@@ -26,7 +26,7 @@ class User extends Authenticatable
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -44,5 +44,15 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * The games that belong to the user.
+     */
+    public function games()
+    {
+        return $this->belongsToMany(Game::class, 'game_user')
+            ->withPivot('list_status')
+            ->withTimestamps();
     }
 }
