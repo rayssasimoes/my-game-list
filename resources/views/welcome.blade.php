@@ -17,8 +17,16 @@
                 <div class="card h-100 shadow-sm">
                     <img src="{{ $game->background_image }}" class="card-img-top" alt="{{ $game->name }}" style="height: 200px; object-fit: cover;">
                     <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">{{ $game->name }}</h5>
-                        {{-- Adicionar mais detalhes do jogo aqui se necessário --}}
+                        <h5 class="card-title text-truncate" title="{{ $game->name }}">{{ $game->name }}</h5>
+                        
+                        {{-- Formulário para adicionar o jogo à lista do usuário --}}
+                        @auth
+                            <form action="{{ route('games.add') }}" method="POST" class="mt-auto">
+                                @csrf
+                                <input type="hidden" name="game_id" value="{{ $game->id }}">
+                                <button type="submit" class="btn btn-primary w-100">Adicionar à Lista</button>
+                            </form>
+                        @endauth
                     </div>
                 </div>
             </div>
