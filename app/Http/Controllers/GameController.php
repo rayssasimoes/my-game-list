@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Game;
+use App\Services\RawgApiService;
 use Illuminate\Http\Request;
 
 class GameController extends Controller
@@ -16,18 +18,10 @@ class GameController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $options = [];
-        if ($request->has('search')) {
-            $options['search'] = $request->input('search');
-        }
-
-        $games = $this->rawgApiService->getGames($options);
-
-        return view('games.index', [
-            'games' => $games['results'] ?? [],
-        ]);
+        $games = Game::latest()->take(20)->get();
+        return view('welcome', compact('games'));
     }
 
     /**
