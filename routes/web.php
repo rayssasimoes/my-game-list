@@ -15,6 +15,8 @@ Route::middleware('auth')->group(function () {
 
     // Rota para adicionar um jogo à lista do usuário
     Route::post('games/add', [GameController::class, 'add'])->name('games.add');
+
+    Route::get('/minha-lista', [GameController::class, 'myList'])->name('games.my-list');
 });
 
 Route::resource('games', GameController::class);

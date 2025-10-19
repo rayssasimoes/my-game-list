@@ -105,4 +105,13 @@ class GameController extends Controller
     {
         //
     }
+
+    /**
+     * Display the user's personal game list.
+     */
+    public function myList()
+    {
+        $games = auth()->user()->games;
+        return view('my-list', compact('games'));
+    }
 }
