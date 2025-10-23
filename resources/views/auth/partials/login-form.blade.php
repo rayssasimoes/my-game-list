@@ -1,5 +1,9 @@
 <!-- Session Status -->
-<x-auth-session-status class="mb-4" :status="session('status')" />
+@if (session('status'))
+    <div class="alert alert-success mb-4" role="alert">
+        {{ session('status') }}
+    </div>
+@endif
 
 <form method="POST" action="{{ route('login') }}">
     @csrf
@@ -30,9 +34,9 @@
 
     <div class="d-flex justify-content-end align-items-center">
         @if (Route::has('password.request'))
-            <button type="button" class="btn btn-link" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
+            <a class="btn btn-link text-decoration-none" href="{{ route('password.request') }}">
                 {{ __('Forgot your password?') }}
-            </button>
+            </a>
         @endif
 
         <button type="submit" class="btn btn-primary ms-3">
