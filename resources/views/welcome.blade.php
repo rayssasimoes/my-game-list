@@ -9,8 +9,10 @@
     </section>
 
     <!-- Seção: Populares no Momento -->
-    <section class="popular-games-section mb-5">
-        <h2 class="section-title text-white mb-4">Populares no Momento</h2>
+    <section class="popular-games-section popular-games-container mb-5">
+        <div class="section-header mb-4">
+            <h2 class="section-title text-white">Populares agora</h2>
+        </div>
         
         <div class="games-grid">
             @foreach($popularGames as $game)
