@@ -20,17 +20,10 @@ class GameController extends Controller
      */
     public function index()
     {
-        $games = Game::latest()->take(20)->get();
-        return view('welcome', compact('games'));
-    }
-
-    /**
-     * Display a listing of the games on the dashboard.
-     */
-    public function dashboard()
-    {
-        $games = Game::latest()->take(20)->get();
-        return view('dashboard', compact('games'));
+        // Busca os 6 jogos mais populares da API da RAWG
+        $popularGames = $this->rawgApiService->getPopularGames(6);
+        
+        return view('welcome', compact('popularGames'));
     }
 
     /**

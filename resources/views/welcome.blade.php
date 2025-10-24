@@ -1,36 +1,33 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    {{-- Hero Section --}}
-    <div class="p-5 mb-4 bg-white rounded-3 shadow-sm">
-        <div class="container-fluid py-5">
-            <h1 class="display-5 fw-bold">Bem-vindo ao MyGameList</h1>
-            <p class="col-md-8 fs-4">O seu espaço para organizar e descobrir novos jogos. Explore nossa coleção pública e comece a montar a sua lista pessoal.</p>
-        </div>
-    </div>
+<div class="container py-5">
+    <!-- Hero Section -->
+    <section class="hero-simple mb-5">
+        <h1 class="hero-title">Bem-vindo ao MyGameList</h1>
+        <p class="hero-subtitle">Organize, descubra e compartilhe sua paixão por jogos</p>
+    </section>
 
-    {{-- Games Section --}}
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 mb-5">
-        @foreach ($games as $game)
-            <div class="col">
-                <div class="card h-100 shadow-sm">
-                    <img src="{{ $game->background_image }}" class="card-img-top" alt="{{ $game->name }}" style="height: 200px; object-fit: cover;">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title text-truncate" title="{{ $game->name }}">{{ $game->name }}</h5>
-                        
-                        {{-- Formulário para adicionar o jogo à lista do usuário --}}
-                        @auth
-                            <form action="{{ route('games.add') }}" method="POST" class="mt-auto">
-                                @csrf
-                                <input type="hidden" name="game_id" value="{{ $game->id }}">
-                                <button type="submit" class="btn btn-primary w-100">Adicionar à Lista</button>
-                            </form>
-                        @endauth
+    <!-- Seção: Populares no Momento -->
+    <section class="popular-games-section mb-5">
+        <h2 class="section-title text-white mb-4">Populares no Momento</h2>
+        
+        <div class="games-grid">
+            @foreach($popularGames as $game)
+                <div class="game-card">
+                    <div class="game-card-image" style="background-image: url('{{ $game['background_image'] ?? '' }}');">
+                        <div class="game-card-overlay">
+                            <h3 class="game-card-title">{{ $game['name'] }}</h3>
+                            @if(isset($game['metacritic']) && $game['metacritic'])
+                                <div class="game-card-rating">
+                                    <span class="metacritic-score">{{ $game['metacritic'] }}</span>
+                                </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
-            </div>
-        @endforeach
-    </div>
+            @endforeach
+        </div>
+    </section>
 </div>
 @endsection

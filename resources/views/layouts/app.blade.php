@@ -10,15 +10,11 @@
     <!-- Scripts -->
     @vite(['resources/scss/app.scss', 'resources/js/app.js'])
 </head>
-<body class="bg-light">
+<body>
     <div id="app">
-        <!-- Top Navbar -->
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">
             <div class="container-fluid">
-                <!-- Always-visible Hamburger Button -->
-                <button class="btn btn-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#mainOffcanvas" aria-controls="mainOffcanvas">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
 
                 <!-- Logo -->
                 <a class="navbar-brand" href="{{ url('/') }}">
@@ -27,30 +23,36 @@
 
                 <!-- Search Bar -->
                 <div class="mx-auto">
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="{{ __('Buscar jogos...') }}" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">{{ __('Buscar') }}</button>
+                    <form class="search-form" role="search">
+                        <div class="search-container">
+                            <input class="search-input" type="search" placeholder="{{ __('Buscar jogos...') }}" aria-label="Search">
+                            <i class="bi bi-search search-icon"></i>
+                        </div>
                     </form>
                 </div>
 
                 <!-- Right Side Of Navbar -->
                 <div class="d-flex">
                     <ul class="navbar-nav ms-auto">
+                        <!-- Link principal: Jogos -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Jogos</a>
+                        </li>
                         <!-- Authentication Links -->
                         @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">
-                                    <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal">
                                         {{ __('Entrar') }}
-                                    </button>
+                                    </a>
                                 </li>
                             @endif
 
                             @if (Route::has('register'))
                                 <li class="nav-item">
-                                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#registerModal">
+                                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#registerModal">
                                         {{ __('Criar Conta') }}
-                                    </button>
+                                    </a>
                                 </li>
                             @endif
                         @else
@@ -74,42 +76,6 @@
                 </div>
             </div>
         </nav>
-
-        <!-- Offcanvas Menu -->
-        <div class="offcanvas offcanvas-start bg-dark text-white" tabindex="-1" id="mainOffcanvas" aria-labelledby="mainOffcanvasLabel">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="mainOffcanvasLabel">Menu</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/') }}">{{ __('Início') }}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/') }}">{{ __('Explorar Jogos') }}</a>
-                    </li>
-                    @auth
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/minha-lista') }}">{{ __('Minha Lista') }}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('profile.edit') }}">{{ __('Meu Perfil') }}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('logout') }}"
-                           onclick="event.preventDefault();
-                                         document.getElementById('logout-form-offcanvas').submit();">
-                            {{ __('Logout') }}
-                        </a>
-                        <form id="logout-form-offcanvas" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
-                    </li>
-                    @endauth
-                </ul>
-            </div>
-        </div>
 
         <div class="container mt-4">
             @if (session('success'))

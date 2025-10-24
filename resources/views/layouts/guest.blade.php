@@ -10,7 +10,7 @@
         <!-- Scripts -->
         @vite(['resources/scss/app.scss', 'resources/js/app.js'])
     </head>
-    <body class="bg-light">
+    <body>
         <div class="container">
             <div class="row justify-content-center align-items-center min-vh-100">
                 <div class="col-md-6 col-lg-4">
