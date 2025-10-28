@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [GameController::class, 'index']);
 
+Route::get('/jogos/populares', [GameController::class, 'popular'])->name('games.popular');
+
 Route::get('/dashboard', [GameController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

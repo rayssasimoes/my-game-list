@@ -11,6 +11,9 @@
     @vite(['resources/scss/app.scss', 'resources/js/app.js'])
 </head>
 <body>
+    <!-- Barra de Carregamento -->
+    <div id="loading-bar" class="loading-bar"></div>
+    
     <div id="app">
     <!-- Top Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm fixed-top">

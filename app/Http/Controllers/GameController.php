@@ -27,6 +27,32 @@ class GameController extends Controller
     }
 
     /**
+     * Display popular games with pagination and filters.
+     */
+    public function popular(Request $request)
+    {
+        $page = $request->get('page', 1);
+        $ordering = $request->get('ordering', '-rating');
+        $platforms = $request->get('platforms', []);
+        
+        if (is_string($platforms)) {
+            $platforms = explode(',', $platforms);
+        }
+
+        $data = $this->rawgApiService->getPopularGamesPaginated($page, 40, $ordering, $platforms);
+        
+        return view('games.popular', [
+            'games' => $data['results'] ?? [],
+            'totalGames' => $data['count'] ?? 0,
+            'currentPage' => $page,
+            'hasNextPage' => !empty($data['next']),
+            'hasPreviousPage' => !empty($data['previous']),
+            'ordering' => $ordering,
+            'selectedPlatforms' => $platforms,
+        ]);
+    }
+
+    /**
      * Attach a game to the authenticated user's list.
      *
      * @param  \Illuminate\Http\Request  $request
