@@ -2,15 +2,17 @@
     x-data="{
         formData: {
             name: '',
+            username: '',
             email: '',
             password: '',
             password_confirmation: ''
         },
         errors: {},
         passwordVisible: false,
+        passwordConfirmationVisible: false,
         submitting: false,
         resetForm() {
-            this.formData = { name: '', email: '', password: '', password_confirmation: '' };
+            this.formData = { name: '', username: '', email: '', password: '', password_confirmation: '' };
             this.errors = {};
         },
         submitForm() {
@@ -60,14 +62,61 @@
     <!-- Name -->
     <div class="mb-3">
         <label for="name" class="form-label">{{ __('Name') }}</label>
-        <input id="name" class="form-control" :class="{ 'is-invalid': errors.name }" type="text" name="name" x-model="formData.name" required autofocus autocomplete="name">
+        <div class="input-group">
+            <span class="input-group-addon">
+                <i class="bi bi-person"></i>
+            </span>
+            <input id="name" 
+                   class="form-control" 
+                   :class="{ 'is-invalid': errors.name }" 
+                   type="text" 
+                   name="name" 
+                   x-model="formData.name" 
+                   placeholder="Seu nome completo"
+                   required 
+                   autofocus 
+                   autocomplete="name">
+        </div>
         <div x-show="errors.name" x-text="errors.name ? errors.name[0] : ''" class="invalid-feedback"></div>
+    </div>
+
+    <!-- Username -->
+    <div class="mb-3">
+        <label for="username" class="form-label">{{ __('Username') }}</label>
+        <div class="input-group">
+            <span class="input-group-addon">
+                <i class="bi bi-at"></i>
+            </span>
+            <input id="username" 
+                   class="form-control" 
+                   :class="{ 'is-invalid': errors.username }" 
+                   type="text" 
+                   name="username" 
+                   x-model="formData.username" 
+                   placeholder="seu_username"
+                   required 
+                   autocomplete="username">
+        </div>
+        <div x-show="errors.username" x-text="errors.username ? errors.username[0] : ''" class="invalid-feedback"></div>
     </div>
 
     <!-- Email Address -->
     <div class="mb-3">
         <label for="email" class="form-label">{{ __('Email') }}</label>
-        <input id="email" class="form-control" :class="{ 'is-invalid': errors.email }" type="email" name="email" x-model="formData.email" required autocomplete="username">
+        <div class="input-group">
+            <span class="input-group-addon">
+                <i class="bi bi-envelope"></i>
+            </span>
+            <input id="email" 
+                   class="form-control" 
+                   :class="{ 'is-invalid': errors.email }" 
+                   type="email" 
+                   name="email" 
+                   x-model="formData.email" 
+                   placeholder="exemplo@email.com"
+                   required 
+                   autocomplete="username">
+        </div>
         <div x-show="errors.email" x-text="errors.email ? errors.email[0] : ''" class="invalid-feedback"></div>
     </div>
 
@@ -86,14 +135,18 @@
            autocomplete="new-password"
            aria-describedby="passwordHelp">
 
-    <!-- Ícone ver/ocultar senha: visível quando houver pelo menos 1 caractere -->
+    <!-- Ícone ver/ocultar senha com estados ativo/inativo -->
     <i class="bi password-toggle-icon"
-       :class="passwordVisible ? 'bi-eye-slash' : 'bi-eye'"
-       x-show="formData.password.length > 0"
-       @click="passwordVisible = !passwordVisible"
-       x-cloak
+       :class="{
+           'bi-eye-slash': passwordVisible,
+           'bi-eye': !passwordVisible,
+           'password-icon-inactive': formData.password.length === 0,
+           'password-icon-active': formData.password.length > 0
+       }"
+       @click="formData.password.length > 0 ? passwordVisible = !passwordVisible : null"
+       :style="formData.password.length === 0 ? 'cursor: default;' : 'cursor: pointer;'"
        role="button"
-       aria-label="Alternar visibilidade da senha"></i>
+       :aria-label="formData.password.length > 0 ? 'Alternar visibilidade da senha' : ''"></i>
 
     <!-- Mensagem de erro do backend -->
     <div x-show="errors.password" x-text="errors.password ? errors.password[0] : ''" class="invalid-feedback"></div>
@@ -110,9 +163,28 @@
 </div>
 
     <!-- Confirm Password -->
-    <div class="mb-3">
+    <div class="mb-3 password-container">
         <label for="password_confirmation" class="form-label">{{ __('Confirm Password') }}</label>
-        <input id="password_confirmation" class="form-control" type="password" name="password_confirmation" x-model="formData.password_confirmation" required autocomplete="new-password">
+        <input id="password_confirmation" 
+               class="form-control form-control-with-icon" 
+               :type="passwordConfirmationVisible ? 'text' : 'password'" 
+               name="password_confirmation" 
+               x-model="formData.password_confirmation" 
+               required 
+               autocomplete="new-password">
+        
+        <!-- Ícone ver/ocultar senha com estados ativo/inativo -->
+        <i class="bi password-toggle-icon"
+           :class="{
+               'bi-eye-slash': passwordConfirmationVisible,
+               'bi-eye': !passwordConfirmationVisible,
+               'password-icon-inactive': formData.password_confirmation.length === 0,
+               'password-icon-active': formData.password_confirmation.length > 0
+           }"
+           @click="formData.password_confirmation.length > 0 ? passwordConfirmationVisible = !passwordConfirmationVisible : null"
+           :style="formData.password_confirmation.length === 0 ? 'cursor: default;' : 'cursor: pointer;'"
+           role="button"
+           :aria-label="formData.password_confirmation.length > 0 ? 'Alternar visibilidade da senha' : ''"></i>
     </div>
 
     <div class="d-flex justify-content-end align-items-center mt-4">
@@ -120,7 +192,7 @@
             {{ __('Already registered?') }}
         </a>
 
-        <button type="submit" class="btn btn-primary" :disabled="submitting">
+        <button type="submit" class="btn btn-primary-custom" :disabled="submitting">
             <span x-show="submitting" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             <span x-text="submitting ? 'Criando Conta...' : 'Criar Conta'">{{ __('Register') }}</span>
         </button>

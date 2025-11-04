@@ -1,9 +1,84 @@
 @import 'bootstrap/scss/bootstrap';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+html {
+    height: 100%;
+}
 
 body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     padding-top: 70px;
     background-color: #1a1a1a;
     color: #e5e5e5;
+    margin: 0;
+    
+    @media (max-width: 575px) {
+        padding-top: 60px;
+    }
+}
+
+// Wrapper para o conteúdo principal
+main {
+    flex: 1;
+}
+
+/* Responsividade da Navbar */
+.navbar {
+    @media (max-width: 767px) {
+        padding: 0.5rem 0.75rem;
+    }
+    
+    .navbar-brand {
+        @media (max-width: 575px) {
+            font-size: 1rem;
+        }
+    }
+    
+    .navbar-nav {
+        @media (max-width: 767px) {
+            .nav-link {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.6rem;
+            }
+        }
+        
+        @media (max-width: 575px) {
+            .nav-link {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.5rem;
+            }
+        }
+    }
+    
+    // Alinha o conteúdo do navbar com o container da página
+    .container-fluid {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-left: 15px;
+        padding-right: 15px;
+        
+        @media (min-width: 992px) {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+    }
+}
+
+/* Container responsivo */
+.container {
+    @media (max-width: 575px) {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+.py-5 {
+    @media (max-width: 575px) {
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+    }
 }
 
 /* Barra de Carregamento */
@@ -52,19 +127,111 @@ body {
 /* Styles for password toggle icon */
 .password-container {
     position: relative;
+    
+    .form-control-with-icon.is-invalid {
+        background-image: none !important;
+        padding-right: 3rem !important;
+    }
+    
+    .form-control-with-icon {
+        background-image: none !important;
+    }
 }
 
 .form-control-with-icon {
-    padding-right: 2.5rem; /* Make space for the icon */
+    padding-right: 3rem;
 }
 
 .password-toggle-icon {
     position: absolute;
-    top: 50%;
+    top: 2.2rem;
     right: 0.75rem;
-    transform: translateY(-50%);
+    font-size: 1.3rem;
+    z-index: 10;
     cursor: pointer;
-    color: #6c757d;
+}
+
+/* Estado inativo: senha oculta (olho fechado) */
+.password-icon-inactive {
+    color: #AAAAAA !important; /* Cinza neutro */
+    opacity: 0.5;
+    cursor: default !important;
+    pointer-events: none;
+}
+
+/* Estado ativo: senha visível (olho aberto) */
+.password-icon-active {
+    opacity: 1;
+    cursor: pointer !important;
+    pointer-events: auto;
+    
+    /* Quando a senha está VISÍVEL (olho aberto) */
+    &.bi-eye-slash {
+        color: #212121 !important; /* Preto/escuro quando mostrando senha */
+    }
+    
+    /* Quando a senha está OCULTA mas tem texto (olho fechado) */
+    &.bi-eye {
+        color: #AAAAAA !important; /* Cinza quando ocultando senha */
+    }
+    
+    /* Hover apenas muda a opacidade, sem animação de escala */
+    &:hover {
+        opacity: 0.8;
+    }
+    
+    /* Remove completamente qualquer efeito de active */
+}
+
+/* Styles for input group with addon (ícone externo à esquerda) */
+.input-group {
+    display: flex;
+    width: 100%;
+}
+
+.input-group-addon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.75rem;
+    font-size: 1.1rem;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-right: 0;
+    border-radius: 0.375rem 0 0 0.375rem;
+    color: rgba(255, 255, 255, 0.6);
+    
+    i {
+        line-height: 1;
+    }
+}
+
+.input-group .form-control {
+    border-radius: 0 0.375rem 0.375rem 0;
+    flex: 1;
+    
+    &:focus {
+        ~ .input-group-addon,
+        + .input-group-addon {
+            border-color: #E93D82;
+            color: #E93D82;
+        }
+    }
+}
+
+/* Ajuste para quando o input group está no modal dark theme */
+.modal-dark-theme {
+    .input-group-addon {
+        background-color: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .input-group .form-control:focus ~ .input-group-addon,
+    .input-group .form-control:focus + .input-group-addon {
+        border-color: #E93D82;
+        color: #E93D82;
+    }
 }
 
 /* Styles for search bar in navbar */
@@ -76,6 +243,14 @@ body {
     position: relative;
     width: 400px;
     max-width: 100%;
+    
+    @media (max-width: 767px) {
+        width: 200px;
+    }
+    
+    @media (max-width: 575px) {
+        width: 150px;
+    }
 }
 
 .search-input {
@@ -98,6 +273,11 @@ body {
         background-color: rgba(255, 255, 255, 0.15);
         box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.1);
     }
+    
+    @media (max-width: 767px) {
+        font-size: 0.85rem;
+        padding: 0.4rem 2rem 0.4rem 0.8rem;
+    }
 }
 
 .search-icon {
@@ -108,6 +288,11 @@ body {
     color: rgba(255, 255, 255, 0.6);
     pointer-events: none;
     font-size: 1.1rem;
+    
+    @media (max-width: 767px) {
+        font-size: 0.95rem;
+        right: 0.8rem;
+    }
 }
 
 /* Styles for Popular Games Section */
@@ -117,6 +302,12 @@ body {
         width: 100%;
         margin-bottom: 1.5rem;
         padding-right: 0;
+        
+        @media (max-width: 575px) {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 1rem;
+        }
     }
 
     .section-title {
@@ -138,6 +329,15 @@ body {
             height: 4px;
             background: #E93D82;
             border-radius: 2px;
+        }
+        
+        @media (max-width: 767px) {
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+        
+        @media (max-width: 575px) {
+            font-size: 16px;
         }
     }
 
@@ -161,25 +361,47 @@ body {
         &:hover::after {
             margin-left: 12px;
         }
+        
+        @media (max-width: 575px) {
+            align-self: flex-start;
+            margin-bottom: 0;
+            font-size: 14px;
+        }
     }
 }
 
 .popular-games-container {
-    max-width: 1060px;
+    max-width: 1200px;
     margin: 0 auto;
+    
+    @media (max-width: 767px) {
+        padding: 0 1rem;
+    }
 }
 
 .games-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 0.75rem;
 
-    @media (min-width: 768px) {
+    @media (max-width: 575px) {
         grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
     }
 
-    @media (min-width: 1200px) {
+    @media (min-width: 576px) and (max-width: 767px) {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.6rem;
+    }
+
+    @media (min-width: 768px) and (max-width: 991px) {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0.65rem;
+    }
+
+    @media (min-width: 992px) {
         grid-template-columns: repeat(6, 1fr);
+        gap: 0.75rem;
     }
 }
 
@@ -197,6 +419,14 @@ body {
 
         .game-card-overlay {
             opacity: 1;
+        }
+    }
+    
+    @media (max-width: 575px) {
+        border-radius: 6px;
+        
+        &:hover {
+            transform: translateY(-3px);
         }
     }
 }
@@ -225,6 +455,11 @@ body {
     padding: 0.6rem;
     opacity: 0;
     transition: opacity 0.3s ease;
+    
+    @media (max-width: 575px) {
+        padding: 0.5rem;
+        opacity: 1;
+    }
 }
 
 .game-card-title {
@@ -233,6 +468,11 @@ body {
     font-weight: 600;
     margin: 0 0 0.3rem 0;
     line-height: 1.2;
+    
+    @media (max-width: 575px) {
+        font-size: 0.75rem;
+        margin: 0 0 0.25rem 0;
+    }
 }
 
 .game-card-rating {
@@ -240,6 +480,11 @@ body {
     align-items: center;
     gap: 0.3rem;
     font-size: 0.75rem;
+    
+    @media (max-width: 575px) {
+        gap: 0.25rem;
+        font-size: 0.7rem;
+    }
 }
 
 .metacritic-score {
@@ -250,6 +495,11 @@ body {
     padding: 0.15rem 0.35rem;
     border-radius: 3px;
     display: inline-block;
+    
+    @media (max-width: 575px) {
+        font-size: 0.6rem;
+        padding: 0.1rem 0.3rem;
+    }
 }
 
 /* Popular Games Page Styles */
@@ -289,7 +539,7 @@ body {
 
 // Página de jogos populares - remove espaço superior desnecessário
 .popular-games-page {
-    padding-top: 0.75rem !important;
+    padding-top: 0 !important;
     padding-bottom: 2rem !important;
 }
 
@@ -393,5 +643,253 @@ body {
     .page-item.active .page-link {
         background-color: #E93D82;
         border-color: #E93D82;
+    }
+}
+
+/* Modal Dark Theme */
+.modal-dark-theme {
+    background-color: #212529;
+    color: #fff;
+    
+    .modal-header {
+        background-color: #1a1a1a;
+        
+        .modal-title {
+            color: #fff;
+            font-weight: 600;
+            
+            i {
+                color: #E93D82;
+            }
+        }
+    }
+    
+    .modal-body {
+        background-color: #212529;
+        padding: 1.5rem;
+        
+        p {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 1rem;
+        }
+        
+        // Estilização dos inputs para tema escuro
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            
+            &::placeholder {
+                color: rgba(255, 255, 255, 0.5);
+            }
+            
+            &:focus {
+                background-color: rgba(255, 255, 255, 0.15);
+                border-color: #E93D82;
+                color: #fff;
+                box-shadow: 0 0 0 0.25rem rgba(233, 61, 130, 0.25);
+            }
+            
+            &.is-invalid {
+                border-color: #dc3545;
+                
+                &:focus {
+                    border-color: #dc3545;
+                    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+                }
+            }
+        }
+        
+        // Labels
+        .form-label {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+        
+        // Checkbox
+        .form-check-input {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            
+            &:checked {
+                background-color: #E93D82;
+                border-color: #E93D82;
+            }
+            
+            &:focus {
+                border-color: #E93D82;
+                box-shadow: 0 0 0 0.25rem rgba(233, 61, 130, 0.25);
+            }
+        }
+        
+        .form-check-label {
+            color: rgba(255, 255, 255, 0.85);
+        }
+        
+        // Links
+        .btn-link {
+            color: #E93D82;
+            
+            &:hover {
+                color: #d62a6e;
+            }
+        }
+        
+        a:not(.btn) {
+            color: #E93D82;
+            
+            &:hover {
+                color: #d62a6e;
+            }
+        }
+        
+        // Textos de ajuda
+        .form-text {
+            color: rgba(255, 255, 255, 0.6);
+            
+            &.text-danger {
+                color: #dc3545 !important;
+            }
+        }
+        
+        // Feedback de erro
+        .invalid-feedback {
+            color: #dc3545;
+        }
+    }
+    
+    .modal-footer {
+        background-color: #212529;
+        
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            
+            &:hover {
+                background-color: rgba(255, 255, 255, 0.2);
+                border-color: rgba(255, 255, 255, 0.3);
+            }
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            
+            &:hover {
+                background-color: #bb2d3b;
+                border-color: #b02a37;
+            }
+        }
+    }
+}
+
+// Botão principal customizado (rosa)
+.btn-primary-custom {
+    background-color: #E93D82;
+    border-color: #E93D82;
+    color: #fff;
+    font-weight: 500;
+    
+    &:hover {
+        background-color: #d62a6e;
+        border-color: #d62a6e;
+        color: #fff;
+    }
+    
+    &:focus,
+    &:active {
+        background-color: #d62a6e;
+        border-color: #d62a6e;
+        color: #fff;
+        box-shadow: 0 0 0 0.25rem rgba(233, 61, 130, 0.5);
+    }
+    
+    &:disabled {
+        background-color: rgba(233, 61, 130, 0.5);
+        border-color: rgba(233, 61, 130, 0.5);
+        cursor: not-allowed;
+    }
+}
+
+// Backdrop do modal mais escuro
+.modal-backdrop.show {
+    opacity: 0.7;
+}
+
+// ================================
+// FOOTER MODERN
+// ================================
+
+.footer-modern {
+    background-color: #212529;
+    padding: 1.5rem 0;
+    margin-top: auto; // Empurra o footer para o final
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    @media (max-width: 767px) {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+}
+
+.footer-copyright {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.footer-brand {
+    color: #E93D82;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+    
+    &:hover {
+        color: #d62a6e;
+        text-decoration: none;
+    }
+}
+
+.footer-links {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 1.5rem;
+    
+    @media (max-width: 767px) {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+    
+    li {
+        margin: 0;
+    }
+    
+    a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: color 0.2s ease;
+        
+        &:hover {
+            color: #E93D82;
+            text-decoration: none;
+        }
     }
 }

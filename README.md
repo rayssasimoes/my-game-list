@@ -75,3 +75,44 @@ npm run dev
 ```
 
 Agora, abra seu navegador e acesse a URL fornecida pelo `php artisan serve` (geralmente http://127.0.0.1:8000).
+
+📱 **Testando no Celular**
+Para testar o projeto no seu celular na mesma rede Wi-Fi:
+
+**1. Descubra seu IP local:**
+```bash
+# Windows
+ipconfig
+
+# Mac/Linux
+ifconfig
+```
+
+**2. Configure a variável de ambiente:**
+Edite o arquivo `.env` e adicione:
+```
+VITE_HMR_HOST=SEU_IP_LOCAL
+```
+Exemplo: `VITE_HMR_HOST=192.168.0.100`
+
+**3. Compile os assets:**
+```bash
+npm run build
+```
+
+**4. Inicie o servidor Laravel:**
+```bash
+php artisan serve --host=0.0.0.0 --port=8000
+```
+
+**5. Acesse no celular:**
+```
+http://SEU_IP_LOCAL:8000
+```
+Exemplo: `http://192.168.0.100:8000`
+
+> **⚠️ Importante**: Para testes no celular, use `npm run build` ao invés de `npm run dev`. O build compila os assets de forma estática e funciona melhor em dispositivos da rede local. Lembre-se de rodar `npm run build` novamente sempre que fizer mudanças no CSS/JS.
+
+> **💡 Dica**: Para desenvolvimento no PC, continue usando `npm run dev` normalmente para ter hot reload automático.
+
+> **Nota**: O arquivo `.env` não é versionado no Git por segurança. Cada desenvolvedor deve configurar seu próprio IP local.

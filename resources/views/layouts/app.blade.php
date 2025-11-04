@@ -65,9 +65,8 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutConfirmModal">
+                                        <i class="bi bi-box-arrow-right me-2"></i>{{ __('Sair') }}
                                     </a>
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                         @csrf
@@ -95,7 +94,7 @@
             @endif
         </div>
 
-        <main class="py-4">
+        <main>
             @yield('content')
         </main>
     </div>
@@ -103,10 +102,12 @@
     <!-- Login Modal -->
     <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content modal-dark-theme">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="loginModalLabel">{{ __('Entrar') }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
+                    <h5 class="modal-title" id="loginModalLabel">
+                        <i class="bi bi-box-arrow-in-right me-2"></i>{{ __('Entrar') }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
                 </div>
                 <div class="modal-body">
                     @include('auth.partials.login-form')
@@ -118,10 +119,12 @@
     <!-- Register Modal -->
     <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content modal-dark-theme">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="registerModalLabel">{{ __('Criar Conta') }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
+                    <h5 class="modal-title" id="registerModalLabel">
+                        <i class="bi bi-person-plus me-2"></i>{{ __('Criar Conta') }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
                 </div>
                 <div class="modal-body">
                     @include('auth.partials.register-form')
@@ -133,10 +136,12 @@
     <!-- Forgot Password Modal -->
     <div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content modal-dark-theme">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="forgotPasswordModalLabel">{{ __('Esqueceu a Senha?') }}</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
+                    <h5 class="modal-title" id="forgotPasswordModalLabel">
+                        <i class="bi bi-key me-2"></i>{{ __('Esqueceu a Senha?') }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
                 </div>
                 <div class="modal-body">
                     <p class="text-muted">
@@ -161,6 +166,31 @@
                             </button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal fade" id="logoutConfirmModal" tabindex="-1" aria-labelledby="logoutConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content modal-dark-theme">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="logoutConfirmModalLabel">
+                        <i class="bi bi-box-arrow-right me-2"></i>{{ __('Confirmar Saída') }}
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-0">{{ __('Você tem certeza que deseja sair?') }}</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>{{ __('Cancelar') }}
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="document.getElementById('logout-form').submit();">
+                        <i class="bi bi-check-circle me-1"></i>{{ __('Sim') }}
+                    </button>
                 </div>
             </div>
         </div>
