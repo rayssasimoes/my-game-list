@@ -6,20 +6,15 @@
 /vendor/
 /node_modules/
 
-# Laravel (removido mas mantendo compatibilidade)
-/public/hot
-/public/storage
-/storage/*.key
+# Environment & Config
 .env
 .env.backup
-.phpunit.result.cache
-Homestead.json
-Homestead.yaml
+config.php
 
 # Logs
+*.log
 npm-debug.log
 yarn-error.log
-*.log
 
 # IDEs
 /.idea
@@ -35,10 +30,8 @@ Thumbs.db
 # Backup folders
 my-game-list-puro/
 backup/
+resources/
 
-# Configuration files (use .env.example as template)
-config.php
-
-# User uploads (se houver futuramente)
+# User uploads (futuro)
 /public/uploads/*
 !/public/uploads/.gitkeep
