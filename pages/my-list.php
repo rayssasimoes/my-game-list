@@ -46,12 +46,12 @@ include 'includes/header.php';
                         <div class="game-card-overlay">
                             <h3 class="game-card-title"><?php echo htmlspecialchars($game['name']); ?></h3>
                             <?php if ($game['status']): ?>
-                                <p style="font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.9;">
+                                <p class="game-card-status">
                                     Status: <?php echo htmlspecialchars($game['status']); ?>
                                 </p>
                             <?php endif; ?>
                             <?php if ($game['rating']): ?>
-                                <p style="font-size: 0.85rem; opacity: 0.9;">
+                                <p class="game-card-rating">
                                     ⭐ <?php echo htmlspecialchars($game['rating']); ?>/10
                                 </p>
                             <?php endif; ?>

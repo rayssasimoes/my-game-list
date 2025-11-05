@@ -43,9 +43,9 @@
                                 Minha Lista
                             </a>
                             <div class="dropdown-divider"></div>
-                            <form method="POST" style="margin: 0;">
+                            <form method="POST" class="dropdown-form">
                                 <input type="hidden" name="action" value="logout">
-                                <button type="submit" class="dropdown-item" style="width: 100%; text-align: left; cursor: pointer;">
+                                <button type="submit" class="dropdown-item dropdown-button">
                                     Sair
                                 </button>
                             </form>
