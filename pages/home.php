@@ -7,7 +7,7 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
     $games = searchGames($searchTerm);
     $sectionTitle = "Resultados para: " . htmlspecialchars($searchTerm);
 } else {
-    $games = getPopularGames(6);
+    $games = getPopularGames(20);
     $sectionTitle = "Populares agora";
 }
 
@@ -34,8 +34,9 @@ include 'includes/header.php';
 
     <!-- Seção: Populares no Momento -->
     <section class="popular-games-section mb-5">
-        <div class="section-header">
+        <div class="section-header-with-arrow">
             <h2 class="section-title"><?php echo $sectionTitle; ?></h2>
+            <span class="scroll-indicator">›</span>
         </div>
         
         <?php if (empty($games)): ?>
@@ -48,25 +49,23 @@ include 'includes/header.php';
                              alt="<?php echo htmlspecialchars($game['name']); ?>" 
                              class="game-card-image">
                         
-                        <!-- Overlay padrão (nome embaixo) -->
-                        <div class="game-card-overlay">
-                            <h3 class="game-card-title"><?php echo htmlspecialchars($game['name']); ?></h3>
-                        </div>
-                        
                         <!-- Overlay de hover (nome no centro + botões embaixo) -->
                         <div class="game-card-hover-content">
                             <h3 class="game-card-hover-title"><?php echo htmlspecialchars($game['name']); ?></h3>
-                            <div class="game-card-actions">
-                                <button class="action-btn" title="Jogado">
-                                    <span class="action-btn-icon">🎮</span>
-                                </button>
-                                <button class="action-btn" title="Backlog">
-                                    <span class="action-btn-icon">📋</span>
-                                </button>
-                                <button class="action-btn" title="Mais opções">
-                                    <span class="action-btn-icon">⋮</span>
-                                </button>
-                            </div>
+                            
+                            <?php if (isLoggedIn()): ?>
+                                <div class="game-card-actions">
+                                    <button class="action-btn" title="Jogado">
+                                        <span class="action-btn-icon">🎮</span>
+                                    </button>
+                                    <button class="action-btn" title="Backlog">
+                                        <span class="action-btn-icon">📋</span>
+                                    </button>
+                                    <button class="action-btn" title="Mais opções">
+                                        <span class="action-btn-icon">⋮</span>
+                                    </button>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 <?php endforeach; ?>

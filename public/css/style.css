@@ -282,6 +282,7 @@ a {
     font-size: 20px;
     font-weight: 800;
     margin-bottom: 0;
+    margin: 0;
     text-transform: uppercase;
     letter-spacing: 1.5px;
     color: #ffffff;
@@ -300,12 +301,42 @@ a {
     border-radius: 2px;
 }
 
+/* Header com seta para indicar navegação */
+.section-header-with-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+}
+
+.scroll-indicator {
+    color: #E93D82;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    user-select: none;
+}
+
+.scroll-indicator:hover {
+    transform: translateX(3px);
+}
+
 /* ===== GAMES GRID ===== */
 .games-grid {
-    display: grid;
-    grid-template-columns: repeat(6, 1fr); /* 6 colunas fixas em uma linha */
-    gap: 2rem; /* Espaçamento maior entre cards */
+    display: flex;
+    overflow-x: auto;
+    gap: 2rem;
     margin-bottom: 2rem;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox - oculta scrollbar */
+    -ms-overflow-style: none; /* IE/Edge - oculta scrollbar */
+}
+
+/* Oculta scrollbar em Chrome, Safari, Opera */
+.games-grid::-webkit-scrollbar {
+    display: none;
 }
 
 .game-card {
@@ -314,11 +345,8 @@ a {
     overflow: hidden;
     cursor: pointer;
     transition: transform 0.2s ease;
-    max-width: 180px; /* Largura máxima compacta */
-}
-
-.game-card:hover {
-    transform: scale(1.02); /* Leve aumento */
+    flex: 0 0 180px; /* Largura fixa para scroll horizontal */
+    width: 180px;
 }
 
 .game-card-image {
@@ -340,7 +368,7 @@ a {
     left: 0;
     right: 0;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
-    padding: 1.5rem 1rem 1rem;
+    padding: 1rem 0.75rem;
     transition: opacity 0.3s ease;
 }
 
@@ -373,25 +401,30 @@ a {
 
 .game-card-hover-title {
     color: #ffffff;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 700;
     text-align: center;
     margin-bottom: auto;
     margin-top: auto;
     padding: 0 0.5rem;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    line-height: 1.3;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    word-break: break-word;
 }
 
 .game-card-actions {
     display: flex;
-    gap: 0.75rem;
+    gap: 0.6rem;
     margin-top: auto;
-    padding-bottom: 1rem;
+    padding-bottom: 0.75rem;
 }
 
 .action-btn {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     background-color: rgba(255, 255, 255, 0.2);
     border: 2px solid rgba(255, 255, 255, 0.4);
@@ -411,15 +444,21 @@ a {
 
 .action-btn-icon {
     color: #ffffff;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: bold;
 }
 
 .game-card-title {
     color: #ffffff;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 600;
     margin: 0;
+    line-height: 1.3;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    word-break: break-word;
 }
 
 .game-card-status {
@@ -634,38 +673,58 @@ a {
         max-width: 300px;
     }
 
-    /* Tablets: 6 cards em linha, mas com scroll horizontal */
+    /* TABLET: 6 cards confortáveis com scroll mínimo */
+    .container {
+        padding: 0 12px;
+    }
+
     .games-grid {
-        display: flex; /* Muda para flexbox */
-        overflow-x: auto; /* Scroll horizontal */
+        display: flex;
+        overflow-x: auto;
         gap: 1rem;
-        padding-bottom: 1rem;
         scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch; /* Scroll suave no iOS */
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox - oculta scrollbar */
+        -ms-overflow-style: none; /* IE/Edge - oculta scrollbar */
     }
 
-    /* Estiliza a scrollbar no tablet */
+    /* Oculta scrollbar em Chrome, Safari, Opera */
     .games-grid::-webkit-scrollbar {
-        height: 8px;
-    }
-
-    .games-grid::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 4px;
-    }
-
-    .games-grid::-webkit-scrollbar-thumb {
-        background: #E93D82;
-        border-radius: 4px;
+        display: none;
     }
 
     .game-card {
-        flex: 0 0 150px; /* Tamanho fixo: 150px */
-        max-width: 150px;
+        flex: 0 0 110px; /* Largura fixa confortável */
+        max-width: 110px;
     }
 
     .game-card-image {
-        height: 200px;
+        height: 165px; /* Proporção 2:3 mantida */
+    }
+
+    .game-card-title {
+        font-size: 0.8rem;
+    }
+
+    .game-card-overlay {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .game-card-hover-title {
+        font-size: 0.9rem;
+    }
+
+    .action-btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    .action-btn-icon {
+        font-size: 0.85rem;
+    }
+
+    .game-card-actions {
+        gap: 0.4rem;
     }
 
     .welcome-section {
@@ -676,6 +735,10 @@ a {
 
     .section-title {
         font-size: 18px;
+    }
+
+    .scroll-indicator {
+        font-size: 1.3rem;
     }
 }
 
@@ -689,52 +752,59 @@ a {
         padding: 0.3rem 0.5rem;
     }
 
-    /* Mobile: 6 cards em linha com scroll horizontal! */
+    /* MOBILE: Cards confortáveis, último 40% visível (indica scroll) */
+    .container {
+        padding: 0 10px;
+    }
+
     .games-grid {
         display: flex;
         overflow-x: auto;
         gap: 0.75rem;
-        padding-bottom: 1rem;
         scroll-behavior: smooth;
         -webkit-overflow-scrolling: touch;
-    }
-
-    /* Scrollbar mobile */
-    .games-grid::-webkit-scrollbar {
-        height: 6px;
-    }
-
-    .games-grid::-webkit-scrollbar-track {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 3px;
-    }
-
-    .games-grid::-webkit-scrollbar-thumb {
-        background: #E93D82;
-        border-radius: 3px;
+        padding-bottom: 0.5rem;
     }
 
     .game-card {
-        flex: 0 0 120px; /* Tamanho fixo menor: 120px */
-        max-width: 120px;
+        flex: 0 0 85px; /* Largura confortável para mobile */
+        max-width: 85px;
     }
 
     .game-card-image {
-        height: 160px;
+        height: 127px; /* Proporção 2:3 */
     }
 
-    /* Ajusta botões no mobile */
-    .action-btn {
-        width: 32px;
-        height: 32px;
+    .game-card-title {
+        font-size: 0.7rem;
+        line-height: 1.2;
     }
 
-    .action-btn-icon {
-        font-size: 0.85rem;
+    .game-card-overlay {
+        padding: 0.6rem 0.35rem;
     }
 
     .game-card-hover-title {
-        font-size: 0.9rem;
+        font-size: 0.8rem;
+        padding: 0 0.3rem;
+    }
+
+    .action-btn {
+        width: 28px;
+        height: 28px;
+    }
+
+    .action-btn-icon {
+        font-size: 0.75rem;
+    }
+
+    .game-card-actions {
+        gap: 0.35rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .game-card-hover-content {
+        padding: 0.75rem 0.5rem;
     }
 
     .section-title {
