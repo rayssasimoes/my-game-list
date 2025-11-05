@@ -203,6 +203,16 @@ a {
     opacity: 1;
 }
 
+.dropdown-form {
+    margin: 0;
+}
+
+.dropdown-button {
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+}
+
 /* ===== WELCOME SECTION ===== */
 .welcome-section {
     padding-left: 0;
@@ -329,6 +339,20 @@ a {
     color: #ffffff;
     font-size: 1rem;
     font-weight: 600;
+    margin: 0;
+}
+
+.game-card-status {
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    opacity: 0.9;
+    color: #ffffff;
+}
+
+.game-card-rating {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    color: #ffffff;
     margin: 0;
 }
 
