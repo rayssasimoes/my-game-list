@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'MyGameList - Lista de Jogos';
+$pageTitle = 'MyGameList';
 
 // Buscar jogos populares ou resultados de busca
 if (isset($_GET['search']) && !empty($_GET['search'])) {
@@ -14,6 +14,7 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
 include 'includes/header.php';
 ?>
 
+<!-- Conteúdo da página para usuários logados -->
 <div class="container py-5">
     <!-- Frase de Boas-vindas -->
     <?php if (isLoggedIn()): ?>
@@ -26,9 +27,9 @@ include 'includes/header.php';
             </div>
         </div>
     <?php else: ?>
-        <div class="welcome-message mb-5 text-center">
-            <h1 class="display-5 fw-bold text-white mb-3">Bem-vindo(a) ao MyGameList!</h1>
-            <p class="lead text-white-50">Descubra, organize e compartilhe sua coleção de jogos favoritos</p>
+        <div class="welcome-message-compact">
+            <h1 class="welcome-title">Bem-vindo(a) ao MyGameList!</h1>
+            <p class="welcome-subtitle">Descubra, organize e compartilhe sua coleção de jogos favoritos</p>
         </div>
     <?php endif; ?>
 
@@ -52,7 +53,8 @@ include 'includes/header.php';
                         <!-- Overlay de hover (nome no centro + botões embaixo) -->
                         <div class="game-card-hover-content">
                             <h3 class="game-card-hover-title"><?php echo htmlspecialchars($game['name']); ?></h3>
-                            
+
+                            <!-- Para usuários logados -->
                             <?php if (isLoggedIn()): ?>
                                 <div class="game-card-actions">
                                     <button class="action-btn" title="Jogado">

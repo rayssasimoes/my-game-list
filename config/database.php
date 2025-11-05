@@ -3,7 +3,7 @@
  * Configuração do Banco de Dados
  */
 
-// Configurações do banco (mesmo do Laravel)
+// Configurações do banco
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'db_mygamelist');
 define('DB_USER', 'root');

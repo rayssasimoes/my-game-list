@@ -237,6 +237,33 @@ a {
     color: #ffffff;
 }
 
+/* Welcome message compacta (não logado) */
+.welcome-message-compact {
+    margin-bottom: 2.5rem;
+    margin-top:0%;
+    max-width: 500px;
+}
+
+.welcome-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+}
+
+.welcome-subtitle {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1.25rem;
+    line-height: 1.5;
+}
+
+.welcome-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
 .welcome-message {
     margin-bottom: 3rem;
     text-align: center;
@@ -733,6 +760,22 @@ a {
         gap: 1rem;
     }
 
+    .welcome-message-compact {
+        max-width: 100%;
+    }
+
+    .welcome-title {
+        font-size: 1.5rem;
+    }
+
+    .welcome-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .welcome-actions {
+        flex-wrap: wrap;
+    }
+
     .section-title {
         font-size: 18px;
     }
@@ -750,6 +793,20 @@ a {
     .nav-link {
         font-size: 0.8rem;
         padding: 0.3rem 0.5rem;
+    }
+
+    .welcome-title {
+        font-size: 1.25rem;
+    }
+
+    .welcome-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .btn-primary-custom,
+    .btn-secondary-custom {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.85rem;
     }
 
     /* MOBILE: Cards confortáveis, último 40% visível (indica scroll) */

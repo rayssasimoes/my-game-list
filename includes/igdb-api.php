@@ -1,8 +1,4 @@
 <?php
-/**
- * IGDB API - PHP Puro
- * Mantendo as mesmas credenciais do Laravel
- */
 
 define('IGDB_CLIENT_ID', '8moen985l6yy84pd61d7d4net3k26g');
 define('IGDB_CLIENT_SECRET', 'bwwru0snjnk13e5ko1aoyi2clbucu3');
@@ -69,7 +65,7 @@ function igdbRequest($endpoint, $query) {
     return [];
 }
 
-// Buscar jogos populares (mantendo mesma lógica do Laravel)
+// Buscar jogos populares
 function getPopularGames($limit = 12) {
     // Cache simples em sessão por 6 horas
     $cacheKey = "popular_games_{$limit}";
