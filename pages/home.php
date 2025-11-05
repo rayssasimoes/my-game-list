@@ -57,10 +57,10 @@ include 'includes/header.php';
                         <div class="game-card-hover-content">
                             <h3 class="game-card-hover-title"><?php echo htmlspecialchars($game['name']); ?></h3>
                             <div class="game-card-actions">
-                                <button class="action-btn" title="Played (Jogado)">
+                                <button class="action-btn" title="Jogado">
                                     <span class="action-btn-icon">🎮</span>
                                 </button>
-                                <button class="action-btn" title="Backlog (Quero Jogar)">
+                                <button class="action-btn" title="Backlog">
                                     <span class="action-btn-icon">📋</span>
                                 </button>
                                 <button class="action-btn" title="Mais opções">
