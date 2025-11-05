@@ -113,6 +113,105 @@ a {
     background-color: rgba(255, 255, 255, 0.15);
 }
 
+/* ===== SEARCH AUTOCOMPLETE DROPDOWN ===== */
+.search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #1a1a2e;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    margin-top: 2px;
+}
+
+.search-dropdown.show {
+    display: block;
+}
+
+.search-result-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    gap: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.search-result-item:last-child {
+    border-bottom: none;
+}
+
+.search-result-item:hover {
+    background-color: rgba(233, 61, 130, 0.1);
+}
+
+.search-result-image {
+    width: 40px;
+    height: 53px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.search-result-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.search-result-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.search-result-year {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 0.25rem;
+}
+
+.search-loading,
+.search-no-results,
+.search-error {
+    padding: 1rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+}
+
+.search-error {
+    color: #ff6b6b;
+}
+
+/* Scrollbar personalizada para dropdown */
+.search-dropdown::-webkit-scrollbar {
+    width: 8px;
+}
+
+.search-dropdown::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.search-dropdown::-webkit-scrollbar-thumb {
+    background: #E93D82;
+    border-radius: 4px;
+}
+
+.search-dropdown::-webkit-scrollbar-thumb:hover {
+    background: #d62a6e;
+}
+
 /* ===== DROPDOWN DO USUÁRIO - FUNDO UNIFICADO ===== */
 .nav-item.dropdown {
     position: relative;
@@ -698,6 +797,23 @@ a {
     .search-container {
         width: 100%;
         max-width: 300px;
+    }
+
+    .search-dropdown {
+        max-height: 300px;
+    }
+
+    .search-result-item {
+        padding: 0.6rem 0.75rem;
+    }
+
+    .search-result-image {
+        width: 35px;
+        height: 47px;
+    }
+
+    .search-result-name {
+        font-size: 0.85rem;
     }
 
     /* TABLET: 6 cards confortáveis com scroll mínimo */

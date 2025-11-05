@@ -107,12 +107,12 @@ function getPopularGames($limit = 12) {
 }
 
 // Buscar jogos por termo de busca
-function searchGames($searchTerm) {
+function searchGames($searchTerm, $limit = 20) {
     $query = "
         fields name, cover.url, rating, first_release_date;
         search \"{$searchTerm}\";
         where cover != null;
-        limit 20;
+        limit {$limit};
     ";
     
     $games = igdbRequest('games', $query);
