@@ -7,7 +7,7 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
     $games = searchGames($searchTerm);
     $sectionTitle = "Resultados para: " . htmlspecialchars($searchTerm);
 } else {
-    $games = getPopularGames(12);
+    $games = getPopularGames(6);
     $sectionTitle = "Populares agora";
 }
 
@@ -47,8 +47,26 @@ include 'includes/header.php';
                         <img src="<?php echo htmlspecialchars($game['cover']); ?>" 
                              alt="<?php echo htmlspecialchars($game['name']); ?>" 
                              class="game-card-image">
+                        
+                        <!-- Overlay padrão (nome embaixo) -->
                         <div class="game-card-overlay">
                             <h3 class="game-card-title"><?php echo htmlspecialchars($game['name']); ?></h3>
+                        </div>
+                        
+                        <!-- Overlay de hover (nome no centro + botões embaixo) -->
+                        <div class="game-card-hover-content">
+                            <h3 class="game-card-hover-title"><?php echo htmlspecialchars($game['name']); ?></h3>
+                            <div class="game-card-actions">
+                                <button class="action-btn" title="Played (Jogado)">
+                                    <span class="action-btn-icon">🎮</span>
+                                </button>
+                                <button class="action-btn" title="Backlog (Quero Jogar)">
+                                    <span class="action-btn-icon">📋</span>
+                                </button>
+                                <button class="action-btn" title="Mais opções">
+                                    <span class="action-btn-icon">⋮</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 <?php endforeach; ?>
