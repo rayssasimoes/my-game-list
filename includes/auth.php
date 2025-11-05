@@ -1,6 +1,6 @@
 <?php
 /**
- * Sistema de Autenticação - PHP Puro
+ * Sistema de Autenticação
  * Mantendo compatibilidade com banco do Laravel
  */
 

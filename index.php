@@ -1,8 +1,4 @@
 <?php
-/**
- * MY GAME LIST - PHP PURO
- * Convertido do Laravel
- */
 
 // Iniciar sessão
 session_start();
