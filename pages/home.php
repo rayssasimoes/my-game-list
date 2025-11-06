@@ -16,15 +16,17 @@ include 'includes/header.php';
 
 <!-- Conteúdo da página para usuários logados -->
 <div class="container py-5">
-    <!-- Frase de Boas-vindas -->
+    <!-- Hero Section de Boas-vindas -->
     <?php if (isLoggedIn()): ?>
-        <?php $user = getUser(); ?>
-        <div class="welcome-section">
-            <div class="welcome-heading">
-                <span class="fw-bold">Olá, <?php echo htmlspecialchars($user['name']); ?>!</span>
-                <br>
-                O que vamos jogar hoje?
-            </div>
+        <?php 
+            $user = getUser(); 
+            // Pegar apenas o primeiro nome
+            $firstName = explode(' ', $user['name'])[0];
+        ?>
+        <div class="hero-section">
+            <h1 class="hero-title">
+                Bem-vindo (a) de volta, <span class="hero-name"><?php echo htmlspecialchars($firstName); ?></span>. Organize, descubra e jogue!
+            </h1>
         </div>
     <?php else: ?>
         <div class="welcome-message-compact">
