@@ -1,7 +1,34 @@
 <?php
 
-define('IGDB_CLIENT_ID', '8moen985l6yy84pd61d7d4net3k26g');
-define('IGDB_CLIENT_SECRET', 'bwwru0snjnk13e5ko1aoyi2clbucu3');
+// Helper simples para pegar variáveis de ambiente (.env) quando necessário
+function env($key, $default = null) {
+    // 1) getenv
+    $val = getenv($key);
+    if ($val !== false) return $val;
+
+    // 2) $_ENV
+    if (isset($_ENV[$key])) return $_ENV[$key];
+
+    // 3) Ler .env local (apenas fallback para desenvolvimento)
+    $envFile = __DIR__ . '/../.env';
+    if (is_file($envFile)) {
+        $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '' || strpos($line, '#') === 0) continue;
+            if (strpos($line, '=') === false) continue;
+            list($k, $v) = explode('=', $line, 2);
+            $k = trim($k);
+            $v = trim($v);
+            if ($k === $key) return $v;
+        }
+    }
+
+    return $default;
+}
+
+define('IGDB_CLIENT_ID', env('IGDB_CLIENT_ID', ''));
+define('IGDB_CLIENT_SECRET', env('IGDB_CLIENT_SECRET', ''));
 
 // Função para pegar token de acesso do IGDB
 function getIGDBToken() {
