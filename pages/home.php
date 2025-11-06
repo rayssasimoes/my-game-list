@@ -30,8 +30,7 @@ include 'includes/header.php';
         </div>
     <?php else: ?>
         <div class="welcome-message-compact">
-            <h1 class="welcome-title">Bem-vindo(a) ao MyGameList!</h1>
-            <p class="welcome-subtitle">Descubra, organize e compartilhe sua coleção de jogos favoritos</p>
+            <h1 class="welcome-title">Bem-vindo(a) ao <span class="welcome-name-app">MyGameList</span>! Descubra, organize e compartilhe sua coleção de jogos favoritos</h1>
         </div>
     <?php endif; ?>
 

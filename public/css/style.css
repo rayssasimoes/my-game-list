@@ -370,23 +370,23 @@ a {
 
 /* Welcome message compacta (não logado) */
 .welcome-message-compact {
-    margin-bottom: 2.5rem;
-    margin-top:0%;
-    max-width: 500px;
+    text-align: center;
+    margin-bottom: 2rem;
 }
 
 .welcome-title {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #ffffff;
-    margin-bottom: 0.5rem;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 25px;
+    font-weight: 300;
+    color: #708090;
+    margin: 0;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
 }
 
-.welcome-subtitle {
-    font-size: 1rem;
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 1.25rem;
-    line-height: 1.5;
+.welcome-name-app {
+    font-weight: 700;
+    color: #ffffff;
 }
 
 .welcome-actions {
@@ -1440,10 +1440,6 @@ body.modal-open {
         font-size: 1.5rem;
     }
 
-    .welcome-subtitle {
-        font-size: 0.9rem;
-    }
-
     .welcome-actions {
         flex-wrap: wrap;
     }
@@ -1518,10 +1514,6 @@ body.modal-open {
 
     .welcome-title {
         font-size: 1.25rem;
-    }
-
-    .welcome-subtitle {
-        font-size: 0.85rem;
     }
 
     .btn-primary-custom,
