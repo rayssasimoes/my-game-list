@@ -8,7 +8,7 @@ function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.add('show');
-        document.body.style.overflow = 'hidden';
+        document.body.classList.add('modal-open'); // Previne scroll - problema 1
     }
 }
 
@@ -16,7 +16,33 @@ function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.remove('show');
-        document.body.style.overflow = '';
+        document.body.classList.remove('modal-open');
+        
+        // Limpar formulário ao fechar - problema 2
+        const form = modal.querySelector('form');
+        if (form) {
+            form.reset();
+            
+            // Resetar ícones de senha
+            const passwordIcons = modal.querySelectorAll('.password-toggle-icon');
+            passwordIcons.forEach(icon => {
+                icon.classList.remove('password-icon-active', 'bi-eye-slash');
+                icon.classList.add('password-icon-inactive', 'bi-eye');
+                const targetId = icon.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                if (input) input.type = 'password';
+            });
+            
+            // Remover classes de validação
+            const passwordInputs = modal.querySelectorAll('.password-validation');
+            passwordInputs.forEach(input => {
+                input.classList.remove('password-invalid');
+            });
+            const passwordHints = modal.querySelectorAll('.password-hint');
+            passwordHints.forEach(hint => {
+                hint.classList.remove('invalid');
+            });
+        }
     }
 }
 
@@ -52,7 +78,99 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Inicializar autocomplete de busca
     initSearchAutocomplete();
+
+    // Inicializar toggle de senha
+    initPasswordToggle();
+
+    // Inicializar validação de senha em tempo real
+    initPasswordValidation();
 });
+
+// ==== PASSWORD TOGGLE ====
+function initPasswordToggle() {
+    const toggleIcons = document.querySelectorAll('.password-toggle-icon');
+
+    toggleIcons.forEach(icon => {
+        const targetId = icon.getAttribute('data-target');
+        const passwordInput = document.getElementById(targetId);
+
+        if (!passwordInput) return;
+
+        // Monitora mudanças no input para ativar/desativar ícone
+        passwordInput.addEventListener('input', function() {
+            if (this.value.length > 0) {
+                // Ativa o ícone
+                icon.classList.remove('password-icon-inactive');
+                icon.classList.add('password-icon-active');
+            } else {
+                // Desativa o ícone
+                icon.classList.remove('password-icon-active');
+                icon.classList.add('password-icon-inactive');
+                // Reseta para olho fechado
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+                passwordInput.type = 'password';
+            }
+        });
+
+        // Clique no ícone para alternar visibilidade - CORRIGIDO problema 3
+        icon.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            // Só funciona se tiver texto
+            if (!this.classList.contains('password-icon-active')) return;
+
+            if (passwordInput.type === 'password') {
+                // Mostra senha
+                passwordInput.type = 'text';
+                this.classList.remove('bi-eye');
+                this.classList.add('bi-eye-slash');
+            } else {
+                // Oculta senha
+                passwordInput.type = 'password';
+                this.classList.remove('bi-eye-slash');
+                this.classList.add('bi-eye');
+            }
+        });
+    });
+}
+
+// ==== PASSWORD VALIDATION (Real-time) - Problema 4 ====
+function initPasswordValidation() {
+    const passwordInput = document.getElementById('register_password');
+    if (!passwordInput) return;
+
+    const passwordHint = document.getElementById('password-hint');
+    let validationTimeout;
+
+    passwordInput.addEventListener('input', function() {
+        const value = this.value;
+        
+        // Limpa timeout anterior
+        clearTimeout(validationTimeout);
+
+        // Se está vazio, remove validação
+        if (value.length === 0) {
+            this.classList.remove('password-invalid');
+            if (passwordHint) passwordHint.classList.remove('invalid');
+            return;
+        }
+
+        // Aguarda 800ms após parar de digitar
+        validationTimeout = setTimeout(() => {
+            if (value.length < 6) {
+                // Senha muito curta
+                this.classList.add('password-invalid');
+                if (passwordHint) passwordHint.classList.add('invalid');
+            } else {
+                // Senha válida
+                this.classList.remove('password-invalid');
+                if (passwordHint) passwordHint.classList.remove('invalid');
+            }
+        }, 800);
+    });
+}
 
 // ==== SEARCH AUTOCOMPLETE ====
 function initSearchAutocomplete() {
