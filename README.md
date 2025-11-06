@@ -1,124 +1,245 @@
-<div align="center">
+# MyGameList<div align="center">
 
-# 🎮 MyGameList
 
-### *Sua biblioteca pessoal de jogos na web*
 
-[![PHP](https://img.shields.io/badge/PHP-8.0+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/)
-[![MySQL](https://img.shields.io/badge/MySQL-5.7+-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
-[![IGDB](https://img.shields.io/badge/IGDB-API-9147FF?style=for-the-badge&logo=twitch&logoColor=white)](https://api-docs.igdb.com/)
+Uma aplicação web para organizar sua biblioteca de jogos localmente. Usa a API do IGDB para obter informações de jogos.# 🎮 MyGameList
+
+
+
+## Requisitos### *Sua biblioteca pessoal de jogos na web*
+
+
+
+- PHP 8+[![PHP](https://img.shields.io/badge/PHP-8.0+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/)
+
+- MySQL 5.7+[![MySQL](https://img.shields.io/badge/MySQL-5.7+-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
+
+- XAMPP (recomendado para Windows)[![IGDB](https://img.shields.io/badge/IGDB-API-9147FF?style=for-the-badge&logo=twitch&logoColor=white)](https://api-docs.igdb.com/)
+
 [![CSS3](https://img.shields.io/badge/CSS3-Pure-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+
+## Instalação
 
 Uma plataforma web para **gamers catalogarem e gerenciarem** sua coleção de jogos com informações em tempo real da **IGDB API**.
 
+### 1. Clone o repositório
+
 [Demo](#-como-executar) • [Instalação](#️-instalação-e-configuração) • [Funcionalidades](#-funcionalidades)
 
-</div>
+```bash
 
----
+git clone https://github.com/rayssasimoes/my-game-list.git</div>
 
-## � Sobre o Projeto
+cd my-game-list
 
-**MyGameList** é uma aplicação web que permite aos usuários:
+```---
 
-<table>
-<tr>
-<td width="50%">
+
+
+### 2. Configure as variáveis de ambiente## � Sobre o Projeto
+
+
+
+Crie um arquivo `.env` a partir do `.env.example`:**MyGameList** é uma aplicação web que permite aos usuários:
+
+
+
+**Windows (PowerShell):**<table>
+
+```powershell<tr>
+
+copy .env.example .env<td width="50%">
+
+```
 
 ### 🎯 Principais Recursos
-- 🔐 **Autenticação segura** com criptografia
-- � **Busca em tempo real** via IGDB API
-- 📋 **Catálogo pessoal** de jogos
-- 🏆 **Informações detalhadas** dos jogos
+
+**Linux/Mac:**- 🔐 **Autenticação segura** com criptografia
+
+```bash- � **Busca em tempo real** via IGDB API
+
+cp .env.example .env- 📋 **Catálogo pessoal** de jogos
+
+```- 🏆 **Informações detalhadas** dos jogos
+
 - 📱 **Design responsivo** para todos dispositivos
 
-</td>
-<td width="50%">
+Edite o `.env` e preencha com suas credenciais:
 
-### 💡 Objetivo
+- `DB_*` - Configurações do banco de dados</td>
+
+- `IGDB_CLIENT_ID` e `IGDB_CLIENT_SECRET` - Obtenha em [Twitch Developers Console](https://dev.twitch.tv/console)<td width="50%">
+
+
+
+### 3. Crie o banco de dados### 💡 Objetivo
+
 Criar uma forma simples e elegante de organizar sua biblioteca de jogos, descobrir novos títulos e acompanhar o que você já jogou ou deseja jogar.
 
-> *Desenvolvido para a disciplina de Programação Web*
+**Opção A: Via phpMyAdmin**
 
-</td>
-</tr>
+1. Acesse http://localhost/phpmyadmin> *Desenvolvido para a disciplina de Programação Web*
+
+2. Clique em "Novo" e crie o banco: `db_mygamelist`
+
+3. Selecione o banco criado</td>
+
+4. Na aba "SQL", cole o conteúdo do arquivo `database.sql` e execute</tr>
+
 </table>
 
----
+**Opção B: Via linha de comando (Windows)**
 
-## �️ Tecnologias Utilizadas
+```powershell---
+
+cd C:\xampp\mysql\bin
+
+.\mysql.exe -u root -p < C:\xampp\htdocs\my-game-list\database.sql## �️ Tecnologias Utilizadas
+
+```
 
 <table>
-<tr>
+
+### 4. Inicie os servidores<tr>
+
 <td align="center" width="25%">
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" width="48" height="48" alt="PHP"/>
-<br><strong>PHP 8+</strong>
-<br><sub>Backend & Lógica</sub>
+
+1. Abra o XAMPP Control Panel<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg" width="48" height="48" alt="PHP"/>
+
+2. Inicie Apache e MySQL<br><strong>PHP 8+</strong>
+
+3. Acesse: http://localhost/my-game-list<br><sub>Backend & Lógica</sub>
+
 </td>
-<td align="center" width="25%">
+
+## Acessar pelo celular<td align="center" width="25%">
+
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" width="48" height="48" alt="MySQL"/>
-<br><strong>MySQL</strong>
+
+Para testar no celular (mesma rede Wi-Fi):<br><strong>MySQL</strong>
+
 <br><sub>Banco de Dados</sub>
-</td>
-<td align="center" width="25%">
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" width="48" height="48" alt="CSS3"/>
-<br><strong>CSS3 Puro</strong>
+
+1. No Windows, abra o PowerShell e execute:</td>
+
+```powershell<td align="center" width="25%">
+
+ipconfig<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" width="48" height="48" alt="CSS3"/>
+
+```<br><strong>CSS3 Puro</strong>
+
 <br><sub>Estilização</sub>
-</td>
+
+2. Procure o `Endereço IPv4` (exemplo: `192.168.0.105`)</td>
+
 <td align="center" width="25%">
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" width="48" height="48" alt="JavaScript"/>
-<br><strong>JavaScript</strong>
-<br><sub>Interatividade</sub>
-</td>
+
+3. No celular, acesse:<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" width="48" height="48" alt="JavaScript"/>
+
+```<br><strong>JavaScript</strong>
+
+http://SEU_IP/my-game-list<br><sub>Interatividade</sub>
+
+```</td>
+
 </tr>
-</table>
 
-### 🔧 Detalhes Técnicos
+Exemplo: `http://192.168.0.105/my-game-list`</table>
 
-```
-Backend:      PHP 8+ com PDO (Prepared Statements)
-Database:     MySQL 5.7+ com Foreign Keys
-API:          IGDB (Internet Game Database) + OAuth 2.0
-Frontend:     HTML5 + CSS3 Puro + JavaScript Vanilla
-Segurança:    password_hash() + password_verify()
-Servidor:     Apache (XAMPP)
-```
 
----
 
-## 🤖 Desenvolvimento
+## Estrutura do projeto### 🔧 Detalhes Técnicos
 
-Este projeto foi desenvolvido com o auxílio da **IA GitHub Copilot**, com:
+
+
+``````
+
+my-game-list/Backend:      PHP 8+ com PDO (Prepared Statements)
+
+├── config/              # Configurações (database.php)Database:     MySQL 5.7+ com Foreign Keys
+
+├── includes/            # Funções (auth.php, igdb-api.php)API:          IGDB (Internet Game Database) + OAuth 2.0
+
+├── pages/               # Páginas (home.php, my-list.php)Frontend:     HTML5 + CSS3 Puro + JavaScript Vanilla
+
+├── public/Segurança:    password_hash() + password_verify()
+
+│   ├── css/Servidor:     Apache (XAMPP)
+
+│   └── js/```
+
+├── database.sql         # Script de criação do banco
+
+├── .env.example         # Template de configuração---
+
+└── README.md
+
+```## 🤖 Desenvolvimento
+
+
+
+## SegurançaEste projeto foi desenvolvido com o auxílio da **IA GitHub Copilot**, com:
+
 - 💭 Engenharia de prompt
-- 🏗️ Arquitetura de software
-- 🎨 Decisões de design
 
-Todas guiadas por **[@rayssasimoes](https://github.com/rayssasimoes)**
+- **NUNCA** commite o arquivo `.env` (ele já está no `.gitignore`)- 🏗️ Arquitetura de software
 
----
+- Se alguma credencial foi exposta, gere novas credenciais na [Twitch Developers Console](https://dev.twitch.tv/console)- 🎨 Decisões de design
+
+
+
+## TroubleshootingTodas guiadas por **[@rayssasimoes](https://github.com/rayssasimoes)**
+
+
+
+**Erro de conexão MySQL:**---
+
+- Verifique se o MySQL está rodando no XAMPP Control Panel
 
 ## 📁 Estrutura do Projeto
 
-```
+**Erro "Access denied":**
+
+- Confirme a senha no `config/database.php` (padrão XAMPP: vazio)```
+
 📦 my-game-list
-┣ 📂 config
-┃ ┗ 📄 database.php          # Configuração PDO
-┣ 📂 includes
+
+**Página 404:**┣ 📂 config
+
+- Confirme que a pasta está em `C:\xampp\htdocs\my-game-list`┃ ┗ 📄 database.php          # Configuração PDO
+
+- Acesse exatamente: `http://localhost/my-game-list`┣ 📂 includes
+
 ┃ ┣ 📄 auth.php              # Sistema de autenticação
-┃ ┣ 📄 igdb-api.php          # Integração com IGDB
-┃ ┣ 📄 header.php            # Navbar e modais
-┃ ┗ 📄 footer.php            # Footer e scripts
-┣ 📂 pages
+
+**Jogos não aparecem:**┃ ┣ 📄 igdb-api.php          # Integração com IGDB
+
+- Verifique sua conexão com a internet┃ ┣ 📄 header.php            # Navbar e modais
+
+- Confirme as credenciais IGDB no `.env`┃ ┗ 📄 footer.php            # Footer e scripts
+
+- Abra o Console do navegador (F12) para ver erros┣ 📂 pages
+
 ┃ ┣ 📄 home.php              # Página inicial
-┃ ┗ 📄 my-list.php           # Lista pessoal
+
+## Recursos┃ ┗ 📄 my-list.php           # Lista pessoal
+
 ┣ 📂 public
-┃ ┣ 📂 css
-┃ ┃ ┗ 📄 style.css           # Estilos customizados
-┃ ┗ 📂 js
+
+- [IGDB API Documentation](https://api-docs.igdb.com/)┃ ┣ 📂 css
+
+- [PHP PDO Manual](https://www.php.net/manual/pt_BR/book.pdo.php)┃ ┃ ┗ 📄 style.css           # Estilos customizados
+
+- [MySQL Documentation](https://dev.mysql.com/doc/)┃ ┗ 📂 js
+
 ┃   ┗ 📄 app.js              # JavaScript (modais)
-┣ 📄 index.php               # Router principal
+
+---┣ 📄 index.php               # Router principal
+
 ┣ 📄 database.sql            # Script SQL
-┗ 📄 README.md               # Este arquivo
+
+*Projeto desenvolvido para fins educacionais*┗ 📄 README.md               # Este arquivo
+
 ```
 
 ---
@@ -326,72 +447,6 @@ Experimente:
 - ✅ Abrir o menu dropdown
 
 </details>
-
----
-
-## ✨ Funcionalidades
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-### 🔐 **Autenticação**
-- ✅ Cadastro de novos usuários
-- ✅ Login seguro com senha criptografada
-- ✅ Sistema de sessões
-- ✅ Logout
-- ✅ Proteção de rotas privadas
-
-### 🎮 **Catálogo de Jogos**
-- ✅ Listagem de jogos populares (top rated)
-- ✅ Busca em tempo real por nome
-- ✅ Informações detalhadas
-  - 🖼️ Capa do jogo
-  - 🎯 Gêneros
-  - 🎮 Plataformas
-  - ⭐ Rating da comunidade
-- ✅ Cache inteligente (6 horas)
-
-</td>
-<td width="50%" valign="top">
-
-### 📋 **Lista Pessoal**
-- ✅ Adicionar jogos ao catálogo pessoal
-- ✅ Visualizar todos os jogos salvos
-- ✅ Status dos jogos:
-  - 🎮 **Jogando**
-  - ✅ **Completado**
-  - ⭐ **Quero Jogar**
-  - ❌ **Desisti**
-- ✅ Contador de jogos
-
-### 🎨 **Interface**
-- ✅ Design dark mode elegante
-- ✅ Navbar responsiva
-- ✅ Dropdown com fundo unificado
-- ✅ Modais para login/cadastro
-- ✅ Alerts com auto-dismiss
-- ✅ Grid responsivo de jogos
-
-</td>
-</tr>
-</table>
-
----
-
-## 🎨 Design & Paleta de Cores
-
-<div align="center">
-
-| Elemento | Cor | Preview |
-|----------|-----|---------|
-| Background Principal | `#1a1a1a` | ![#1a1a1a](https://via.placeholder.com/100x30/1a1a1a/1a1a1a.png) |
-| Navbar | `#212529` | ![#212529](https://via.placeholder.com/100x30/212529/212529.png) |
-| Dropdown Hover | `#4A5B87` | ![#4A5B87](https://via.placeholder.com/100x30/4A5B87/4A5B87.png) |
-| Accent (Botões) | `#E93D82` | ![#E93D82](https://via.placeholder.com/100x30/E93D82/E93D82.png) |
-| Texto Principal | `#ffffff` | ![#ffffff](https://via.placeholder.com/100x30/ffffff/ffffff.png) |
-
-</div>
 
 ---
 
