@@ -34,20 +34,32 @@
                     <a class="nav-link" href="#" onclick="openModal('registerModal')">Criar Conta</a>
                 <?php else: ?>
                     <?php $user = getUser(); ?>
+                    <!-- Ícone de notificação -->
+                    <a class="nav-link notification-icon" href="#" title="Notificações">
+                        <i class="bi bi-bell"></i>
+                    </a>
+                    
                     <div class="nav-item dropdown">
                         <a class="dropdown-toggle" href="#" role="button">
-                            <?php echo htmlspecialchars($user['name']); ?>
+                            <span class="user-name"><?php echo htmlspecialchars($user['username']); ?></span>
+                            <i class="bi bi-chevron-down"></i>
                         </a>
 
                         <div class="dropdown-menu">
+                            <a class="dropdown-item" href="index.php?page=profile">
+                                <i class="bi bi-person"></i> Perfil
+                            </a>
                             <a class="dropdown-item" href="index.php?page=my-list">
-                                Minha Lista
+                                <i class="bi bi-list-ul"></i> Minha Lista
+                            </a>
+                            <a class="dropdown-item" href="index.php?page=settings">
+                                <i class="bi bi-gear"></i> Configurações
                             </a>
                             <div class="dropdown-divider"></div>
                             <form method="POST" class="dropdown-form">
                                 <input type="hidden" name="action" value="logout">
                                 <button type="submit" class="dropdown-item dropdown-button">
-                                    Sair
+                                    <i class="bi bi-box-arrow-right"></i> Sair
                                 </button>
                             </form>
                         </div>

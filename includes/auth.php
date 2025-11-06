@@ -21,7 +21,7 @@ function getUser() {
     }
     
     $db = getDB();
-    $stmt = $db->prepare("SELECT id, name, email FROM users WHERE id = ?");
+    $stmt = $db->prepare("SELECT id, name, username, email FROM users WHERE id = ?");
     $stmt->execute([$_SESSION['user_id']]);
     return $stmt->fetch();
 }
