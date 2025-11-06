@@ -23,7 +23,7 @@
                             <span class="input-group-addon">
                                 <i class="bi bi-person-circle"></i>
                             </span>
-                            <input id="login_identifier" class="form-control" type="text" name="identifier" placeholder="email@exemplo.com ou @username" required autocomplete="username">
+                            <input id="login_identifier" class="form-control" type="text" name="identifier" placeholder="Email / Username" required autocomplete="username">
                         </div>
                     </div>
                     
@@ -35,13 +35,29 @@
                                 <span class="input-group-addon">
                                     <i class="bi bi-lock"></i>
                                 </span>
-                                <input id="login_password" class="form-control form-control-with-icon" type="password" name="password" placeholder="••••••••" required autocomplete="current-password">
+                                <input id="login_password" class="form-control form-control-with-icon" type="password" name="password" placeholder="******" required autocomplete="current-password">
                                 <i class="bi bi-eye password-toggle-icon password-icon-inactive" data-target="login_password"></i>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Checkbox Manter Conectado -->
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="remember_me" name="remember_me">
+                            <label class="form-check-label" for="remember_me">
+                                Manter conectado
+                            </label>
+                        </div>
+                    </div>
                     
-                    <button type="submit" class="btn btn-primary-custom w-100">Entrar</button>
+                    <!-- Botões de ação -->
+                    <div class="login-actions">
+                        <button type="button" class="btn-link-custom" onclick="alert('Funcionalidade em breve!')">
+                            Esqueceu a senha?
+                        </button>
+                        <button type="submit" class="btn btn-primary-custom-compact">Entrar</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -80,9 +96,9 @@
                             <span class="input-group-addon">
                                 <i class="bi bi-at"></i>
                             </span>
-                            <input id="register_username" class="form-control" type="text" name="username" placeholder="username (único)" required autocomplete="username" pattern="[a-zA-Z0-9_]{3,20}">
+                            <input id="register_username" class="form-control availability-check" type="text" name="username" placeholder="username" required autocomplete="username" pattern="[a-zA-Z0-9_]{3,20}" data-check-type="username">
                         </div>
-                        <div class="form-text">3-20 caracteres, apenas letras, números e underscore</div>
+                        <div class="form-text availability-hint" id="username-hint">3-20 caracteres, apenas letras, números e underscore</div>
                     </div>
                     
                     <!-- Email com ícone -->
@@ -92,8 +108,9 @@
                             <span class="input-group-addon">
                                 <i class="bi bi-envelope"></i>
                             </span>
-                            <input id="register_email" class="form-control" type="email" name="email" placeholder="seu@email.com" required autocomplete="email">
+                            <input id="register_email" class="form-control availability-check" type="email" name="email" placeholder="seu@email.com" required autocomplete="email" data-check-type="email">
                         </div>
+                        <div class="form-text availability-hint" id="email-hint" style="display: none;">Este email já está em uso</div>
                     </div>
                     
                     <!-- Senha com ícone e toggle -->

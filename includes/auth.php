@@ -27,10 +27,12 @@ function getUser() {
 }
 
 // Faz login
-function login($email, $password) {
+function login($identifier, $password) {
     $db = getDB();
-    $stmt = $db->prepare("SELECT id, name, email, password FROM users WHERE email = ?");
-    $stmt->execute([$email]);
+    
+    // Busca por email OU username
+    $stmt = $db->prepare("SELECT id, name, username, email, password FROM users WHERE email = ? OR username = ?");
+    $stmt->execute([$identifier, $identifier]);
     $user = $stmt->fetch();
     
     if ($user && password_verify($password, $user['password'])) {
@@ -43,20 +45,29 @@ function login($email, $password) {
 }
 
 // Faz cadastro
-function register($name, $email, $password) {
+function register($name, $username, $email, $password) {
     $db = getDB();
     
     // Verifica se email já existe
     $stmt = $db->prepare("SELECT id FROM users WHERE email = ?");
     $stmt->execute([$email]);
     if ($stmt->fetch()) {
-        return false; // Email já cadastrado
+        return ['success' => false, 'error' => 'Email já cadastrado'];
+    }
+    
+    // Verifica se username já existe
+    $stmt = $db->prepare("SELECT id FROM users WHERE username = ?");
+    $stmt->execute([$username]);
+    if ($stmt->fetch()) {
+        return ['success' => false, 'error' => 'Nome de usuário já está em uso'];
     }
     
     // Insere novo usuário
-    $stmt = $db->prepare("INSERT INTO users (name, email, password, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())");
+    $stmt = $db->prepare("INSERT INTO users (name, username, email, password, created_at, updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())");
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-    return $stmt->execute([$name, $email, $hashedPassword]);
+    $result = $stmt->execute([$name, $username, $email, $hashedPassword]);
+    
+    return ['success' => $result, 'error' => null];
 }
 
 // Faz logout
@@ -78,31 +89,36 @@ function requireLogin() {
 // Processa login via POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     if ($_POST['action'] === 'login') {
-        $email = $_POST['email'] ?? '';
+        $identifier = $_POST['identifier'] ?? ''; // email OU username
         $password = $_POST['password'] ?? '';
         
-        if (login($email, $password)) {
+        if (login($identifier, $password)) {
             $_SESSION['success'] = 'Login realizado com sucesso!';
             header('Location: index.php');
             exit;
         } else {
-            $_SESSION['error'] = 'Email ou senha incorretos.';
+            $_SESSION['error'] = 'Email/usuário ou senha incorretos.';
         }
     }
     
     if ($_POST['action'] === 'register') {
         $name = $_POST['name'] ?? '';
+        $username = $_POST['username'] ?? '';
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
         
         if (strlen($password) < 6) {
             $_SESSION['error'] = 'A senha deve ter no mínimo 6 caracteres.';
-        } elseif (register($name, $email, $password)) {
-            $_SESSION['success'] = 'Conta criada com sucesso! Faça login.';
-            header('Location: index.php');
-            exit;
         } else {
-            $_SESSION['error'] = 'Email já cadastrado ou erro ao criar conta.';
+            $result = register($name, $username, $email, $password);
+            
+            if ($result['success']) {
+                $_SESSION['success'] = 'Conta criada com sucesso! Faça login.';
+                header('Location: index.php');
+                exit;
+            } else {
+                $_SESSION['error'] = $result['error'];
+            }
         }
     }
     
