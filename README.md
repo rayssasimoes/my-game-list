@@ -1,84 +1,227 @@
-# MyGameList<div align="center">
+# MyGameList# MyGameList# MyGameList<div align="center">
 
 
 
-Uma aplicação web para organizar sua biblioteca de jogos localmente. Usa a API do IGDB para obter informações de jogos.# 🎮 MyGameList
+Aplicação web para organizar sua biblioteca de jogos. Usa a API do IGDB.
 
 
 
-## Requisitos### *Sua biblioteca pessoal de jogos na web*
+## Instalação> Organize sua biblioteca de jogos com informações da API do IGDB
 
 
 
-- PHP 8+[![PHP](https://img.shields.io/badge/PHP-8.0+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/)
+- Clone o repositório
 
-- MySQL 5.7+[![MySQL](https://img.shields.io/badge/MySQL-5.7+-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
+- Copie `.env.example` para `.env` e preencha as credenciais
 
-- XAMPP (recomendado para Windows)[![IGDB](https://img.shields.io/badge/IGDB-API-9147FF?style=for-the-badge&logo=twitch&logoColor=white)](https://api-docs.igdb.com/)
+- Crie o banco `db_mygamelist` e importe `database.sql`## Setup RápidoUma aplicação web para organizar sua biblioteca de jogos localmente. Usa a API do IGDB para obter informações de jogos.# 🎮 MyGameList
 
-[![CSS3](https://img.shields.io/badge/CSS3-Pure-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+- Inicie Apache e MySQL no XAMPP
 
-## Instalação
-
-Uma plataforma web para **gamers catalogarem e gerenciarem** sua coleção de jogos com informações em tempo real da **IGDB API**.
-
-### 1. Clone o repositório
-
-[Demo](#-como-executar) • [Instalação](#️-instalação-e-configuração) • [Funcionalidades](#-funcionalidades)
-
-```bash
-
-git clone https://github.com/rayssasimoes/my-game-list.git</div>
-
-cd my-game-list
-
-```---
+- Acesse http://localhost/my-game-list
 
 
 
-### 2. Configure as variáveis de ambiente## � Sobre o Projeto
+## Credenciais IGDB```bash
 
 
 
-Crie um arquivo `.env` a partir do `.env.example`:**MyGameList** é uma aplicação web que permite aos usuários:
+Obtenha em: https://dev.twitch.tv/console# 1. Clone
 
 
 
-**Windows (PowerShell):**<table>
+Adicione no `.env`:git clone https://github.com/rayssasimoes/my-game-list.git## Requisitos### *Sua biblioteca pessoal de jogos na web*
 
-```powershell<tr>
+- IGDB_CLIENT_ID
 
-copy .env.example .env<td width="50%">
+- IGDB_CLIENT_SECRETcd my-game-list
+
+
+
+## Criar banco de dados
+
+
+
+Via phpMyAdmin:# 2. Configure .env (copie .env.example e preencha suas credenciais)
+
+- Acesse http://localhost/phpmyadmin
+
+- Crie o banco `db_mygamelist`copy .env.example .env- PHP 8+[![PHP](https://img.shields.io/badge/PHP-8.0+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://www.php.net/)
+
+- Importe o arquivo `database.sql`
+
+
+
+Via terminal (Windows):
+
+- cd C:\xampp\mysql\bin# 3. Crie o banco "db_mygamelist" e importe database.sql- MySQL 5.7+[![MySQL](https://img.shields.io/badge/MySQL-5.7+-4479A1?style=for-the-badge&logo=mysql&logoColor=white)](https://www.mysql.com/)
+
+- .\mysql.exe -u root -p < C:\xampp\htdocs\my-game-list\database.sql
+
+
+
+## Acessar pelo celular
+
+# 4. Inicie Apache + MySQL no XAMPP- XAMPP (recomendado para Windows)[![IGDB](https://img.shields.io/badge/IGDB-API-9147FF?style=for-the-badge&logo=twitch&logoColor=white)](https://api-docs.igdb.com/)
+
+- No Windows, execute: ipconfig
+
+- Copie o IPv4 (ex: 192.168.0.105)
+
+- No celular (mesma rede Wi-Fi), acesse: http://SEU_IP/my-game-list
+
+# 5. Acesse[![CSS3](https://img.shields.io/badge/CSS3-Pure-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+
+## Estrutura
+
+http://localhost/my-game-list
 
 ```
 
-### 🎯 Principais Recursos
+my-game-list/```## Instalação
 
-**Linux/Mac:**- 🔐 **Autenticação segura** com criptografia
+├── config/
 
-```bash- � **Busca em tempo real** via IGDB API
+├── includes/
 
-cp .env.example .env- 📋 **Catálogo pessoal** de jogos
+├── pages/
 
-```- 🏆 **Informações detalhadas** dos jogos
+├── public/## Credenciais IGDBUma plataforma web para **gamers catalogarem e gerenciarem** sua coleção de jogos com informações em tempo real da **IGDB API**.
 
-- 📱 **Design responsivo** para todos dispositivos
+│   ├── css/
+
+│   └── js/
+
+├── database.sql
+
+├── .env.exampleObtenha gratuitamente em: **https://dev.twitch.tv/console**### 1. Clone o repositório
+
+└── README.md
+
+```
+
+
+
+## Problemas comunsAdicione no `.env`:[Demo](#-como-executar) • [Instalação](#️-instalação-e-configuração) • [Funcionalidades](#-funcionalidades)
+
+
+
+- MySQL não conecta: Verifique se está rodando no XAMPP```env
+
+- Jogos não aparecem: Confira credenciais IGDB no `.env`
+
+- Erro 404: Confirme a pasta em C:\xampp\htdocs\my-game-listIGDB_CLIENT_ID=seu_client_id```bash
+
+
+
+## SegurançaIGDB_CLIENT_SECRET=seu_client_secret
+
+
+
+Nunca commite o arquivo `.env` (já está no .gitignore)```git clone https://github.com/rayssasimoes/my-game-list.git</div>
+
+
+
+
+## Criar Banco de Dadoscd my-game-list
+
+
+
+**Via phpMyAdmin:**```---
+
+- Acesse `http://localhost/phpmyadmin`
+
+- Crie banco: `db_mygamelist`
+
+- Importe o arquivo `database.sql`
+
+### 2. Configure as variáveis de ambiente## � Sobre o Projeto
+
+**Via terminal:**
+
+```powershell
+
+cd C:\xampp\mysql\bin
+
+.\mysql.exe -u root -p < C:\xampp\htdocs\my-game-list\database.sqlCrie um arquivo `.env` a partir do `.env.example`:**MyGameList** é uma aplicação web que permite aos usuários:
+
+```
+
+
+
+## Ver no Celular
+
+**Windows (PowerShell):**<table>
+
+```powershell
+
+# 1. Descubra seu IP```powershell<tr>
+
+ipconfig
+
+copy .env.example .env<td width="50%">
+
+# 2. No celular (mesma rede Wi-Fi), acesse:
+
+http://SEU_IP/my-game-list```
+
+# Exemplo: http://192.168.0.105/my-game-list
+
+```### 🎯 Principais Recursos
+
+
+
+## Estrutura**Linux/Mac:**- 🔐 **Autenticação segura** com criptografia
+
+
+
+``````bash- � **Busca em tempo real** via IGDB API
+
+my-game-list/
+
+├── config/        → Conexão bancocp .env.example .env- 📋 **Catálogo pessoal** de jogos
+
+├── includes/      → Auth + API IGDB
+
+├── pages/         → Home + Minha Lista```- 🏆 **Informações detalhadas** dos jogos
+
+├── public/        → CSS + JS
+
+└── database.sql   → Schema do banco- 📱 **Design responsivo** para todos dispositivos
+
+```
 
 Edite o `.env` e preencha com suas credenciais:
 
+## Solução Rápida
+
 - `DB_*` - Configurações do banco de dados</td>
 
-- `IGDB_CLIENT_ID` e `IGDB_CLIENT_SECRET` - Obtenha em [Twitch Developers Console](https://dev.twitch.tv/console)<td width="50%">
+| Problema | Solução |
 
+|----------|---------|- `IGDB_CLIENT_ID` e `IGDB_CLIENT_SECRET` - Obtenha em [Twitch Developers Console](https://dev.twitch.tv/console)<td width="50%">
 
+| MySQL não conecta | Verifique XAMPP (MySQL rodando?) |
+
+| Jogos não aparecem | Confira `.env` (credenciais IGDB corretas?) |
+
+| Erro 404 | Pasta em `C:\xampp\htdocs\my-game-list` ? |
 
 ### 3. Crie o banco de dados### 💡 Objetivo
 
+## Segurança
+
 Criar uma forma simples e elegante de organizar sua biblioteca de jogos, descobrir novos títulos e acompanhar o que você já jogou ou deseja jogar.
+
+⚠️ **NUNCA** faça commit do `.env` (já está no `.gitignore`)
 
 **Opção A: Via phpMyAdmin**
 
+---
+
 1. Acesse http://localhost/phpmyadmin> *Desenvolvido para a disciplina de Programação Web*
+
+*Projeto educacional • Desenvolvido com GitHub Copilot*
 
 2. Clique em "Novo" e crie o banco: `db_mygamelist`
 
