@@ -194,3 +194,154 @@ function getGameDetails($gameId) {
         }, $game['screenshots'] ?? [])
     ];
 }
+
+// Buscar jogos "Em Breve" (lançamentos próximos - próximos 30 dias)
+function getUpcomingGames($limit = 8) {
+    $cacheKey = "upcoming_games_{$limit}";
+    
+    if (isset($_SESSION[$cacheKey]) && isset($_SESSION[$cacheKey . '_time']) && 
+        (time() - $_SESSION[$cacheKey . '_time']) < 21600) {
+        return $_SESSION[$cacheKey];
+    }
+    
+    $today = time();
+    $thirtyDaysFromNow = $today + (30 * 24 * 60 * 60);
+    
+    $query = "
+        fields name, cover.url, first_release_date;
+        where first_release_date > {$today} & first_release_date < {$thirtyDaysFromNow} & cover != null;
+        sort first_release_date asc;
+        limit {$limit};
+    ";
+    
+    $games = igdbRequest('games', $query);
+    
+    $mesesPtBr = [
+        1 => 'Jan', 2 => 'Fev', 3 => 'Mar', 4 => 'Abr', 5 => 'Mai', 6 => 'Jun',
+        7 => 'Jul', 8 => 'Ago', 9 => 'Set', 10 => 'Out', 11 => 'Nov', 12 => 'Dez'
+    ];
+    
+    $formatted = [];
+    foreach ($games as $game) {
+        $coverUrl = isset($game['cover']['url']) 
+            ? str_replace('t_thumb', 't_cover_small', 'https:' . $game['cover']['url'])
+            : 'https://via.placeholder.com/90x120?text=No+Image';
+            
+        if (isset($game['first_release_date'])) {
+            $mes = (int)date('n', $game['first_release_date']);
+            $dia = date('j', $game['first_release_date']);
+            $releaseDate = $mesesPtBr[$mes] . ' ' . $dia;
+        } else {
+            $releaseDate = 'TBA';
+        }
+            
+        $formatted[] = [
+            'id' => $game['id'],
+            'name' => $game['name'],
+            'cover' => $coverUrl,
+            'release_date' => $releaseDate
+        ];
+    }
+    
+    $_SESSION[$cacheKey] = $formatted;
+    $_SESSION[$cacheKey . '_time'] = time();
+    
+    return $formatted;
+}
+
+// Buscar jogos "Recentemente Antecipados" (alto hype, lançamento distante)
+function getHypedGames($limit = 8) {
+    $cacheKey = "hyped_games_{$limit}";
+    
+    if (isset($_SESSION[$cacheKey]) && isset($_SESSION[$cacheKey . '_time']) && 
+        (time() - $_SESSION[$cacheKey . '_time']) < 21600) {
+        return $_SESSION[$cacheKey];
+    }
+    
+    $sixMonthsFromNow = time() + (180 * 24 * 60 * 60);
+    
+    $query = "
+        fields name, cover.url, first_release_date, hypes;
+        where first_release_date > {$sixMonthsFromNow} & hypes > 50 & cover != null;
+        sort hypes desc;
+        limit {$limit};
+    ";
+    
+    $games = igdbRequest('games', $query);
+    
+    $mesesPtBr = [
+        1 => 'Jan', 2 => 'Fev', 3 => 'Mar', 4 => 'Abr', 5 => 'Mai', 6 => 'Jun',
+        7 => 'Jul', 8 => 'Ago', 9 => 'Set', 10 => 'Out', 11 => 'Nov', 12 => 'Dez'
+    ];
+    
+    $formatted = [];
+    foreach ($games as $game) {
+        $coverUrl = isset($game['cover']['url']) 
+            ? str_replace('t_thumb', 't_cover_small', 'https:' . $game['cover']['url'])
+            : 'https://via.placeholder.com/90x120?text=No+Image';
+            
+        if (isset($game['first_release_date'])) {
+            $mes = (int)date('n', $game['first_release_date']);
+            $dia = date('j', $game['first_release_date']);
+            $ano = date('Y', $game['first_release_date']);
+            $releaseDate = $mesesPtBr[$mes] . ' ' . $dia . ', ' . $ano;
+        } else {
+            $releaseDate = 'TBA';
+        }
+            
+        $formatted[] = [
+            'id' => $game['id'],
+            'name' => $game['name'],
+            'cover' => $coverUrl,
+            'release_date' => $releaseDate,
+            'hypes' => $game['hypes'] ?? 0
+        ];
+    }
+    
+    $_SESSION[$cacheKey] = $formatted;
+    $_SESSION[$cacheKey . '_time'] = time();
+    
+    return $formatted;
+}
+
+// Buscar "Sucessos Inesperados" (hidden gems - alta avaliação, poucos reviews)
+function getHiddenGems($limit = 8) {
+    $cacheKey = "hidden_gems_{$limit}";
+    
+    if (isset($_SESSION[$cacheKey]) && isset($_SESSION[$cacheKey . '_time']) && 
+        (time() - $_SESSION[$cacheKey . '_time']) < 21600) {
+        return $_SESSION[$cacheKey];
+    }
+    
+    $query = "
+        fields name, cover.url, total_rating, total_rating_count;
+        where total_rating > 80 & total_rating_count > 50 & total_rating_count < 1000 & cover != null;
+        sort total_rating desc;
+        limit {$limit};
+    ";
+    
+    $games = igdbRequest('games', $query);
+    
+    $formatted = [];
+    foreach ($games as $game) {
+        $coverUrl = isset($game['cover']['url']) 
+            ? str_replace('t_thumb', 't_cover_small', 'https:' . $game['cover']['url'])
+            : 'https://via.placeholder.com/90x120?text=No+Image';
+            
+        $rating = isset($game['total_rating']) 
+            ? number_format($game['total_rating'] / 20, 1) // Converter de 0-100 para 0-5
+            : 0;
+            
+        $formatted[] = [
+            'id' => $game['id'],
+            'name' => $game['name'],
+            'cover' => $coverUrl,
+            'rating' => $rating
+        ];
+    }
+    
+    $_SESSION[$cacheKey] = $formatted;
+    $_SESSION[$cacheKey . '_time'] = time();
+    
+    return $formatted;
+}

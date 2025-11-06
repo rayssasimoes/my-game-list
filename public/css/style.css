@@ -1,3 +1,6 @@
+/* Importar fonte Inter do Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap');
+
 * {
     margin: 0;
     padding: 0;
@@ -347,15 +350,17 @@ a {
 /* ===== HERO SECTION (USUÁRIO LOGADO) ===== */
 .hero-section {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
 }
 
 .hero-title {
-    font-size: 2rem;
-    font-weight: 400;
-    color: rgba(255, 255, 255, 0.9);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 25px;
+    font-weight: 300;
+    color: #708090;
     margin: 0;
     line-height: 1.3;
+    letter-spacing: -0.01em;
 }
 
 .hero-name {
@@ -1217,6 +1222,101 @@ body.modal-open {
     justify-content: space-between;
 }
 
+/* ===== DISCOVERY SECTION (TRÊS COLUNAS ESTILO BACKLOGGD) ===== */
+.discovery-section {
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.discovery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.discovery-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.discovery-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+}
+
+.discovery-see-more {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    line-height: 1;
+}
+
+.discovery-see-more:hover {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.discovery-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.discovery-item {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    padding: 0.35rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.discovery-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.discovery-cover {
+    width: 40px;
+    height: 53px;
+    object-fit: cover;
+    border-radius: 0.25rem;
+    flex-shrink: 0;
+}
+
+.discovery-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.discovery-game-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #ffffff;
+    margin-bottom: 0.2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.3;
+}
+
+.discovery-meta {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 400;
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     body {
@@ -1312,6 +1412,26 @@ body.modal-open {
         font-size: 1.5rem;
     }
 
+    /* Discovery Section responsiva - 2 colunas em tablet */
+    .discovery-section {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        padding-top: 1.5rem;
+    }
+
+    .discovery-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .discovery-column:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .discovery-title {
+        font-size: 0.9rem;
+    }
+
     .welcome-message-compact {
         max-width: 100%;
     }
@@ -1356,6 +1476,44 @@ body.modal-open {
         font-size: 1.25rem;
         line-height: 1.4;
         padding: 0 0.5rem;
+    }
+
+    /* Discovery Section mobile - 1 coluna */
+    .discovery-section {
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+        padding-top: 1rem;
+    }
+
+    .discovery-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .discovery-column:last-child {
+        grid-column: auto;
+    }
+
+    .discovery-title {
+        font-size: 0.85rem;
+    }
+
+    .discovery-item {
+        gap: 0.5rem;
+        padding: 0.3rem;
+    }
+
+    .discovery-cover {
+        width: 35px;
+        height: 47px;
+    }
+
+    .discovery-game-name {
+        font-size: 0.8rem;
+    }
+
+    .discovery-meta {
+        font-size: 0.7rem;
     }
 
     .welcome-title {

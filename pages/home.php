@@ -76,6 +76,92 @@ include 'includes/header.php';
             </div>
         <?php endif; ?>
     </section>
+
+    <!-- Seção: Três Colunas -->
+    <section class="discovery-section">
+        <div class="discovery-grid">
+            <!-- Coluna 1: Em Breve -->
+            <div class="discovery-column">
+                <div class="discovery-header">
+                    <h3 class="discovery-title">Em Breve</h3>
+                    <a href="#" class="discovery-see-more">›</a>
+                </div>
+                <div class="discovery-list">
+                    <?php 
+                    $upcomingGames = getUpcomingGames(5);
+                    if (empty($upcomingGames)): ?>
+                        <p class="text-white-50 small">Nenhum jogo encontrado.</p>
+                    <?php else: ?>
+                        <?php foreach ($upcomingGames as $game): ?>
+                            <div class="discovery-item">
+                                <img src="<?php echo htmlspecialchars($game['cover']); ?>" 
+                                     alt="<?php echo htmlspecialchars($game['name']); ?>" 
+                                     class="discovery-cover">
+                                <div class="discovery-info">
+                                    <div class="discovery-game-name"><?php echo htmlspecialchars($game['name']); ?></div>
+                                    <div class="discovery-meta"><?php echo htmlspecialchars($game['release_date']); ?></div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Coluna 2: Recentemente Antecipados -->
+            <div class="discovery-column">
+                <div class="discovery-header">
+                    <h3 class="discovery-title">Recentemente Antecipados</h3>
+                    <a href="#" class="discovery-see-more">›</a>
+                </div>
+                <div class="discovery-list">
+                    <?php 
+                    $hypedGames = getHypedGames(5);
+                    if (empty($hypedGames)): ?>
+                        <p class="text-white-50 small">Nenhum jogo encontrado.</p>
+                    <?php else: ?>
+                        <?php foreach ($hypedGames as $game): ?>
+                            <div class="discovery-item">
+                                <img src="<?php echo htmlspecialchars($game['cover']); ?>" 
+                                     alt="<?php echo htmlspecialchars($game['name']); ?>" 
+                                     class="discovery-cover">
+                                <div class="discovery-info">
+                                    <div class="discovery-game-name"><?php echo htmlspecialchars($game['name']); ?></div>
+                                    <div class="discovery-meta"><?php echo htmlspecialchars($game['release_date']); ?></div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+
+            <!-- Coluna 3: Sucessos Inesperados -->
+            <div class="discovery-column">
+                <div class="discovery-header">
+                    <h3 class="discovery-title">Sucessos Inesperados</h3>
+                    <a href="#" class="discovery-see-more">›</a>
+                </div>
+                <div class="discovery-list">
+                    <?php 
+                    $hiddenGems = getHiddenGems(5);
+                    if (empty($hiddenGems)): ?>
+                        <p class="text-white-50 small">Nenhum jogo encontrado.</p>
+                    <?php else: ?>
+                        <?php foreach ($hiddenGems as $game): ?>
+                            <div class="discovery-item">
+                                <img src="<?php echo htmlspecialchars($game['cover']); ?>" 
+                                     alt="<?php echo htmlspecialchars($game['name']); ?>" 
+                                     class="discovery-cover">
+                                <div class="discovery-info">
+                                    <div class="discovery-game-name"><?php echo htmlspecialchars($game['name']); ?></div>
+                                    <div class="discovery-meta">Méd <?php echo $game['rating']; ?>★</div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 
 <?php include 'includes/footer.php'; ?>
