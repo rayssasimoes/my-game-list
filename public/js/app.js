@@ -7,8 +7,8 @@
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
+        document.body.classList.add('modal-open');
         modal.classList.add('show');
-        document.body.classList.add('modal-open'); // Previne scroll - problema 1
     }
 }
 

@@ -732,8 +732,9 @@ a {
 
 /* Prevenir scroll do body quando modal aberto */
 body.modal-open {
-    overflow: hidden;
-    padding-right: 0 !important; /* Remove padding que causa "pulo" */
+    overflow-y: scroll;
+    position: fixed;
+    width: 100%;
 }
 
 .modal-dialog {
