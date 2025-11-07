@@ -5,6 +5,26 @@ $pageTitle = 'MyGameList';
 $games = getPopularGames(20);
 $sectionTitle = "Populares agora";
 
+// Se logado, buscar jogos que já estão na lista do usuário
+$userGames = [];
+if (isLoggedIn()) {
+    $user = getUser();
+    $db = getDB();
+    // Buscar jogos com JOIN para pegar o igdb_id
+    $stmt = $db->prepare("
+        SELECT g.igdb_id, gu.status 
+        FROM game_user gu 
+        INNER JOIN games g ON gu.game_id = g.id 
+        WHERE gu.user_id = ? AND g.igdb_id IS NOT NULL
+    ");
+    $stmt->execute([$user['id']]);
+    $userGamesList = $stmt->fetchAll();
+    
+    foreach ($userGamesList as $userGame) {
+        $userGames[$userGame['igdb_id']] = $userGame['status'];
+    }
+}
+
 include 'includes/header.php';
 ?>
 
@@ -45,21 +65,46 @@ include 'includes/header.php';
                              alt="<?php echo htmlspecialchars($game['name']); ?>" 
                              class="game-card-image">
                         
-                        <!-- Overlay de hover (nome no centro + botões embaixo) -->
+                        <!-- Overlay de hover (ações rápidas + nome) -->
                         <div class="game-card-hover-content">
+                            <!-- Título do jogo -->
                             <h3 class="game-card-hover-title"><?php echo htmlspecialchars($game['name']); ?></h3>
-
-                            <!-- Para usuários logados -->
+                            
+                            <!-- Ações rápidas embaixo (apenas para logados) -->
                             <?php if (isLoggedIn()): ?>
-                                <div class="game-card-actions">
-                                    <button class="action-btn" title="Jogado">
-                                        <span class="action-btn-icon">🎮</span>
+                                <?php 
+                                    $gameStatus = isset($userGames[$game['id']]) ? $userGames[$game['id']] : null;
+                                ?>
+                                <div class="quick-actions">
+                                    <button class="quick-action-btn <?php echo $gameStatus === 'completed' ? 'active' : ''; ?>" 
+                                            data-action="completed" 
+                                            data-game-id="<?php echo $game['id']; ?>"
+                                            data-game-name="<?php echo htmlspecialchars($game['name']); ?>"
+                                            data-game-cover="<?php echo htmlspecialchars($game['cover']); ?>"
+                                            title="Marcar como Jogado">
+                                        <i class="bi bi-check-circle"></i>
                                     </button>
-                                    <button class="action-btn" title="Backlog">
-                                        <span class="action-btn-icon">📋</span>
+                                    <button class="quick-action-btn <?php echo $gameStatus === 'playing' ? 'active' : ''; ?>" 
+                                            data-action="playing" 
+                                            data-game-id="<?php echo $game['id']; ?>"
+                                            data-game-name="<?php echo htmlspecialchars($game['name']); ?>"
+                                            data-game-cover="<?php echo htmlspecialchars($game['cover']); ?>"
+                                            title="Jogando Agora">
+                                        <i class="bi bi-controller"></i>
                                     </button>
-                                    <button class="action-btn" title="Mais opções">
-                                        <span class="action-btn-icon">⋮</span>
+                                    <button class="quick-action-btn <?php echo $gameStatus === 'want_to_play' ? 'active' : ''; ?>" 
+                                            data-action="want_to_play" 
+                                            data-game-id="<?php echo $game['id']; ?>"
+                                            data-game-name="<?php echo htmlspecialchars($game['name']); ?>"
+                                            data-game-cover="<?php echo htmlspecialchars($game['cover']); ?>"
+                                            title="Lista de Desejos">
+                                        <i class="bi bi-bookmark-heart"></i>
+                                    </button>
+                                    <button class="quick-action-btn quick-action-more" 
+                                            data-action="more" 
+                                            data-game-id="<?php echo $game['id']; ?>"
+                                            title="Mais opções">
+                                        <i class="bi bi-three-dots"></i>
                                     </button>
                                 </div>
                             <?php endif; ?>
