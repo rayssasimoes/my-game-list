@@ -437,3 +437,273 @@ function checkAvailability(value, type, input, hint) {
             }
         });
 }
+
+// ==== MY LIST PAGE - TAB SWITCHING ====
+document.addEventListener('DOMContentLoaded', () => {
+    const tabs = document.querySelectorAll('.list-tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    if (tabs.length > 0 && tabContents.length > 0) {
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetStatus = tab.getAttribute('data-status');
+                
+                // Remove active de todas as tabs
+                tabs.forEach(t => t.classList.remove('active'));
+                
+                // Remove active de todos os conteúdos
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Adiciona active na tab clicada
+                tab.classList.add('active');
+                
+                // Adiciona active no conteúdo correspondente
+                const targetContent = document.getElementById(`tab-${targetStatus}`);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+                
+                // Atualiza URL hash
+                window.location.hash = targetStatus;
+            });
+        });
+        
+        // Verifica se há hash na URL ao carregar
+        const hash = window.location.hash.substring(1);
+        if (hash) {
+            const targetTab = document.querySelector(`.list-tab[data-status="${hash}"]`);
+            if (targetTab) {
+                targetTab.click();
+            }
+        }
+    }
+});
+
+// ==== MY LIST PAGE - FILTER TOGGLE ====
+document.addEventListener('DOMContentLoaded', () => {
+    const filterToggle = document.getElementById('filterToggle');
+    const filterTabs = document.getElementById('filterTabs');
+    
+    if (filterToggle && filterTabs) {
+        // Inicialmente esconder as tabs
+        filterTabs.style.display = 'none';
+        
+        filterToggle.addEventListener('click', () => {
+            const isVisible = filterTabs.style.display !== 'none';
+            
+            if (isVisible) {
+                filterTabs.style.display = 'none';
+                filterToggle.classList.remove('active');
+            } else {
+                filterTabs.style.display = 'flex';
+                filterToggle.classList.add('active');
+            }
+        });
+    }
+});
+
+// ==== MY LIST PAGE - GAME ACTIONS ====
+function editGame(gameId) {
+    // TODO: Abrir modal de edição do jogo
+    console.log('Edit game:', gameId);
+    alert('Funcionalidade de edição em desenvolvimento');
+}
+
+function removeGame(gameId) {
+    // Confirmar remoção
+    if (confirm('Tem certeza que deseja remover este jogo da sua lista?')) {
+        // TODO: Fazer requisição para remover o jogo
+        console.log('Remove game:', gameId);
+        alert('Funcionalidade de remoção em desenvolvimento');
+    }
+}
+
+// ==== HOME PAGE - QUICK ACTIONS ====
+document.addEventListener('DOMContentLoaded', () => {
+    const quickActionBtns = document.querySelectorAll('.quick-action-btn');
+    
+    // Suporte para touch em mobile
+    const gameCards = document.querySelectorAll('.game-card');
+    let activeCard = null;
+    
+    gameCards.forEach(card => {
+        card.addEventListener('touchstart', (e) => {
+            // Se já tiver um card ativo e não for o mesmo, desativar
+            if (activeCard && activeCard !== card) {
+                activeCard.classList.remove('touch-active');
+            }
+            
+            // Se tocar no mesmo card ativo, desativar (toggle)
+            if (activeCard === card) {
+                card.classList.remove('touch-active');
+                activeCard = null;
+            } else {
+                // Ativar novo card
+                card.classList.add('touch-active');
+                activeCard = card;
+            }
+        });
+    });
+    
+    // Fechar overlay ao tocar fora
+    document.addEventListener('touchstart', (e) => {
+        if (activeCard && !e.target.closest('.game-card')) {
+            activeCard.classList.remove('touch-active');
+            activeCard = null;
+        }
+    });
+    
+    quickActionBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevenir outros eventos
+            
+            const action = btn.getAttribute('data-action');
+            const gameId = btn.getAttribute('data-game-id');
+            const gameName = btn.getAttribute('data-game-name');
+            const gameCover = btn.getAttribute('data-game-cover');
+            
+            if (action === 'more') {
+                // Abrir menu de mais opções (implementar depois)
+                console.log('More options for game:', gameId);
+                alert('Menu de opções em desenvolvimento');
+                return;
+            }
+            
+            // Adicionar jogo à lista com o status específico
+            addGameToList(gameId, action, btn, gameName, gameCover);
+        });
+    });
+});
+
+function addGameToList(gameId, status, btnElement, gameName, gameCover) {
+    // Mostrar feedback visual
+    btnElement.disabled = true;
+    btnElement.style.opacity = '0.6';
+    
+    console.log('Tentando adicionar jogo:', gameId, 'com status:', status);
+    console.log('Nome:', gameName, 'Cover:', gameCover);
+    
+    // Caminho relativo à raiz do projeto
+    const url = 'includes/add-to-list.php';
+    
+    console.log('URL da requisição:', url);
+    
+    // Fazer requisição AJAX para adicionar o jogo
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `game_id=${gameId}&status=${status}&game_name=${encodeURIComponent(gameName)}&game_cover=${encodeURIComponent(gameCover)}`
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.text().then(text => {
+            console.log('Response text:', text);
+            try {
+                return JSON.parse(text);
+            } catch (e) {
+                console.error('Erro ao fazer parse do JSON:', e);
+                console.error('Resposta recebida:', text);
+                throw new Error('Resposta inválida do servidor');
+            }
+        });
+    })
+    .then(data => {
+        console.log('Data recebida:', data);
+        if (data.success) {
+            // Remover classe active de todos os botões do mesmo card
+            const card = btnElement.closest('.game-card');
+            const allBtns = card.querySelectorAll('.quick-action-btn[data-action]:not([data-action="more"])');
+            allBtns.forEach(btn => btn.classList.remove('active'));
+            
+            // Marcar apenas o botão clicado como ativo
+            btnElement.classList.add('active');
+            
+            // Feedback visual temporário
+            const originalHTML = btnElement.innerHTML;
+            btnElement.innerHTML = '<i class="bi bi-check"></i>';
+            
+            setTimeout(() => {
+                btnElement.innerHTML = originalHTML;
+                btnElement.style.opacity = '1';
+                btnElement.disabled = false;
+            }, 1000);
+            
+            // Mostrar notificação de sucesso
+            const messages = {
+                'completed': 'Marcado como Jogado!',
+                'playing': 'Adicionado em Jogando!',
+                'want_to_play': 'Adicionado à Lista de Desejos!',
+                'dropped': 'Marcado como Abandonado!'
+            };
+            showNotification(messages[status] || 'Jogo adicionado à sua lista!', 'success');
+        } else {
+            // Erro ao adicionar
+            console.error('Erro retornado pelo servidor:', data.message);
+            btnElement.style.opacity = '1';
+            btnElement.disabled = false;
+            showNotification(data.message || 'Erro ao adicionar jogo', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error completo:', error);
+        btnElement.style.opacity = '1';
+        btnElement.disabled = false;
+        showNotification('Erro ao adicionar jogo: ' + error.message, 'error');
+    });
+}
+
+function showNotification(message, type = 'success') {
+    // Criar notificação temporária
+    const notification = document.createElement('div');
+    notification.className = `quick-notification ${type}`;
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: ${type === 'success' ? '#22c55e' : '#ef4444'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+        font-weight: 600;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Adicionar animações CSS para notificações
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
