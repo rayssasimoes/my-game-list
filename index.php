@@ -14,7 +14,8 @@ $page = $_GET['page'] ?? 'home';
 // Rotas disponíveis
 $validPages = [
     'home',
-    'my-list'
+    'my-list',
+    'search'
 ];
 
 // Verificar se a página existe

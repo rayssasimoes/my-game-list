@@ -19,7 +19,8 @@
             <!-- Search Bar -->
             <div class="search-container">
                 <form action="index.php" method="GET">
-                    <input class="search-input" type="search" name="search" placeholder="Buscar jogos..." value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
+                    <input type="hidden" name="page" value="search">
+                    <input class="search-input" type="search" name="q" placeholder="Buscar jogos..." value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>">
                     <!-- Ícone de lupa (visível por padrão) -->
                     <i class="bi bi-search search-icon" id="searchIcon" aria-hidden="true"></i>
                     <!-- Ícone para limpar a busca (aparece quando há texto) -->

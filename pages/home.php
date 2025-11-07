@@ -1,15 +1,9 @@
 <?php
 $pageTitle = 'MyGameList';
 
-// Buscar jogos populares ou resultados de busca
-if (isset($_GET['search']) && !empty($_GET['search'])) {
-    $searchTerm = $_GET['search'];
-    $games = searchGames($searchTerm);
-    $sectionTitle = "Resultados para: " . htmlspecialchars($searchTerm);
-} else {
-    $games = getPopularGames(20);
-    $sectionTitle = "Populares agora";
-}
+// Buscar jogos populares
+$games = getPopularGames(20);
+$sectionTitle = "Populares agora";
 
 include 'includes/header.php';
 ?>

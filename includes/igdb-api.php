@@ -136,7 +136,7 @@ function getPopularGames($limit = 12) {
 // Buscar jogos por termo de busca
 function searchGames($searchTerm, $limit = 20) {
     $query = "
-        fields name, cover.url, rating, first_release_date;
+        fields name, cover.url, first_release_date, platforms.name;
         search \"{$searchTerm}\";
         where cover != null;
         limit {$limit};
@@ -150,12 +150,28 @@ function searchGames($searchTerm, $limit = 20) {
         $coverUrl = isset($game['cover']['url']) 
             ? str_replace('t_thumb', 't_cover_big', 'https:' . $game['cover']['url'])
             : 'https://via.placeholder.com/264x352?text=No+Image';
+        
+        // Extrair ano da data de lançamento
+        $year = isset($game['first_release_date']) 
+            ? date('Y', $game['first_release_date'])
+            : null;
+        
+        // Extrair nomes das plataformas
+        $platforms = [];
+        if (isset($game['platforms']) && is_array($game['platforms'])) {
+            foreach ($game['platforms'] as $platform) {
+                if (isset($platform['name'])) {
+                    $platforms[] = $platform['name'];
+                }
+            }
+        }
             
         $formatted[] = [
             'id' => $game['id'],
             'name' => $game['name'],
             'cover' => $coverUrl,
-            'rating' => $game['rating'] ?? 0
+            'year' => $year,
+            'platforms' => $platforms
         ];
     }
     
