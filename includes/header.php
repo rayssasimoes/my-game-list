@@ -20,6 +20,10 @@
             <div class="search-container">
                 <form action="index.php" method="GET">
                     <input class="search-input" type="search" name="search" placeholder="Buscar jogos..." value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
+                    <!-- Ícone de lupa (visível por padrão) -->
+                    <i class="bi bi-search search-icon" id="searchIcon" aria-hidden="true"></i>
+                    <!-- Ícone para limpar a busca (aparece quando há texto) -->
+                    <i class="bi bi-x search-clear" id="searchClear" role="button" title="Limpar busca" aria-hidden="true"></i>
                 </form>
             </div>
 

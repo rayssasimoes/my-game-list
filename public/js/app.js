@@ -204,6 +204,8 @@ function initSearchAutocomplete() {
     if (!searchInput) return;
 
     const searchContainer = document.querySelector('.search-container');
+    const searchClear = document.getElementById('searchClear');
+    const searchIcon = document.getElementById('searchIcon');
     
     // Criar dropdown de sugestões
     let dropdown = document.querySelector('.search-dropdown');
@@ -225,6 +227,9 @@ function initSearchAutocomplete() {
         // Se query vazia ou muito curta, esconde dropdown
         if (query.length < 2) {
             dropdown.classList.remove('show');
+            // esconder ícone de limpar quando vazio e mostrar lupa
+            if (searchClear) searchClear.classList.remove('visible');
+            if (searchIcon) searchIcon.classList.remove('hidden');
             return;
         }
 
@@ -232,12 +237,27 @@ function initSearchAutocomplete() {
         debounceTimer = setTimeout(() => {
             fetchSearchResults(query, dropdown);
         }, 300);
+        // mostrar ícone de limpar quando tiver texto e esconder lupa
+        if (searchClear && searchIcon) {
+            if (this.value.length > 0) {
+                searchClear.classList.add('visible');
+                searchIcon.classList.add('hidden');
+            } else {
+                searchClear.classList.remove('visible');
+                searchIcon.classList.remove('hidden');
+            }
+        } else if (searchClear) {
+            if (this.value.length > 0) searchClear.classList.add('visible');
+            else searchClear.classList.remove('visible');
+        }
     });
 
     // Fechar dropdown ao clicar fora
     document.addEventListener('click', function(e) {
         if (!searchContainer.contains(e.target)) {
             dropdown.classList.remove('show');
+            if (searchClear) searchClear.classList.remove('visible');
+            if (searchIcon) searchIcon.classList.remove('hidden');
         }
     });
 
@@ -245,8 +265,24 @@ function initSearchAutocomplete() {
     searchInput.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             dropdown.classList.remove('show');
+            if (searchClear) searchClear.classList.remove('visible');
+            if (searchIcon) searchIcon.classList.remove('hidden');
         }
     });
+
+    // Clique no ícone X para limpar a busca
+    if (searchClear) {
+        searchClear.addEventListener('click', function(e) {
+            e.preventDefault();
+            searchInput.value = '';
+            searchInput.dispatchEvent(new Event('input'));
+            dropdown.classList.remove('show');
+            this.classList.remove('visible');
+            if (searchIcon) searchIcon.classList.remove('hidden');
+            // opcional: focar novamente no input
+            searchInput.focus();
+        });
+    }
 }
 
 function fetchSearchResults(query, dropdown) {
