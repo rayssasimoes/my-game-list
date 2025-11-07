@@ -1613,7 +1613,7 @@ body.modal-open {
 .login-prompt-text {
     font-size: 0.85rem;
     color: rgba(255, 255, 255, 0.6);
-    margin-top: 0;
+    margin-top: 10px;
     margin-bottom: 0;
     text-align: justify;
     line-height: 1.5;
@@ -1626,7 +1626,7 @@ body.modal-open {
 .btn-login-link {
     background: none;
     border: none;
-    color: #667eea;
+    color: rgba(255, 255, 255, 0.6);
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
@@ -1636,7 +1636,7 @@ body.modal-open {
 }
 
 .btn-login-link:hover {
-    color: #7c8fef;
+    color: #fff;
 }
 
 .btn-login-small {
