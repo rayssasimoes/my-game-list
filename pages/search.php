@@ -112,11 +112,12 @@ include 'includes/header.php';
                         <?php else: ?>
                             <div class="search-card-actions">
                                 <div class="search-login-prompt">
-                                    <i class="bi bi-lock"></i>
-                                    <p>Faça login para adicionar jogos à sua lista</p>
-                                    <button class="btn-register-small" onclick="openModal('registerModal')">Criar Conta</button>
+                                    <p class="login-prompt-main">
+                                        <button class="btn-register-small" onclick="openModal('registerModal')">Criar Conta</button>
+                                        para adicionar jogos à sua lista
+                                    </p>
                                     <p class="login-prompt-text">
-                                        ou <button class="btn-login-link" onclick="openModal('loginModal')">entre</button> se você já tem uma conta
+                                        ou <button class="btn-login-link" onclick="openModal('loginModal')">iniciar sessão</button> se já tem uma conta.
                                     </p>
                                 </div>
                             </div>
