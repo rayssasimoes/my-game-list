@@ -3246,15 +3246,16 @@ body.modal-open {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
     border-bottom: 1px solid #333;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.75rem;
 }
 
 .profile-header-left {
     display: flex;
     align-items: center;
     gap: 1rem;
+    flex: 1;
 }
 
 .profile-avatar {
@@ -3306,7 +3307,7 @@ body.modal-open {
 
 /* Profile Bio */
 .profile-bio {
-    padding-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
     border-bottom: 1px solid #333;
     margin-bottom: 1.5rem;
 }
@@ -3318,7 +3319,7 @@ body.modal-open {
     margin: 0;
 }
 
-/* Profile Stats - Aligned Right */
+/* Profile Stats - Horizontal Layout */
 .profile-stats {
     display: flex;
     align-items: center;
@@ -3327,9 +3328,9 @@ body.modal-open {
 
 .stat-item {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+    align-items: baseline;
+    gap: 0.5rem;
+    text-align: left;
 }
 
 .stat-value {
@@ -3342,14 +3343,14 @@ body.modal-open {
 .stat-label {
     font-size: 0.7rem;
     color: #999;
-    margin-top: 0.25rem;
     letter-spacing: 0.05em;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .stat-divider {
     width: 1px;
-    height: 35px;
+    height: 25px;
     background: #333;
 }
 
@@ -3578,22 +3579,22 @@ body.modal-open {
     
     .profile-header {
         flex-direction: column;
-        align-items: center;
-        text-align: center;
+        align-items: flex-start;
         gap: 1rem;
-        padding-bottom: 1rem;
-        margin-bottom: 1.25rem;
+        padding-bottom: 0.75rem;
+        margin-bottom: 1rem;
     }
     
     .profile-header-left {
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
-        text-align: center;
+        width: 100%;
     }
     
     .profile-header-info {
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
+        gap: 0.5rem;
     }
     
     .profile-name {
@@ -3606,13 +3607,25 @@ body.modal-open {
     
     .profile-bio {
         max-width: 100%;
-        padding: 1rem;
+        padding: 0.5rem 0;
         font-size: 0.9rem;
+        margin-bottom: 1rem;
     }
     
     .profile-stats {
-        justify-content: center;
+        justify-content: flex-start;
         gap: 1rem;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    
+    .stat-item {
+        flex-direction: row;
+        gap: 0.5rem;
+    }
+    
+    .stat-divider {
+        height: 20px;
     }
     
     .profile-tabs {
