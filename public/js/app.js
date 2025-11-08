@@ -707,3 +707,53 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// ==== PROFILE PAGE - TABS ====
+document.addEventListener('DOMContentLoaded', () => {
+    // Profile main tabs (Perfil, Jogos, Atividade)
+    const profileTabs = document.querySelectorAll('.profile-tab');
+    
+    profileTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const targetTab = tab.getAttribute('data-tab');
+            
+            // Remove active de todas as tabs
+            profileTabs.forEach(t => t.classList.remove('active'));
+            
+            // Adiciona active na tab clicada
+            tab.classList.add('active');
+            
+            // Por enquanto, apenas Perfil está implementado
+            if (targetTab !== 'overview') {
+                console.log(`Tab ${targetTab} em desenvolvimento`);
+            }
+        });
+    });
+    
+    // Games filter tabs (Jogando, Jogado, Abandonado, Favorito)
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    const filterContents = document.querySelectorAll('.filter-content');
+    
+    if (filterTabs.length > 0 && filterContents.length > 0) {
+        filterTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetFilter = tab.getAttribute('data-filter');
+                
+                // Remove active de todas as filter tabs
+                filterTabs.forEach(t => t.classList.remove('active'));
+                
+                // Remove active de todos os conteúdos
+                filterContents.forEach(content => content.classList.remove('active'));
+                
+                // Adiciona active na tab clicada
+                tab.classList.add('active');
+                
+                // Adiciona active no conteúdo correspondente
+                const targetContent = document.querySelector(`[data-filter-content="${targetFilter}"]`);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+            });
+        });
+    }
+});

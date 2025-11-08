@@ -2639,3 +2639,404 @@ body.modal-open {
         font-size: 1.25rem;
     }
 }
+
+/* ===== PROFILE PAGE (Letterboxd-inspired) ===== */
+
+.profile-page {
+    min-height: 100vh;
+    padding: 3rem 0;
+}
+
+.profile-container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Profile Header */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #333;
+    margin-bottom: 2rem;
+}
+
+.profile-avatar {
+    font-size: 5rem;
+    color: #666;
+    line-height: 1;
+}
+
+.profile-avatar i {
+    display: block;
+}
+
+.profile-header-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.profile-name {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.btn-edit-profile {
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid #444;
+    border-radius: 6px;
+    color: #999;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.btn-edit-profile:hover {
+    background: #2a2a2a;
+    border-color: #555;
+    color: #fff;
+}
+
+/* Info Block */
+.profile-info-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #333;
+    margin-bottom: 2rem;
+}
+
+.profile-bio {
+    flex: 1;
+    max-width: 60%;
+}
+
+.bio-text {
+    color: #999;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.bio-text:empty::before {
+    content: "Nenhuma bio adicionada ainda";
+    color: #666;
+    font-style: italic;
+}
+
+.profile-stats {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #999;
+    margin-top: 0.25rem;
+}
+
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background: #333;
+}
+
+/* Profile Tabs */
+.profile-tabs {
+    display: flex;
+    gap: 0.5rem;
+    border-bottom: 1px solid #333;
+    margin-bottom: 3rem;
+}
+
+.profile-tab {
+    padding: 1rem 1.5rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #999;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.profile-tab:hover {
+    color: #fff;
+}
+
+.profile-tab.active {
+    color: #fff;
+    border-bottom-color: #E93D82;
+}
+
+/* Profile Content */
+.profile-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 1.5rem 0;
+    letter-spacing: -0.02em;
+}
+
+/* Favorite Games Section */
+.favorite-games-section {
+    margin-bottom: 2rem;
+}
+
+.favorite-games-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+}
+
+.favorite-game-card {
+    aspect-ratio: 3 / 4;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    background: #242424;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+}
+
+.favorite-game-card:hover {
+    transform: translateY(-4px);
+    border-color: #444;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.favorite-game-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.favorite-game-card.empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a1a1a;
+    border: 2px dashed #333;
+}
+
+.btn-add-favorite {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #242424;
+    border: 1px solid #444;
+    color: #666;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-add-favorite:hover {
+    background: #2a2a2a;
+    border-color: #E93D82;
+    color: #E93D82;
+    transform: scale(1.1);
+}
+
+/* Games List Section */
+.games-list-section {
+    margin-bottom: 3rem;
+}
+
+.games-filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #333;
+}
+
+.filter-tab {
+    padding: 0.75rem 1.25rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #999;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.filter-tab:hover {
+    color: #fff;
+}
+
+.filter-tab.active {
+    color: #fff;
+    border-bottom-color: #667eea;
+}
+
+.games-filter-content {
+    position: relative;
+}
+
+.filter-content {
+    display: none;
+}
+
+.filter-content.active {
+    display: block;
+}
+
+.games-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+}
+
+.game-list-card {
+    aspect-ratio: 3 / 4;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    background: #242424;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+}
+
+.game-list-card:hover {
+    transform: translateY(-4px);
+    border-color: #444;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.game-list-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.game-rating-badge {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #fbbf24;
+}
+
+.game-rating-badge i {
+    font-size: 0.75rem;
+}
+
+.empty-message {
+    text-align: center;
+    color: #666;
+    font-size: 1rem;
+    padding: 3rem 0;
+}
+
+/* Responsive - Profile */
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 0 1rem;
+    }
+    
+    .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .profile-header-info {
+        flex-direction: column;
+    }
+    
+    .profile-name {
+        font-size: 1.75rem;
+    }
+    
+    .profile-avatar {
+        font-size: 4rem;
+    }
+    
+    .profile-info-block {
+        flex-direction: column;
+        gap: 2rem;
+    }
+    
+    .profile-bio {
+        max-width: 100%;
+    }
+    
+    .profile-stats {
+        justify-content: center;
+        gap: 1.5rem;
+    }
+    
+    .profile-tabs {
+        gap: 0.25rem;
+    }
+    
+    .profile-tab {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .favorite-games-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+    }
+    
+    .games-list-grid {
+        grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        gap: 0.75rem;
+    }
+    
+    .section-title {
+        font-size: 1.25rem;
+    }
+}

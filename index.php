@@ -15,7 +15,8 @@ $page = $_GET['page'] ?? 'home';
 $validPages = [
     'home',
     'my-list',
-    'search'
+    'search',
+    'profile'
 ];
 
 // Verificar se a página existe
