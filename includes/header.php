@@ -49,24 +49,22 @@
                             <span class="notification-badge">3</span>
                         </button>
                         
-                        <!-- Avatar do Usuário -->
-                        <button class="btn-user-avatar" id="userAvatarBtn">
-                            <?php if (!empty($user['avatar_path'])): ?>
-                                <img src="<?php echo htmlspecialchars($user['avatar_path']); ?>" alt="Avatar">
-                            <?php else: ?>
-                                <i class="bi bi-person-circle"></i>
-                            <?php endif; ?>
-                        </button>
-                        
-                        <!-- Menu Hambúrguer Mobile -->
-                        <button class="btn-hamburger" id="hamburgerBtn">
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                        </button>
-                        
-                        <!-- Dropdown Menu do Usuário -->
-                        <div class="user-dropdown-menu" id="userDropdownMenu">
+                        <!-- Avatar + Nome do Usuário -->
+                        <div class="user-profile-wrapper">
+                            <button class="btn-user-profile" id="userAvatarBtn">
+                                <div class="user-profile-avatar">
+                                    <?php if (!empty($user['avatar_path'])): ?>
+                                        <img src="<?php echo htmlspecialchars($user['avatar_path']); ?>" alt="Avatar">
+                                    <?php else: ?>
+                                        <i class="bi bi-person-circle"></i>
+                                    <?php endif; ?>
+                                </div>
+                                <span class="user-profile-name"><?php echo htmlspecialchars($user['username']); ?></span>
+                                <i class="bi bi-chevron-down user-profile-arrow"></i>
+                            </button>
+                            
+                            <!-- Dropdown Menu do Usuário -->
+                            <div class="user-dropdown-menu" id="userDropdownMenu">
                             <div class="user-dropdown-header">
                                 <div class="user-dropdown-avatar">
                                     <?php if (!empty($user['avatar_path'])): ?>
@@ -97,7 +95,15 @@
                                     <i class="bi bi-box-arrow-right"></i> Sair
                                 </button>
                             </form>
+                            </div>
                         </div>
+                        
+                        <!-- Menu Hambúrguer Mobile -->
+                        <button class="btn-hamburger" id="hamburgerBtn">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
                     <?php endif; ?>
                 </div>
             </div>
