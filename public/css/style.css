@@ -1233,22 +1233,26 @@ body.modal-open {
 
 .modal-content {
     background-color: #2d2d2d;
-    border-radius: 1rem; /* Mais arredondado - problema 5 */
+    border-radius: 24px; /* Bem arredondado */
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    overflow: hidden; /* Garante que o conteúdo respeita o border-radius */
 }
 
 .modal-header {
     padding: 1.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Centraliza o título */
     align-items: center;
+    position: relative; /* Para posicionar o botão de fechar */
+    border-radius: 24px 24px 0 0; /* Arredonda o topo do header */
 }
 
 .modal-title {
     color: #ffffff;
     font-size: 1.25rem;
     margin: 0;
+    text-align: center; /* Centraliza o texto */
 }
 
 .btn-close {
@@ -1258,6 +1262,10 @@ body.modal-open {
     font-size: 1.5rem;
     cursor: pointer;
     opacity: 0.7;
+    position: absolute; /* Posiciona absolutamente */
+    right: 1.5rem; /* Alinha à direita */
+    top: 50%; /* Centraliza verticalmente */
+    transform: translateY(-50%); /* Ajuste fino do centro */
 }
 
 .btn-close:hover {
@@ -1268,6 +1276,12 @@ body.modal-open {
     padding: 1.5rem;
 }
 
+.modal-body form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Garante que os filhos ocupem toda a largura */
+}
+
 /* ===== MODAL DARK THEME (Auth Modals) ===== */
 .modal-dark-theme {
     background-color: #212529;
@@ -1276,11 +1290,13 @@ body.modal-open {
 
 .modal-dark-theme .modal-header {
     background-color: #1a1a1a;
+    border-radius: 24px 24px 0 0; /* Mantém o arredondamento */
 }
 
 .modal-dark-theme .modal-header .modal-title {
     color: #fff;
     font-weight: 600;
+    text-align: center; /* Centraliza o título */
 }
 
 .modal-dark-theme .modal-header .modal-title i {
@@ -1575,6 +1591,9 @@ body.modal-open {
     border-radius: 1rem;
     cursor: pointer;
     transition: all 0.2s ease;
+    text-align: center; /* Centraliza o texto */
+    display: block; /* Garante que o width: 100% funcione */
+    width: 100%;
 }
 
 .btn-primary-custom:hover {
@@ -1609,6 +1628,7 @@ body.modal-open {
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
+    text-align: center; /* Centraliza o texto */
 }
 
 .btn-primary-custom-compact:hover {
@@ -1655,11 +1675,19 @@ body.modal-open {
     align-items: center;
     gap: 1rem;
     margin-top: 1rem;
+    width: 100%; /* Garante que ocupa toda a largura */
+}
+
+.login-actions .btn-primary-custom-compact {
+    text-align: center; /* Centraliza o texto do botão */
+    display: block; /* Força display block */
+    flex: 1; /* Ocupa o espaço disponível */
 }
 
 /* ===== UTILITIES ===== */
 .w-100 {
     width: 100%;
+    display: block; /* Força display block para botões com w-100 */
 }
 
 .mb-3 {
@@ -1707,6 +1735,13 @@ body.modal-open {
     cursor: pointer;
     transition: all 0.2s ease;
     display: inline-block;
+    text-align: center;
+}
+
+/* Garante que botões dentro de forms nos modais ocupem toda a largura */
+.modal-body form button[type="submit"] {
+    display: block;
+    width: 100%;
     text-align: center;
 }
 
@@ -2199,7 +2234,7 @@ body.modal-open {
         display: flex !important;
     }
 
-    /* Ajustar botões de login/register no mobile */
+    /* Ajustar botões de login/bi bi-box-arrow-in-right no mobile */
     .btn-login,
     .btn-register {
         font-size: 0.85rem;
@@ -2288,6 +2323,7 @@ body.modal-open {
 
     .navbar-right {
         gap: 0.5rem;
+        justify-content: center; /* Centralizar botões no mobile */
     }
 
     .user-dropdown-menu {
