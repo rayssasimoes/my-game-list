@@ -76,34 +76,36 @@ include 'includes/header.php';
         
         <!-- Cabeçalho do Perfil -->
         <div class="profile-header">
-            <div class="profile-avatar">
-                <i class="bi bi-person-circle"></i>
-            </div>
-            <div class="profile-header-info">
-                <h1 class="profile-name"><?php echo htmlspecialchars($firstName); ?></h1>
-                <button class="btn-edit-profile">
-                    <i class="bi bi-pencil"></i> Editar Perfil
-                </button>
-            </div>
-        </div>
-
-        <!-- Bloco de Informações -->
-        <div class="profile-info-block">
-            <div class="profile-bio">
-                <p class="bio-text"></p>
+            <div class="profile-header-left">
+                <div class="profile-avatar">
+                    <i class="bi bi-person-circle"></i>
+                </div>
+                <div class="profile-header-info">
+                    <h1 class="profile-name"><?php echo htmlspecialchars($firstName); ?></h1>
+                    <button class="btn-edit-profile">
+                        <i class="bi bi-pencil"></i> Editar Perfil
+                    </button>
+                </div>
             </div>
             <div class="profile-stats">
                 <div class="stat-item">
                     <span class="stat-value"><?php echo $completedTotal; ?></span>
-                    <span class="stat-label">Jogos Concluídos</span>
+                    <span class="stat-label">JOGOS CONCLUÍDOS</span>
                 </div>
                 <div class="stat-divider"></div>
                 <div class="stat-item">
                     <span class="stat-value"><?php echo $completedThisYear; ?></span>
-                    <span class="stat-label">Concluídos este Ano</span>
+                    <span class="stat-label">CONCLUÍDOS ESTE ANO</span>
                 </div>
             </div>
         </div>
+
+        <!-- Bio (se existir) -->
+        <?php if (!empty($user['bio'])): ?>
+            <div class="profile-bio">
+                <p class="bio-text"><?php echo htmlspecialchars($user['bio']); ?></p>
+            </div>
+        <?php endif; ?>
 
         <!-- Navegação de Abas -->
         <nav class="profile-tabs">
@@ -112,12 +114,13 @@ include 'includes/header.php';
             <button class="profile-tab" data-tab="activity">Atividade</button>
         </nav>
 
-        <!-- Conteúdo da Aba Perfil -->
-        <div class="profile-content">
-            
+        <!-- Conteúdo das Abas -->
+        
+        <!-- Aba: Perfil -->
+        <div class="tab-content active" data-tab-content="overview">
             <!-- Seção: 5 Jogos Favoritos -->
             <section class="favorite-games-section">
-                <h2 class="section-title">Jogos Favoritos</h2>
+                <h2 class="section-title">JOGOS FAVORITOS</h2>
                 <div class="favorite-games-grid">
                     <?php for ($i = 0; $i < 5; $i++): ?>
                         <?php if (isset($favoriteGames[$i])): ?>
@@ -137,7 +140,10 @@ include 'includes/header.php';
                     <?php endfor; ?>
                 </div>
             </section>
+        </div>
 
+        <!-- Aba: Jogos -->
+        <div class="tab-content" data-tab-content="games">
             <!-- Seção: Lista de Jogos -->
             <section class="games-list-section">
                 <h2 class="section-title">Jogos</h2>
@@ -228,7 +234,11 @@ include 'includes/header.php';
 
                 </div>
             </section>
+        </div>
 
+        <!-- Aba: Atividade -->
+        <div class="tab-content" data-tab-content="activity">
+            <p class="empty-message">Em breve: Linha do tempo de atividades</p>
         </div>
 
     </div>

@@ -712,23 +712,30 @@ document.head.appendChild(style);
 document.addEventListener('DOMContentLoaded', () => {
     // Profile main tabs (Perfil, Jogos, Atividade)
     const profileTabs = document.querySelectorAll('.profile-tab');
+    const tabContents = document.querySelectorAll('.tab-content');
     
-    profileTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const targetTab = tab.getAttribute('data-tab');
-            
-            // Remove active de todas as tabs
-            profileTabs.forEach(t => t.classList.remove('active'));
-            
-            // Adiciona active na tab clicada
-            tab.classList.add('active');
-            
-            // Por enquanto, apenas Perfil está implementado
-            if (targetTab !== 'overview') {
-                console.log(`Tab ${targetTab} em desenvolvimento`);
-            }
+    if (profileTabs.length > 0 && tabContents.length > 0) {
+        profileTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.getAttribute('data-tab');
+                
+                // Remove active de todas as tabs
+                profileTabs.forEach(t => t.classList.remove('active'));
+                
+                // Remove active de todos os conteúdos
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                // Adiciona active na tab clicada
+                tab.classList.add('active');
+                
+                // Adiciona active no conteúdo correspondente
+                const targetContent = document.querySelector(`[data-tab-content="${targetTab}"]`);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+            });
         });
-    });
+    }
     
     // Games filter tabs (Jogando, Jogado, Abandonado, Favorito)
     const filterTabs = document.querySelectorAll('.filter-tab');
