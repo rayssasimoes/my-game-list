@@ -13,6 +13,11 @@
                 <button type="button" class="btn-close" onclick="closeModal('loginModal')">&times;</button>
             </div>
             <div class="modal-body">
+                <!-- Mensagem de erro -->
+                <div id="login-error-message" class="alert alert-error" style="display: none;">
+                    <i class="bi bi-exclamation-circle"></i> <span id="login-error-text"></span>
+                </div>
+                
                 <form method="POST" action="index.php" id="loginForm">
                     <input type="hidden" name="action" value="login">
                     
@@ -35,9 +40,10 @@
                                 <span class="input-group-addon">
                                     <i class="bi bi-lock"></i>
                                 </span>
-                                <input id="login_password" class="form-control form-control-with-icon" type="password" name="password" placeholder="******" required autocomplete="current-password">
+                                <input id="login_password" class="form-control form-control-with-icon login-password-field" type="password" name="password" placeholder="******" required autocomplete="current-password">
                                 <i class="bi bi-eye password-toggle-icon password-icon-inactive" data-target="login_password"></i>
                             </div>
+                            <small class="form-text login-error-hint" style="display: none; color: #dc3545; margin-top: 0.35rem;">Senha incorreta</small>
                         </div>
                     </div>
 

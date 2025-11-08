@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
     $lastName = trim($_POST['last_name']);
     $email = trim($_POST['email']);
     $bio = trim($_POST['bio']);
-    $pronouns = $_POST['pronouns'];
+    $pronouns = isset($_POST['pronouns']) ? $_POST['pronouns'] : 'male';
     
     // Validações
     if (empty($username) || empty($firstName) || empty($email)) {
@@ -205,13 +205,15 @@ include 'includes/header.php';
                         type="text" 
                         id="username" 
                         name="username" 
-                        class="form-input" 
+                        class="form-input availability-check" 
                         value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>"
                         required
                         pattern="[a-zA-Z0-9_]{3,20}"
                         title="3-20 caracteres, apenas letras, números e underscore"
+                        data-check-type="username"
+                        data-current-value="<?php echo htmlspecialchars($user['username'] ?? ''); ?>"
                     >
-                    <small class="form-hint">3-20 caracteres, apenas letras, números e underscore</small>
+                    <small class="form-hint availability-hint" id="username-edit-hint">3-20 caracteres, apenas letras, números e underscore</small>
                 </div>
                 
                 <div class="form-row">
@@ -271,7 +273,6 @@ include 'includes/header.php';
                         <option value="female" <?php echo ($user['pronouns'] ?? '') === 'female' ? 'selected' : ''; ?>>Ela/Dela</option>
                         <option value="neutral" <?php echo ($user['pronouns'] ?? '') === 'neutral' ? 'selected' : ''; ?>>Prefiro Não Informar</option>
                     </select>
-                    <small class="form-hint">Usado para personalizar a saudação na página inicial</small>
                 </div>
                 
                 <button type="submit" name="save_profile" class="btn btn-primary">
@@ -296,7 +297,7 @@ include 'includes/header.php';
                 </div>
             <?php endif; ?>
             
-            <form method="POST" class="settings-form">
+            <form method="POST" class="settings-form" id="password-change-form">
                 <div class="form-group">
                     <label for="current_password">Senha Atual</label>
                     <div class="password-input-wrapper">
@@ -334,12 +335,14 @@ include 'includes/header.php';
                             type="password" 
                             id="confirm_password" 
                             name="confirm_password" 
-                            class="form-input password-input" 
+                            class="form-input password-input password-match-validation" 
                             required
                             minlength="6"
+                            data-match-target="new_password"
                         >
                         <i class="bi bi-eye password-toggle-icon password-icon-inactive" data-target="confirm_password"></i>
                     </div>
+                    <small class="form-hint password-match-hint" id="confirm_password_hint" style="display: none;">As senhas não coincidem</small>
                 </div>
                 
                 <button type="submit" name="save_password" class="btn btn-primary">

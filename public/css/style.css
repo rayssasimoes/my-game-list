@@ -1488,6 +1488,14 @@ body.modal-open {
     background-image: none !important;
 }
 
+/* Hint de erro do login */
+.login-error-hint {
+    display: none;
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 0.35rem;
+}
+
 .form-control-with-icon {
     padding-right: 3rem;
 }
@@ -2263,10 +2271,17 @@ body.modal-open {
         font-size: 1.1rem;
     }
 
-    /* Dropdown do usuário ajustado */
+    /* Dropdown do usuário - ESCONDER em mobile/tablet */
     .user-dropdown-menu {
-        right: 0;
-        width: 220px;
+        display: none !important; /* Remove dropdown em telas pequenas */
+    }
+    
+    .user-profile-wrapper:hover .user-dropdown-menu {
+        display: none !important; /* Garante que não apareça nem no hover */
+    }
+    
+    .user-dropdown-menu.show {
+        display: none !important; /* Garante que não apareça nem no click */
     }
 
     /* Busca mobile responsiva */
@@ -2326,10 +2341,9 @@ body.modal-open {
         justify-content: center; /* Centralizar botões no mobile */
     }
 
+    /* Dropdown removido em mobile extra pequeno também */
     .user-dropdown-menu {
-        right: 5px;
-        width: calc(100vw - 20px);
-        max-width: 280px;
+        display: none !important;
     }
 }
 
@@ -3773,14 +3787,51 @@ body.modal-open {
     color: #999;
     font-size: 0.8rem;
     margin-top: 0.35rem;
+    transition: color 0.3s ease;
 }
 
 .form-hint.invalid {
-    color: #ef4444;
+    color: #ef4444 !important;
 }
 
 .form-hint.valid {
-    color: #22c55e;
+    color: #22c55e !important;
+}
+
+/* Validação de campos em tempo real */
+.form-input.password-invalid,
+.form-input.availability-invalid {
+    border-color: #ef4444 !important;
+}
+
+.form-input.password-invalid:focus,
+.form-input.availability-invalid:focus {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.form-input.password-valid,
+.form-input.availability-valid {
+    border-color: #22c55e !important;
+}
+
+.form-input.password-valid:focus,
+.form-input.availability-valid:focus {
+    border-color: #22c55e !important;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1) !important;
+}
+
+.password-match-hint {
+    display: none;
+    color: #999;
+    font-size: 0.8rem;
+    margin-top: 0.35rem;
+    transition: color 0.3s ease;
+}
+
+.password-match-hint.invalid {
+    color: #ef4444 !important;
+    display: block !important;
 }
 
 /* Form Row (2 columns) */

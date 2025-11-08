@@ -21,7 +21,7 @@ function getUser() {
     }
     
     $db = getDB();
-    $stmt = $db->prepare("SELECT id, name, username, email FROM users WHERE id = ?");
+    $stmt = $db->prepare("SELECT id, name, username, email, first_name, last_name, bio, pronouns, avatar_path FROM users WHERE id = ?");
     $stmt->execute([$_SESSION['user_id']]);
     return $stmt->fetch();
 }
@@ -93,10 +93,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $password = $_POST['password'] ?? '';
         
         if (login($identifier, $password)) {
+            // Se for requisição AJAX, retorna JSON
+            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => true]);
+                exit;
+            }
             $_SESSION['success'] = 'Login realizado com sucesso!';
             header('Location: index.php');
             exit;
         } else {
+            // Se for requisição AJAX, retorna JSON com erro
+            if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'error' => 'Email/usuário ou senha incorretos']);
+                exit;
+            }
             $_SESSION['error'] = 'Email/usuário ou senha incorretos.';
         }
     }

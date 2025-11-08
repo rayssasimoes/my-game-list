@@ -38,7 +38,7 @@ include 'includes/header.php';
             $firstName = explode(' ', $user['name'])[0];
             
             // Definir saudação baseada nos pronomes
-            $greeting = 'Bem-vindo(a)'; // Padrão
+            $greeting = 'Boas-vindas'; // Padrão
             if (isset($user['pronouns'])) {
                 if ($user['pronouns'] === 'female') {
                     $greeting = 'Bem-vinda';

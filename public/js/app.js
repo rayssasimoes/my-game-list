@@ -44,21 +44,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ==== NAVBAR - DROPDOWN DO USUÁRIO ====
+// ==== NAVBAR - DROPDOWN DO USUÁRIO (APENAS DESKTOP) ====
 document.addEventListener('DOMContentLoaded', () => {
     const userAvatarBtn = document.getElementById('userAvatarBtn');
     const userDropdownMenu = document.getElementById('userDropdownMenu');
     
     if (userAvatarBtn && userDropdownMenu) {
         userAvatarBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            userDropdownMenu.classList.toggle('show');
+            // Só funciona em desktop (> 768px)
+            if (window.innerWidth > 768) {
+                e.stopPropagation();
+                userDropdownMenu.classList.toggle('show');
+            }
         });
         
-        // Fechar ao clicar fora
+        // Fechar ao clicar fora (apenas desktop)
         document.addEventListener('click', (e) => {
-            if (!userDropdownMenu.contains(e.target) && e.target !== userAvatarBtn) {
-                userDropdownMenu.classList.remove('show');
+            if (window.innerWidth > 768) {
+                if (!userDropdownMenu.contains(e.target) && e.target !== userAvatarBtn) {
+                    userDropdownMenu.classList.remove('show');
+                }
             }
         });
     }
@@ -171,7 +176,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Inicializar validação de disponibilidade (username/email)
     initAvailabilityCheck();
+    
+    // Inicializar login via AJAX
+    initLoginForm();
 });
+
+// ==== LOGIN FORM VIA AJAX ====
+function initLoginForm() {
+    const loginForm = document.getElementById('loginForm');
+    if (!loginForm) return;
+    
+    const errorMessage = document.getElementById('login-error-message');
+    const errorText = document.getElementById('login-error-text');
+    const passwordField = document.querySelector('.login-password-field');
+    const errorHint = document.querySelector('.login-error-hint');
+    
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Esconder mensagens de erro anteriores
+        if (errorMessage) errorMessage.style.display = 'none';
+        if (errorHint) errorHint.style.display = 'none';
+        if (passwordField) passwordField.classList.remove('is-invalid');
+        
+        const formData = new FormData(this);
+        
+        fetch('index.php', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Login bem-sucedido - recarrega a página
+                window.location.href = 'index.php';
+            } else {
+                // Mostra erro no modal sem fechar
+                if (passwordField) {
+                    passwordField.classList.add('is-invalid');
+                }
+                if (errorHint) {
+                    errorHint.textContent = data.error || 'Email/usuário ou senha incorretos';
+                    errorHint.style.display = 'block';
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            if (errorHint) {
+                errorHint.textContent = 'Erro ao processar login. Tente novamente.';
+                errorHint.style.display = 'block';
+            }
+        });
+    });
+}
 
 // ==== PASSWORD TOGGLE ====
 function initPasswordToggle() {
@@ -225,37 +286,48 @@ function initPasswordToggle() {
 
 // ==== PASSWORD VALIDATION (Real-time) - Problema 4 ====
 function initPasswordValidation() {
-    const passwordInput = document.getElementById('register_password');
-    if (!passwordInput) return;
-
-    const passwordHint = document.getElementById('password-hint');
-    let validationTimeout;
-
-    passwordInput.addEventListener('input', function() {
-        const value = this.value;
+    // Validar todos os campos com classe password-validation
+    const passwordInputs = document.querySelectorAll('.password-validation');
+    
+    passwordInputs.forEach(passwordInput => {
+        if (!passwordInput) return;
         
-        // Limpa timeout anterior
-        clearTimeout(validationTimeout);
-
-        // Se está vazio, remove validação
-        if (value.length === 0) {
-            this.classList.remove('password-invalid');
-            if (passwordHint) passwordHint.classList.remove('invalid');
-            return;
+        // Buscar o hint correspondente (pode ser password-hint ou new_password_hint)
+        let passwordHint = null;
+        if (passwordInput.id === 'register_password') {
+            passwordHint = document.getElementById('password-hint');
+        } else if (passwordInput.id === 'new_password') {
+            passwordHint = document.getElementById('new_password_hint');
         }
+        
+        let validationTimeout;
 
-        // Aguarda 400ms após parar de digitar (validação rápida)
-        validationTimeout = setTimeout(() => {
-            if (value.length < 6) {
-                // Senha muito curta
-                this.classList.add('password-invalid');
-                if (passwordHint) passwordHint.classList.add('invalid');
-            } else {
-                // Senha válida
+        passwordInput.addEventListener('input', function() {
+            const value = this.value;
+            
+            // Limpa timeout anterior
+            clearTimeout(validationTimeout);
+
+            // Se está vazio, remove validação
+            if (value.length === 0) {
                 this.classList.remove('password-invalid');
                 if (passwordHint) passwordHint.classList.remove('invalid');
+                return;
             }
-        }, 400); // Reduzido de 800ms para 400ms - consistência
+
+            // Aguarda 400ms após parar de digitar (validação rápida)
+            validationTimeout = setTimeout(() => {
+                if (value.length < 6) {
+                    // Senha muito curta
+                    this.classList.add('password-invalid');
+                    if (passwordHint) passwordHint.classList.add('invalid');
+                } else {
+                    // Senha válida
+                    this.classList.remove('password-invalid');
+                    if (passwordHint) passwordHint.classList.remove('invalid');
+                }
+            }, 400); // Reduzido de 800ms para 400ms - consistência
+        });
     });
 }
 
@@ -379,9 +451,10 @@ function fetchSearchResults(query, dropdown) {
         });
 }
 
-// ==== AVAILABILITY CHECK (Username/Email) ====
+// ==== AVAILABILITY CHECK (Username/Email) - APENAS MODAIS ====
 function initAvailabilityCheck() {
-    const availabilityInputs = document.querySelectorAll('.availability-check');
+    // Pega apenas os inputs dos modais, não do edit-profile
+    const availabilityInputs = document.querySelectorAll('.modal .availability-check');
 
     availabilityInputs.forEach(input => {
         const checkType = input.getAttribute('data-check-type'); // 'username' ou 'email'
@@ -848,6 +921,119 @@ document.addEventListener('DOMContentLoaded', () => {
                     targetContent.classList.add('active');
                 }
             });
+        });
+    }
+    
+    // ==== VALIDAÇÃO DE SENHA NO EDIT PROFILE ====
+    const passwordMatchInput = document.querySelector('.password-match-validation');
+    if (passwordMatchInput) {
+        const matchTarget = document.getElementById(passwordMatchInput.dataset.matchTarget);
+        const matchHint = document.getElementById('confirm_password_hint');
+        
+        function validatePasswordMatch() {
+            if (passwordMatchInput.value.length > 0) {
+                if (passwordMatchInput.value !== matchTarget.value) {
+                    passwordMatchInput.classList.add('password-invalid');
+                    passwordMatchInput.classList.remove('password-valid');
+                    if (matchHint) {
+                        matchHint.style.display = 'block';
+                        matchHint.classList.add('invalid');
+                        matchHint.classList.remove('valid');
+                    }
+                    return false;
+                } else {
+                    passwordMatchInput.classList.remove('password-invalid');
+                    passwordMatchInput.classList.add('password-valid');
+                    if (matchHint) {
+                        matchHint.style.display = 'none';
+                        matchHint.classList.remove('invalid');
+                    }
+                    return true;
+                }
+            }
+            return true;
+        }
+        
+        passwordMatchInput.addEventListener('input', validatePasswordMatch);
+        matchTarget.addEventListener('input', validatePasswordMatch);
+    }
+    
+    // ==== VERIFICAÇÃO DE USERNAME NO EDIT PROFILE ====
+    const usernameEditInput = document.querySelector('.edit-profile-page .availability-check[data-check-type="username"]');
+    if (usernameEditInput) {
+        const currentUsername = usernameEditInput.dataset.currentValue;
+        const usernameHint = document.getElementById('username-edit-hint');
+        let usernameTimeout;
+        
+        usernameEditInput.addEventListener('input', function() {
+            clearTimeout(usernameTimeout);
+            const value = this.value.trim();
+            
+            // Limpar todas as classes primeiro
+            this.classList.remove('availability-invalid', 'availability-valid');
+            
+            // Se o valor for igual ao username atual, não precisa verificar
+            if (value === currentUsername) {
+                if (usernameHint) {
+                    usernameHint.textContent = '3-20 caracteres, apenas letras, números e underscore';
+                    usernameHint.classList.remove('invalid', 'valid');
+                }
+                return;
+            }
+            
+            // Se vazio, não validar
+            if (value.length === 0) {
+                if (usernameHint) {
+                    usernameHint.textContent = '3-20 caracteres, apenas letras, números e underscore';
+                    usernameHint.classList.remove('invalid', 'valid');
+                }
+                return;
+            }
+            
+            // Validação de formato PRIMEIRO
+            const isValidFormat = value.length >= 3 && value.length <= 20 && /^[a-zA-Z0-9_]+$/.test(value);
+            
+            if (!isValidFormat) {
+                // FORMATO INVÁLIDO → VERMELHO
+                this.classList.add('availability-invalid');
+                this.classList.remove('availability-valid');
+                if (usernameHint) {
+                    usernameHint.textContent = 'Formato inválido: use 3-20 caracteres (letras, números e underscore)';
+                    usernameHint.classList.add('invalid');
+                    usernameHint.classList.remove('valid');
+                }
+                return; // Para aqui, não verifica no servidor
+            }
+            
+            // FORMATO VÁLIDO → Verificar disponibilidade no servidor
+            usernameTimeout = setTimeout(() => {
+                fetch(`includes/check-availability.php?type=username&value=${encodeURIComponent(value)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.available) {
+                        // USERNAME DISPONÍVEL → VERDE
+                        usernameEditInput.classList.remove('availability-invalid');
+                        usernameEditInput.classList.add('availability-valid');
+                        if (usernameHint) {
+                            usernameHint.textContent = 'Nome de usuário disponível';
+                            usernameHint.classList.remove('invalid');
+                            usernameHint.classList.add('valid');
+                        }
+                    } else {
+                        // USERNAME JÁ EXISTE → VERMELHO
+                        usernameEditInput.classList.add('availability-invalid');
+                        usernameEditInput.classList.remove('availability-valid');
+                        if (usernameHint) {
+                            usernameHint.textContent = 'Este nome de usuário já está em uso';
+                            usernameHint.classList.add('invalid');
+                            usernameHint.classList.remove('valid');
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao verificar username:', error);
+                });
+            }, 300);
         });
     }
 });
