@@ -46,95 +46,399 @@ a {
 }
 
 /* ===== NAVBAR ===== */
+/* =========================================
+   NAVBAR - Responsiva com 2 Estados
+   ========================================= */
+
 .navbar {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    background-color: #212529;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #1a1a1a;
     z-index: 1000;
+}
+
+/* Navbar Principal (Logo + Botões) */
+.navbar-main {
+    border-bottom: 1px solid #333;
 }
 
 .navbar-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1rem 0;
-    max-width: 1200px;
+    padding: 0.75rem 2rem;
+    max-width: 1400px;
     margin: 0 auto;
-    padding-left: 15px;
-    padding-right: 15px;
 }
 
+/* Logo (Extrema Esquerda) */
 .navbar-brand {
     font-size: 1.25rem;
     font-weight: 700;
-    color: #ffffff;
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
 
-.navbar-menu {
+.navbar-brand:hover {
+    color: #E93D82;
+}
+
+/* Lado Direito da Navbar */
+.navbar-right {
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
 }
 
-.nav-link {
-    color: rgba(255, 255, 255, 0.85);
+/* Botão Entrar (Visitante) */
+.btn-login {
     padding: 0.5rem 1rem;
-    transition: color 0.2s ease;
+    background: transparent;
+    border: none;
+    color: #999;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    font-family: 'Inter', sans-serif;
 }
 
-.nav-link:hover {
-    color: #ffffff;
+.btn-login:hover {
+    color: #fff;
 }
 
-/* ===== SEARCH BAR ===== */
+/* Botão Cadastrar (Visitante) - Destaque */
+.btn-register {
+    padding: 0.5rem 1.25rem;
+    background: #E93D82;
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.btn-register:hover {
+    background: #d6356f;
+    transform: translateY(-1px);
+}
+
+/* Botão de Notificações (Logado) */
+.btn-notifications {
+    position: relative;
+    padding: 0.5rem;
+    background: transparent;
+    border: none;
+    color: #999;
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.btn-notifications:hover {
+    color: #fff;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #E93D82;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.15rem 0.35rem;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+}
+
+/* Botão Avatar do Usuário (Logado) */
+.btn-user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #333;
+    border: 2px solid transparent;
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 0;
+}
+
+.btn-user-avatar:hover {
+    border-color: #E93D82;
+}
+
+.btn-user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-user-avatar i {
+    font-size: 1.5rem;
+    color: #666;
+}
+
+/* Dropdown do Usuário */
+.user-dropdown-menu {
+    position: absolute;
+    top: 60px;
+    right: 80px;
+    background: #242424;
+    border: 1px solid #333;
+    border-radius: 8px;
+    width: 240px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    display: none;
+    z-index: 1001;
+}
+
+.user-dropdown-menu.show {
+    display: block;
+}
+
+.user-dropdown-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+}
+
+.user-dropdown-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: #333;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.user-dropdown-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-dropdown-avatar i {
+    font-size: 2rem;
+    color: #666;
+}
+
+.user-dropdown-info {
+    flex: 1;
+    overflow: hidden;
+}
+
+.user-dropdown-name {
+    font-weight: 600;
+    color: #fff;
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-dropdown-username {
+    color: #999;
+    font-size: 0.85rem;
+}
+
+.user-dropdown-divider {
+    height: 1px;
+    background: #333;
+    margin: 0.5rem 0;
+}
+
+.user-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #ccc;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+}
+
+.user-dropdown-item:hover {
+    background: #2a2a2a;
+    color: #fff;
+}
+
+.user-dropdown-item i {
+    font-size: 1.1rem;
+    width: 20px;
+    text-align: center;
+}
+
+.user-dropdown-button {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Botão Hambúrguer (Apenas Mobile) */
+.btn-hamburger {
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: none; /* Oculto por padrão (desktop) */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    padding: 0;
+}
+
+.btn-hamburger span {
+    width: 24px;
+    height: 2px;
+    background: #999;
+    transition: all 0.3s ease;
+    border-radius: 2px;
+}
+
+.btn-hamburger:hover span {
+    background: #fff;
+}
+
+.btn-hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(7px, 7px);
+}
+
+.btn-hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.btn-hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* =========================================
+   BARRA DE BUSCA
+   Desktop: Dentro da navbar principal
+   Mobile: Linha separada abaixo
+   ========================================= */
+
+.navbar-search {
+    background-color: #1a1a1a;
+    border-bottom: 1px solid #333;
+    display: none; /* Oculta por padrão (desktop) */
+}
+
+.navbar-search .navbar-container {
+    padding: 0.75rem 2rem;
+}
+
 .search-container {
     position: relative;
     width: 400px;
     max-width: 100%;
 }
 
+/* Busca Desktop: Visível na navbar principal */
+.search-desktop {
+    display: block;
+}
+
+/* Desktop: Layout padrão */
+@media (min-width: 769px) {
+    body {
+        padding-top: 70px; /* Apenas altura da navbar principal */
+    }
+    
+    .navbar-container {
+        gap: 2rem;
+    }
+    
+    .navbar-right {
+        gap: 1.5rem;
+    }
+    
+    /* Ocultar busca mobile no desktop */
+    .navbar-search {
+        display: none;
+    }
+    
+    /* Ocultar hambúrguer no desktop */
+    .btn-hamburger {
+        display: none;
+    }
+    
+    /* Ocultar menu mobile no desktop */
+    .mobile-menu {
+        display: none;
+    }
+}
+
 .search-input {
     width: 100%;
-    padding: 0.5rem 2.5rem 0.5rem 1rem;
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 1rem;
+    padding: 0.65rem 3rem 0.65rem 2.75rem;
+    background-color: #242424;
+    border: 1px solid #333;
+    border-radius: 24px;
     color: #ffffff;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
 }
 
-/* Ícone X para limpar a busca (posicionado dentro do input) */
+.search-input:focus {
+    outline: none;
+    border-color: #E93D82;
+    background-color: #2a2a2a;
+}
+
+.search-input::placeholder {
+    color: #666;
+}
+
+/* Ícone de Lupa - SEMPRE VISÍVEL */
 .search-icon {
     position: absolute;
-    /* moved slightly left from the edge to appear more centered inside the input */
-    right: 1.25rem; /* was 8px */
+    left: 1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: rgba(255,255,255,0.6);
-    font-size: 1.05rem;
-    pointer-events: none; /* ícone decorativo quando visível */
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: #666;
+    font-size: 1.1rem;
+    pointer-events: none;
 }
 
-.search-icon.hidden {
-    display: none;
-}
-
+/* Ícone X para Limpar */
 .search-clear {
     position: absolute;
-    right: 8px;
+    right: 1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: rgba(255,255,255,0.65);
-    font-size: 1rem;
+    color: #666;
+    font-size: 1.25rem;
     cursor: pointer;
-    display: none; /* visível apenas quando houver texto */
+    display: none;
     padding: 0.25rem;
+    transition: color 0.3s ease;
+}
+
+.search-clear:hover {
+    color: #fff;
 }
 
 .search-clear.visible {
@@ -257,6 +561,99 @@ a {
 .search-dropdown::-webkit-scrollbar-thumb {
     background: #E93D82;
     border-radius: 4px;
+}
+
+/* =========================================
+   MENU MOBILE (Hambúrguer)
+   ========================================= */
+
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 280px;
+    height: 100vh;
+    background: #1a1a1a;
+    border-left: 1px solid #333;
+    z-index: 999;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+}
+
+.mobile-menu.active {
+    right: 0;
+}
+
+.mobile-menu-content {
+    padding: 80px 0 2rem 0;
+}
+
+.mobile-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 2rem;
+    color: #ccc;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.mobile-menu-item:hover {
+    background: #242424;
+    color: #fff;
+    border-left-color: #E93D82;
+}
+
+.mobile-menu-item i {
+    font-size: 1.25rem;
+    width: 24px;
+    text-align: center;
+}
+
+.mobile-menu-divider {
+    height: 1px;
+    background: #333;
+    margin: 0.5rem 1rem;
+}
+
+.mobile-menu-button {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+}
+
+.mobile-menu-highlight {
+    color: #E93D82;
+    font-weight: 600;
+}
+
+.mobile-menu-highlight:hover {
+    background: rgba(233, 61, 130, 0.1);
+    color: #E93D82;
+    border-left-color: #E93D82;
+}
+
+/* Overlay para fechar menu mobile */
+.mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 998;
+    display: none;
+    backdrop-filter: blur(2px);
+}
+
+.mobile-menu-overlay.active {
+    display: block;
 }
 
 .search-dropdown::-webkit-scrollbar-thumb:hover {
@@ -1729,19 +2126,74 @@ body.modal-open {
     margin: 0;
 }
 
-/* ===== RESPONSIVE ===== */
+/* =========================================
+   RESPONSIVE - NAVBAR
+   ========================================= */
+
 @media (max-width: 768px) {
     body {
-        padding-top: 60px;
+        padding-top: 128px; /* Navbar main + Navbar search */
     }
 
-    .navbar-menu {
-        gap: 1rem;
+    .navbar-container {
+        padding: 0.75rem 1rem;
     }
 
-    .search-container {
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+
+    /* Ocultar busca desktop no mobile */
+    .search-desktop {
+        display: none !important;
+    }
+
+    /* Mostrar busca mobile (linha separada) */
+    .navbar-search {
+        display: block !important;
+    }
+
+    /* Mostrar hambúrguer no mobile */
+    .btn-hamburger {
+        display: flex !important;
+    }
+
+    /* Ajustar botões de login/register no mobile */
+    .btn-login,
+    .btn-register {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.75rem;
+    }
+
+    /* Avatar e notificações menores */
+    .btn-user-avatar {
+        width: 32px;
+        height: 32px;
+    }
+
+    .btn-notifications {
+        font-size: 1.1rem;
+    }
+
+    /* Dropdown do usuário ajustado */
+    .user-dropdown-menu {
+        right: 10px;
+        width: 220px;
+    }
+
+    /* Busca mobile responsiva */
+    .navbar-search .navbar-container {
+        padding: 0.6rem 1rem;
+    }
+
+    .navbar-search .search-container {
+        max-width: 100%;
         width: 100%;
-        max-width: 300px;
+    }
+
+    .search-input {
+        font-size: 0.9rem;
+        padding: 0.6rem 2.75rem 0.6rem 2.5rem;
     }
 
     .search-dropdown {
@@ -1760,7 +2212,40 @@ body.modal-open {
     .search-result-name {
         font-size: 0.85rem;
     }
+}
 
+/* =========================================
+   RESPONSIVE - MOBILE EXTRA PEQUENO
+   ========================================= */
+
+@media (max-width: 480px) {
+    .btn-login {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.6rem;
+    }
+
+    .btn-register {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.75rem;
+    }
+
+    .navbar-brand {
+        font-size: 1rem;
+    }
+
+    .navbar-right {
+        gap: 0.5rem;
+    }
+
+    .user-dropdown-menu {
+        right: 5px;
+        width: calc(100vw - 20px);
+        max-width: 280px;
+    }
+}
+
+/* ===== RESPONSIVE GERAL ===== */
+@media (max-width: 768px) {
     /* TABLET: 6 cards confortáveis com scroll mínimo */
     .container {
         padding: 0 12px;

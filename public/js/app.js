@@ -3,6 +3,67 @@
    Modais, Dropdown e Alerts
    ========================================= */
 
+// ==== NAVBAR - MENU HAMBÚRGUER ====
+document.addEventListener('DOMContentLoaded', () => {
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    if (hamburgerBtn && mobileMenu) {
+        // Criar overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'mobile-menu-overlay';
+        document.body.appendChild(overlay);
+        
+        // Toggle menu
+        hamburgerBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            hamburgerBtn.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            overlay.classList.toggle('active');
+            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+        });
+        
+        // Fechar ao clicar no overlay
+        overlay.addEventListener('click', () => {
+            hamburgerBtn.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+        
+        // Fechar ao clicar em um link
+        const menuItems = mobileMenu.querySelectorAll('.mobile-menu-item');
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                hamburgerBtn.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+    }
+});
+
+// ==== NAVBAR - DROPDOWN DO USUÁRIO ====
+document.addEventListener('DOMContentLoaded', () => {
+    const userAvatarBtn = document.getElementById('userAvatarBtn');
+    const userDropdownMenu = document.getElementById('userDropdownMenu');
+    
+    if (userAvatarBtn && userDropdownMenu) {
+        userAvatarBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdownMenu.classList.toggle('show');
+        });
+        
+        // Fechar ao clicar fora
+        document.addEventListener('click', (e) => {
+            if (!userDropdownMenu.contains(e.target) && e.target !== userAvatarBtn) {
+                userDropdownMenu.classList.remove('show');
+            }
+        });
+    }
+});
+
 // ==== MODAL ====
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
@@ -200,89 +261,85 @@ function initPasswordValidation() {
 
 // ==== SEARCH AUTOCOMPLETE ====
 function initSearchAutocomplete() {
-    const searchInput = document.querySelector('.search-input');
-    if (!searchInput) return;
-
-    const searchContainer = document.querySelector('.search-container');
-    const searchClear = document.getElementById('searchClear');
-    const searchIcon = document.getElementById('searchIcon');
+    // Inicializar para todos os campos de busca (desktop e mobile)
+    const searchInputs = document.querySelectorAll('.search-input');
     
-    // Criar dropdown de sugestões
-    let dropdown = document.querySelector('.search-dropdown');
-    if (!dropdown) {
-        dropdown = document.createElement('div');
-        dropdown.className = 'search-dropdown';
-        searchContainer.appendChild(dropdown);
-    }
+    searchInputs.forEach(searchInput => {
+        if (!searchInput) return;
 
-    let debounceTimer;
-
-    // Evento de digitação
-    searchInput.addEventListener('input', function() {
-        const query = this.value.trim();
-
-        // Limpa o timer anterior
-        clearTimeout(debounceTimer);
-
-        // Se query vazia ou muito curta, esconde dropdown
-        if (query.length < 2) {
-            dropdown.classList.remove('show');
-            // esconder ícone de limpar quando vazio e mostrar lupa
-            if (searchClear) searchClear.classList.remove('visible');
-            if (searchIcon) searchIcon.classList.remove('hidden');
-            return;
+        const searchContainer = searchInput.closest('.search-container');
+        const searchClear = searchContainer.querySelector('.search-clear');
+        const searchIcon = searchContainer.querySelector('.search-icon');
+        
+        // Criar dropdown de sugestões
+        let dropdown = searchContainer.querySelector('.search-dropdown');
+        if (!dropdown) {
+            dropdown = document.createElement('div');
+            dropdown.className = 'search-dropdown';
+            searchContainer.appendChild(dropdown);
         }
 
-        // Debounce: espera 300ms após parar de digitar
-        debounceTimer = setTimeout(() => {
-            fetchSearchResults(query, dropdown);
-        }, 300);
-        // mostrar ícone de limpar quando tiver texto e esconder lupa
-        if (searchClear && searchIcon) {
-            if (this.value.length > 0) {
-                searchClear.classList.add('visible');
-                searchIcon.classList.add('hidden');
-            } else {
-                searchClear.classList.remove('visible');
-                searchIcon.classList.remove('hidden');
+        let debounceTimer;
+
+        // Evento de digitação
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+
+            // Limpa o timer anterior
+            clearTimeout(debounceTimer);
+
+            // Se query vazia ou muito curta, esconde dropdown
+            if (query.length < 2) {
+                dropdown.classList.remove('show');
+                // Mostrar ícone de limpar quando tiver texto
+                if (searchClear) searchClear.classList.remove('visible');
+                return;
             }
-        } else if (searchClear) {
-            if (this.value.length > 0) searchClear.classList.add('visible');
-            else searchClear.classList.remove('visible');
-        }
-    });
 
-    // Fechar dropdown ao clicar fora
-    document.addEventListener('click', function(e) {
-        if (!searchContainer.contains(e.target)) {
-            dropdown.classList.remove('show');
-            if (searchClear) searchClear.classList.remove('visible');
-            if (searchIcon) searchIcon.classList.remove('hidden');
-        }
-    });
-
-    // Fechar dropdown com ESC
-    searchInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            dropdown.classList.remove('show');
-            if (searchClear) searchClear.classList.remove('visible');
-            if (searchIcon) searchIcon.classList.remove('hidden');
-        }
-    });
-
-    // Clique no ícone X para limpar a busca
-    if (searchClear) {
-        searchClear.addEventListener('click', function(e) {
-            e.preventDefault();
-            searchInput.value = '';
-            searchInput.dispatchEvent(new Event('input'));
-            dropdown.classList.remove('show');
-            this.classList.remove('visible');
-            if (searchIcon) searchIcon.classList.remove('hidden');
-            // opcional: focar novamente no input
-            searchInput.focus();
+            // Debounce: espera 300ms após parar de digitar
+            debounceTimer = setTimeout(() => {
+                fetchSearchResults(query, dropdown);
+            }, 300);
+            
+            // Mostrar ícone de limpar quando tiver texto
+            if (searchClear) {
+                if (this.value.length > 0) {
+                    searchClear.classList.add('visible');
+                } else {
+                    searchClear.classList.remove('visible');
+                }
+            }
         });
-    }
+
+        // Fechar dropdown ao clicar fora
+        document.addEventListener('click', function(e) {
+            if (!searchContainer.contains(e.target)) {
+                dropdown.classList.remove('show');
+                if (searchClear) searchClear.classList.remove('visible');
+            }
+        });
+
+        // Fechar dropdown com ESC
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                dropdown.classList.remove('show');
+                if (searchClear) searchClear.classList.remove('visible');
+            }
+        });
+
+        // Clique no ícone X para limpar a busca
+        if (searchClear) {
+            searchClear.addEventListener('click', function(e) {
+                e.preventDefault();
+                searchInput.value = '';
+                searchInput.dispatchEvent(new Event('input'));
+                dropdown.classList.remove('show');
+                this.classList.remove('visible');
+                // opcional: focar novamente no input
+                searchInput.focus();
+            });
+        }
+    });
 }
 
 function fetchSearchResults(query, dropdown) {

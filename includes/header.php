@@ -10,65 +10,150 @@
 <body>
     <!-- Navbar -->
     <nav class="navbar">
-        <div class="navbar-container">
-            <!-- Logo -->
-            <a class="navbar-brand" href="index.php">
-                MyGameList
-            </a>
+        <div class="navbar-main">
+            <div class="navbar-container">
+                <!-- Logo (Extrema Esquerda) -->
+                <a class="navbar-brand" href="index.php">
+                    MyGameList
+                </a>
 
-            <!-- Search Bar -->
-            <div class="search-container">
-                <form action="index.php" method="GET">
-                    <input type="hidden" name="page" value="search">
-                    <input class="search-input" type="search" name="q" placeholder="Buscar jogos..." value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>">
-                    <!-- Ícone de lupa (visível por padrão) -->
-                    <i class="bi bi-search search-icon" id="searchIcon" aria-hidden="true"></i>
-                    <!-- Ícone para limpar a busca (aparece quando há texto) -->
-                    <i class="bi bi-x search-clear" id="searchClear" role="button" title="Limpar busca" aria-hidden="true"></i>
-                </form>
-            </div>
+                <!-- Busca (Desktop) -->
+                <div class="search-container search-desktop">
+                    <form action="index.php" method="GET">
+                        <input type="hidden" name="page" value="search">
+                        <i class="bi bi-search search-icon" id="searchIcon"></i>
+                        <input class="search-input" type="search" name="q" placeholder="Buscar jogos..." value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>">
+                        <i class="bi bi-x search-clear" id="searchClear" role="button" title="Limpar busca"></i>
+                    </form>
+                </div>
 
-            <!-- Right Side Of Navbar -->
-            <div class="navbar-menu">
-                <!-- Link principal: Jogos -->
-                <a class="nav-link" href="index.php">Jogos</a>
-                
-                <!-- Authentication Links -->
-                <?php if (!isLoggedIn()): ?>
-                    <a class="nav-link" href="#" onclick="openModal('loginModal')">Entrar</a>
-                    <a class="nav-link" href="#" onclick="openModal('registerModal')">Criar Conta</a>
-                <?php else: ?>
-                    <?php $user = getUser(); ?>
-                    <!-- Ícone de notificação -->
-                    <a class="nav-link notification-icon" href="#" title="Notificações">
-                        <i class="bi bi-bell"></i>
-                    </a>
-                    
-                    <div class="nav-item dropdown">
-                        <a class="dropdown-toggle" href="#" role="button">
-                            <span class="user-name"><?php echo htmlspecialchars($user['username']); ?></span>
-                            <i class="bi bi-chevron-down"></i>
-                        </a>
-
-                        <div class="dropdown-menu">
-                            <a class="dropdown-item" href="index.php?page=profile">
-                                <i class="bi bi-person"></i> Perfil
+                <!-- Right Side -->
+                <div class="navbar-right">
+                    <?php if (!isLoggedIn()): ?>
+                        <!-- Visitante: Botões de Autenticação -->
+                        <button class="btn-login" onclick="openModal('loginModal')">Entrar</button>
+                        <button class="btn-register" onclick="openModal('registerModal')">Cadastrar</button>
+                        <!-- Menu Hambúrguer Mobile -->
+                        <button class="btn-hamburger" id="hamburgerBtn">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+                    <?php else: ?>
+                        <!-- Logado: Notificações + Avatar -->
+                        <?php $user = getUser(); ?>
+                        
+                        <!-- Ícone de Notificações -->
+                        <button class="btn-notifications" title="Notificações">
+                            <i class="bi bi-bell"></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                        
+                        <!-- Avatar do Usuário -->
+                        <button class="btn-user-avatar" id="userAvatarBtn">
+                            <?php if (!empty($user['avatar_path'])): ?>
+                                <img src="<?php echo htmlspecialchars($user['avatar_path']); ?>" alt="Avatar">
+                            <?php else: ?>
+                                <i class="bi bi-person-circle"></i>
+                            <?php endif; ?>
+                        </button>
+                        
+                        <!-- Menu Hambúrguer Mobile -->
+                        <button class="btn-hamburger" id="hamburgerBtn">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </button>
+                        
+                        <!-- Dropdown Menu do Usuário -->
+                        <div class="user-dropdown-menu" id="userDropdownMenu">
+                            <div class="user-dropdown-header">
+                                <div class="user-dropdown-avatar">
+                                    <?php if (!empty($user['avatar_path'])): ?>
+                                        <img src="<?php echo htmlspecialchars($user['avatar_path']); ?>" alt="Avatar">
+                                    <?php else: ?>
+                                        <i class="bi bi-person-circle"></i>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="user-dropdown-info">
+                                    <div class="user-dropdown-name"><?php echo htmlspecialchars($user['first_name'] ?? $user['name']); ?></div>
+                                    <div class="user-dropdown-username">@<?php echo htmlspecialchars($user['username']); ?></div>
+                                </div>
+                            </div>
+                            <div class="user-dropdown-divider"></div>
+                            <a class="user-dropdown-item" href="index.php?page=profile">
+                                <i class="bi bi-person"></i> Ver Perfil
                             </a>
-                            <a class="dropdown-item" href="index.php?page=my-list">
+                            <a class="user-dropdown-item" href="index.php?page=my-list">
                                 <i class="bi bi-list-ul"></i> Minha Lista
                             </a>
-                            <a class="dropdown-item" href="index.php?page=settings">
+                            <a class="user-dropdown-item" href="index.php?page=edit-profile">
                                 <i class="bi bi-gear"></i> Configurações
                             </a>
-                            <div class="dropdown-divider"></div>
-                            <form method="POST" class="dropdown-form">
+                            <div class="user-dropdown-divider"></div>
+                            <form method="POST" style="margin: 0;">
                                 <input type="hidden" name="action" value="logout">
-                                <button type="submit" class="dropdown-item dropdown-button">
+                                <button type="submit" class="user-dropdown-item user-dropdown-button">
                                     <i class="bi bi-box-arrow-right"></i> Sair
                                 </button>
                             </form>
                         </div>
-                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Barra de Busca (Mobile - Nova Linha) -->
+        <div class="navbar-search">
+            <div class="navbar-container">
+                <div class="search-container">
+                    <form action="index.php" method="GET">
+                        <input type="hidden" name="page" value="search">
+                        <i class="bi bi-search search-icon"></i>
+                        <input class="search-input" type="search" name="q" placeholder="Buscar jogos..." value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>">
+                        <i class="bi bi-x search-clear search-clear-mobile" role="button" title="Limpar busca"></i>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Menu Mobile (Hambúrguer) -->
+        <div class="mobile-menu" id="mobileMenu">
+            <div class="mobile-menu-content">
+                <a class="mobile-menu-item" href="index.php">
+                    <i class="bi bi-house"></i> Início
+                </a>
+                <a class="mobile-menu-item" href="index.php?page=search">
+                    <i class="bi bi-search"></i> Buscar
+                </a>
+                
+                <?php if (isLoggedIn()): ?>
+                    <!-- Menu para usuários logados -->
+                    <a class="mobile-menu-item" href="index.php?page=my-list">
+                        <i class="bi bi-list-ul"></i> Minha Lista
+                    </a>
+                    <a class="mobile-menu-item" href="index.php?page=profile">
+                        <i class="bi bi-person"></i> Perfil
+                    </a>
+                    <a class="mobile-menu-item" href="index.php?page=edit-profile">
+                        <i class="bi bi-gear"></i> Configurações
+                    </a>
+                    <div class="mobile-menu-divider"></div>
+                    <form method="POST" style="margin: 0;">
+                        <input type="hidden" name="action" value="logout">
+                        <button type="submit" class="mobile-menu-item mobile-menu-button">
+                            <i class="bi bi-box-arrow-right"></i> Sair
+                        </button>
+                    </form>
+                <?php else: ?>
+                    <!-- Menu para visitantes -->
+                    <div class="mobile-menu-divider"></div>
+                    <a class="mobile-menu-item" href="#" onclick="openModal('loginModal'); return false;">
+                        <i class="bi bi-box-arrow-in-right"></i> Entrar
+                    </a>
+                    <a class="mobile-menu-item mobile-menu-highlight" href="#" onclick="openModal('registerModal'); return false;">
+                        <i class="bi bi-person-plus"></i> Criar Conta
+                    </a>
                 <?php endif; ?>
             </div>
         </div>
