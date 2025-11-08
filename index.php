@@ -16,7 +16,8 @@ $validPages = [
     'home',
     'my-list',
     'search',
-    'profile'
+    'profile',
+    'edit-profile'
 ];
 
 // Verificar se a página existe

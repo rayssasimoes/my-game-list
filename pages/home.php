@@ -36,10 +36,22 @@ include 'includes/header.php';
             $user = getUser(); 
             // Pegar apenas o primeiro nome
             $firstName = explode(' ', $user['name'])[0];
+            
+            // Definir saudação baseada nos pronomes
+            $greeting = 'Bem-vindo(a)'; // Padrão
+            if (isset($user['pronouns'])) {
+                if ($user['pronouns'] === 'female') {
+                    $greeting = 'Bem-vinda';
+                } elseif ($user['pronouns'] === 'male') {
+                    $greeting = 'Bem-vindo';
+                } elseif ($user['pronouns'] === 'neutral') {
+                    $greeting = 'Boas-vindas';
+                }
+            }
         ?>
         <div class="hero-section">
             <h1 class="hero-title">
-                Bem-vindo (a) de volta, <span class="hero-name"><?php echo htmlspecialchars($firstName); ?></span>. Organize, descubra e jogue!
+                <?php echo $greeting; ?> de volta, <span class="hero-name"><?php echo htmlspecialchars($firstName); ?></span>. Organize, descubra e jogue!
             </h1>
         </div>
     <?php else: ?>

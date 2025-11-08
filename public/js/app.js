@@ -712,9 +712,9 @@ document.head.appendChild(style);
 document.addEventListener('DOMContentLoaded', () => {
     // Profile main tabs (Perfil, Jogos, Atividade)
     const profileTabs = document.querySelectorAll('.profile-tab');
-    const tabContents = document.querySelectorAll('.tab-content');
+    const profileTabContents = document.querySelectorAll('.profile-page .tab-content');
     
-    if (profileTabs.length > 0 && tabContents.length > 0) {
+    if (profileTabs.length > 0 && profileTabContents.length > 0) {
         profileTabs.forEach(tab => {
             tab.addEventListener('click', () => {
                 const targetTab = tab.getAttribute('data-tab');
@@ -723,13 +723,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 profileTabs.forEach(t => t.classList.remove('active'));
                 
                 // Remove active de todos os conteúdos
-                tabContents.forEach(content => content.classList.remove('active'));
+                profileTabContents.forEach(content => content.classList.remove('active'));
                 
                 // Adiciona active na tab clicada
                 tab.classList.add('active');
                 
                 // Adiciona active no conteúdo correspondente
-                const targetContent = document.querySelector(`[data-tab-content="${targetTab}"]`);
+                const targetContent = document.querySelector(`.profile-page [data-tab-content="${targetTab}"]`);
                 if (targetContent) {
                     targetContent.classList.add('active');
                 }
@@ -757,6 +757,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Adiciona active no conteúdo correspondente
                 const targetContent = document.querySelector(`[data-filter-content="${targetFilter}"]`);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+            });
+        });
+    }
+});
+
+// ==== EDIT PROFILE PAGE - TABS ====
+document.addEventListener('DOMContentLoaded', () => {
+    // Settings tabs (Perfil, Autenticação, Avatar, Notificações)
+    const settingsTabs = document.querySelectorAll('.settings-tab');
+    const settingsTabContents = document.querySelectorAll('.edit-profile-page .tab-content');
+    
+    if (settingsTabs.length > 0 && settingsTabContents.length > 0) {
+        settingsTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const targetTab = tab.getAttribute('data-tab');
+                
+                // Remove active de todas as tabs
+                settingsTabs.forEach(t => t.classList.remove('active'));
+                
+                // Remove active de todos os conteúdos
+                settingsTabContents.forEach(content => content.classList.remove('active'));
+                
+                // Adiciona active na tab clicada
+                tab.classList.add('active');
+                
+                // Adiciona active no conteúdo correspondente
+                const targetContent = document.querySelector(`.edit-profile-page [data-tab-content="${targetTab}"]`);
                 if (targetContent) {
                     targetContent.classList.add('active');
                 }

@@ -82,9 +82,9 @@ include 'includes/header.php';
                 </div>
                 <div class="profile-header-info">
                     <h1 class="profile-name"><?php echo htmlspecialchars($firstName); ?></h1>
-                    <button class="btn-edit-profile">
+                    <a href="index.php?page=edit-profile" class="btn-edit-profile">
                         <i class="bi bi-pencil"></i> Editar Perfil
-                    </button>
+                    </a>
                 </div>
             </div>
             <div class="profile-stats">
