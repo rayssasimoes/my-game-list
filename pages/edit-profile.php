@@ -10,9 +10,13 @@ $db = getDB();
 
 // Pegar informações do usuário
 $userId = $_SESSION['user_id'];
+
+// Buscar usuário
 $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$userId]);
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
+$user = $stmt->fetch();
+
+// As datas agora vêm automaticamente do getUser() via header.php
 
 // Processar formulário da aba Perfil
 $profileSuccess = false;
@@ -58,7 +62,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
                     // Recarregar dados do usuário
                     $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
                     $stmt->execute([$userId]);
-                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $user = $stmt->fetch();
+                    
+                    // Buscar datas em query separada
+                    $stmtDates = $db->prepare("SELECT DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at, DATE_FORMAT(updated_at, '%Y-%m-%d %H:%i:%s') as updated_at FROM users WHERE id = ?");
+                    $stmtDates->execute([$userId]);
+                    $dates = $stmtDates->fetch();
+                    if ($dates && isset($dates['created_at'])) {
+                        $user['created_at'] = $dates['created_at'];
+                        $user['updated_at'] = $dates['updated_at'];
+                    }
+                    
                     // Atualizar nome na sessão
                     $_SESSION['user_name'] = $user['first_name'];
                 } else {
@@ -152,7 +166,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_avatar'])) {
                     // Recarregar dados do usuário
                     $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
                     $stmt->execute([$userId]);
-                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $user = $stmt->fetch();
+                    
+                    // Buscar datas em query separada
+                    $stmtDates = $db->prepare("SELECT DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') as created_at, DATE_FORMAT(updated_at, '%Y-%m-%d %H:%i:%s') as updated_at FROM users WHERE id = ?");
+                    $stmtDates->execute([$userId]);
+                    $dates = $stmtDates->fetch();
+                    if ($dates && isset($dates['created_at'])) {
+                        $user['created_at'] = $dates['created_at'];
+                        $user['updated_at'] = $dates['updated_at'];
+                    }
                 } else {
                     $avatarError = 'Erro ao salvar avatar no banco de dados.';
                 }
@@ -279,6 +302,51 @@ include 'includes/header.php';
                     <i class="bi bi-check-circle"></i> Salvar Alterações
                 </button>
             </form>
+            
+            <!-- Informações da Conta -->
+            <div class="account-info-section">
+                <h3 class="section-subtitle-small">Informações da Conta</h3>
+                <div class="account-info-grid">
+                    <div class="account-info-item">
+                        <span class="account-info-label">
+                            <i class="bi bi-calendar-plus"></i> Membro desde
+                        </span>
+                        <span class="account-info-value">
+                            <?php 
+                            if (isset($user['created_at']) && $user['created_at']) {
+                                try {
+                                    $createdDate = new DateTime($user['created_at']);
+                                    echo $createdDate->format('d/m/Y \à\s H:i');
+                                } catch (Exception $e) {
+                                    echo 'Não disponível';
+                                }
+                            } else {
+                                echo 'Não disponível';
+                            }
+                            ?>
+                        </span>
+                    </div>
+                    <div class="account-info-item">
+                        <span class="account-info-label">
+                            <i class="bi bi-clock-history"></i> Última atualização
+                        </span>
+                        <span class="account-info-value">
+                            <?php 
+                            if (isset($user['updated_at']) && $user['updated_at']) {
+                                try {
+                                    $updatedDate = new DateTime($user['updated_at']);
+                                    echo $updatedDate->format('d/m/Y \à\s H:i');
+                                } catch (Exception $e) {
+                                    echo 'Não disponível';
+                                }
+                            } else {
+                                echo 'Não disponível';
+                            }
+                            ?>
+                        </span>
+                    </div>
+                </div>
+            </div>
         </div>
         
         <!-- Conteúdo da Aba Autenticação -->
@@ -372,7 +440,9 @@ include 'includes/header.php';
                     <?php if (!empty($user['avatar_path'])): ?>
                         <img src="<?php echo htmlspecialchars($user['avatar_path']); ?>" alt="Avatar atual">
                     <?php else: ?>
-                        <i class="bi bi-person-circle"></i>
+                        <svg class="default-avatar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                        </svg>
                     <?php endif; ?>
                 </div>
                 <div class="avatar-info">

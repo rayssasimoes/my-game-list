@@ -87,7 +87,9 @@
                                     <?php if (!empty($user['avatar_path'])): ?>
                                         <img src="<?php echo htmlspecialchars($user['avatar_path']); ?>" alt="Avatar">
                                     <?php else: ?>
-                                        <i class="bi bi-person-circle"></i>
+                                        <svg class="default-avatar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                        </svg>
                                     <?php endif; ?>
                                 </div>
                                 <span class="user-profile-name"><?php echo htmlspecialchars($user['username']); ?></span>
@@ -101,7 +103,9 @@
                                     <?php if (!empty($user['avatar_path'])): ?>
                                         <img src="<?php echo htmlspecialchars($user['avatar_path']); ?>" alt="Avatar">
                                     <?php else: ?>
-                                        <i class="bi bi-person-circle"></i>
+                                        <svg class="default-avatar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                        </svg>
                                     <?php endif; ?>
                                 </div>
                                 <div class="user-dropdown-info">

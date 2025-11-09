@@ -241,6 +241,12 @@
     color: #666;
 }
 
+.avatar-preview .default-avatar-icon {
+    width: 120px;
+    height: 120px;
+    color: #9ca3af;
+}
+
 .avatar-info p {
     margin: 0 0 0.35rem 0;
     color: #fff;
@@ -250,6 +256,60 @@
 .avatar-info .text-muted {
     color: #999;
     font-size: 0.85rem;
+}
+
+/* Account Info Section */
+.account-info-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #333;
+}
+
+.section-subtitle-small {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.account-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.account-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: #242424;
+    border: 1px solid #333;
+    border-radius: 8px;
+}
+
+.account-info-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.account-info-label i {
+    font-size: 1rem;
+    color: #E93D82;
+}
+
+.account-info-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
 }
 
 /* File Input */
@@ -332,6 +392,56 @@
     font-size: 1.1rem;
 }
 
+/* Account Info Section */
+.account-info-section {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid #333;
+}
+
+.section-subtitle-small {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 1.25rem;
+}
+
+.account-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.account-info-item {
+    background: #1e1e1e;
+    padding: 1.25rem;
+    border-radius: 8px;
+    border: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.account-info-label {
+    font-size: 0.85rem;
+    color: #999;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.account-info-label i {
+    font-size: 1rem;
+    color: #E93D82;
+}
+
+.account-info-value {
+    font-size: 1rem;
+    color: #ffffff;
+    font-weight: 600;
+}
+
 /* Responsive - Edit Profile */
 @media (max-width: 768px) {
     .edit-profile-page .container {
@@ -371,6 +481,11 @@
     }
     
     .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .account-info-grid {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
