@@ -1,7 +1,4 @@
-/* =========================================
-   MY GAME LIST - JAVASCRIPT
-   Modais, Dropdown e Alerts
-   ========================================= */
+/* my-game-list: scripts principais (modais, navbar, autocomplete, etc.) */
 
 // ==== NAVBAR - MENU HAMBÚRGUER ====
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,23 +6,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileMenu = document.getElementById('mobileMenu');
     
     if (hamburgerBtn && mobileMenu) {
-        // Move the mobile menu out of the <nav> into document.body so it isn't
-        // trapped inside the navbar's stacking context (nav has z-index:1000).
-        // This allows the menu (z-index:1003) to stack above the overlay (z-index:1002).
-        if (mobileMenu.parentElement !== document.body) {
-            document.body.appendChild(mobileMenu);
-        }
-        // Criar overlay
+        // criar overlay e garantir ordem no DOM
         const overlay = document.createElement('div');
         overlay.className = 'mobile-menu-overlay';
+        overlay.style.zIndex = '10999';
         document.body.appendChild(overlay);
+
+        // mover menu para body e forçar z-index alto para sobrepor overlay
+        if (mobileMenu.parentElement !== document.body) {
+            document.body.appendChild(mobileMenu);
+        } else {
+            document.body.appendChild(mobileMenu);
+        }
+        mobileMenu.style.zIndex = '11000';
         
-        // Toggle menu
+    // Alternar menu
         hamburgerBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             hamburgerBtn.classList.toggle('active');
             mobileMenu.classList.toggle('active');
             overlay.classList.toggle('active');
+            // alterna estado do menu
             document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
         });
         
@@ -47,6 +48,52 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.body.style.overflow = '';
             });
         });
+
+        // Após abrir o menu, verificar quem está no topo do menu (elementFromPoint)
+        // e, se necessário, aplicar um fallback automático que agrupa overlay+menu
+        // dentro de um root com z-index extremamente alto para contornar quirks.
+        function checkAndFixStacking() {
+            try {
+                const rect = mobileMenu.getBoundingClientRect();
+                const midX = Math.round(rect.left + rect.width / 2);
+                const midY = Math.round(rect.top + rect.height / 2);
+                const topEl = document.elementFromPoint(midX, midY);
+                if (topEl && (topEl === overlay || !mobileMenu.contains(topEl))) {
+                    // Aplicar fallback: criar um root que contém overlay e menu
+                    let root = document.getElementById('mobile-menu-root');
+                    if (!root) {
+                        root = document.createElement('div');
+                        root.id = 'mobile-menu-root';
+                        root.style.position = 'fixed';
+                        root.style.top = '0';
+                        root.style.left = '0';
+                        root.style.right = '0';
+                        root.style.bottom = '0';
+                        // z-index alto (perto do máximo) para sobrepor qualquer contexto
+                        root.style.zIndex = '2147483646';
+                        document.body.appendChild(root);
+                    }
+
+                    // Ajustar overlay e menu dentro do root
+                    overlay.style.position = 'fixed';
+                    overlay.style.zIndex = '2147483646';
+                    mobileMenu.style.zIndex = '2147483647';
+                    root.appendChild(overlay);
+                    root.appendChild(mobileMenu);
+                }
+            } catch (err) {
+                // falha silenciada: não bloqueia a UX
+            }
+        }
+
+        // Chamar verificação ao abrir o menu (pequeno debounce para aguardar o render)
+        hamburgerBtn.addEventListener('click', () => {
+            setTimeout(() => {
+                if (mobileMenu.classList.contains('active')) {
+                    checkAndFixStacking();
+                }
+            }, 60);
+        });
     }
 });
 
@@ -63,6 +110,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 userDropdownMenu.classList.toggle('show');
             }
         });
+        
+        // Mobile/Tablet: clique no avatar leva diretamente ao perfil
+        // Implementado separadamente para não interferir no dropdown de desktop
+        const mobileAvatarClick = (e) => {
+            if (window.matchMedia('(max-width: 768px)').matches) {
+                const profileLinkEl = document.querySelector('#mobileMenu .mobile-menu-item[href*="page=profile"], .user-dropdown-item[href*="page=profile"]');
+                const profileHref = profileLinkEl ? profileLinkEl.getAttribute('href') : 'index.php?page=profile';
+                window.location.assign(profileHref);
+            }
+        };
+        userAvatarBtn.addEventListener('click', mobileAvatarClick);
         
         // Fechar ao clicar fora (apenas desktop)
         document.addEventListener('click', (e) => {
@@ -171,19 +229,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 5000);
     });
 
-    // Inicializar autocomplete de busca
     initSearchAutocomplete();
-
-    // Inicializar toggle de senha
     initPasswordToggle();
-
-    // Inicializar validação de senha em tempo real
     initPasswordValidation();
-
-    // Inicializar validação de disponibilidade (username/email)
     initAvailabilityCheck();
-    
-    // Inicializar login via AJAX
     initLoginForm();
 });
 
@@ -217,10 +266,10 @@ function initLoginForm() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Login bem-sucedido - recarrega a página
+                // sucesso -> recarrega
                 window.location.href = 'index.php';
             } else {
-                // Mostra erro no modal sem fechar
+                // mostra erro no modal sem fechar
                 if (passwordField) {
                     passwordField.classList.add('is-invalid');
                 }
@@ -231,7 +280,6 @@ function initLoginForm() {
             }
         })
         .catch(error => {
-            console.error('Erro:', error);
             if (errorHint) {
                 errorHint.textContent = 'Erro ao processar login. Tente novamente.';
                 errorHint.style.display = 'block';
@@ -250,7 +298,7 @@ function initPasswordToggle() {
 
         if (!passwordInput) return;
 
-        // Monitora mudanças no input para ativar/desativar ícone
+    // ativa/desativa ícone conforme input
         passwordInput.addEventListener('input', function() {
             if (this.value.length > 0) {
                 // Ativa o ícone
@@ -267,12 +315,12 @@ function initPasswordToggle() {
             }
         });
 
-        // Clique no ícone para alternar visibilidade - CORRIGIDO problema 3
+    // alterna visibilidade
         icon.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
             
-            // Só funciona se tiver texto
+            // só funciona se houver texto
             if (!this.classList.contains('password-icon-active')) return;
 
             if (passwordInput.type === 'password') {
@@ -308,7 +356,7 @@ function initPasswordValidation() {
         
         let validationTimeout;
 
-        passwordInput.addEventListener('input', function() {
+            passwordInput.addEventListener('input', function() {
             const value = this.value;
             
             // Limpa timeout anterior
@@ -332,7 +380,7 @@ function initPasswordValidation() {
                     this.classList.remove('password-invalid');
                     if (passwordHint) passwordHint.classList.remove('invalid');
                 }
-            }, 400); // Reduzido de 800ms para 400ms - consistência
+            }, 400);
         });
     });
 }
@@ -357,7 +405,7 @@ function initSearchAutocomplete() {
             searchContainer.appendChild(dropdown);
         }
 
-        let debounceTimer;
+    let debounceTimer;
 
         // Evento de digitação
         searchInput.addEventListener('input', function() {
@@ -374,7 +422,7 @@ function initSearchAutocomplete() {
                 return;
             }
 
-            // Debounce: espera 300ms após parar de digitar
+            // debounce 300ms
             debounceTimer = setTimeout(() => {
                 fetchSearchResults(query, dropdown);
             }, 300);
@@ -389,7 +437,7 @@ function initSearchAutocomplete() {
             }
         });
 
-        // Fechar dropdown ao clicar fora
+        // fechar dropdown ao clicar fora
         document.addEventListener('click', function(e) {
             if (!searchContainer.contains(e.target)) {
                 dropdown.classList.remove('show');
@@ -405,7 +453,7 @@ function initSearchAutocomplete() {
             }
         });
 
-        // Clique no ícone X para limpar a busca
+        // limpar busca
         if (searchClear) {
             searchClear.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -418,6 +466,44 @@ function initSearchAutocomplete() {
             });
         }
     });
+}
+
+// Função de diagnóstico: identifica ancestrais que criam stacking contexts
+function analyzeStackingContexts(menuEl, overlayEl) {
+    // Retorna um relatório simples sobre ancestrais que criam stacking contexts
+    function createsStackingContext(el) {
+        if (!el || el.nodeType !== 1) return false;
+        const s = window.getComputedStyle(el);
+        if (s.position === 'fixed' || s.position === 'sticky') return true;
+        if (s.zIndex !== 'auto' && s.position !== 'static') return true;
+        if (s.opacity && parseFloat(s.opacity) < 1) return true;
+        if (s.transform && s.transform !== 'none') return true;
+        if (s.filter && s.filter !== 'none') return true;
+        if (s.perspective && s.perspective !== 'none') return true;
+        if (s.isolation && s.isolation === 'isolate') return true;
+        if (s.willChange && s.willChange !== 'auto') return true;
+        return false;
+    }
+
+    const report = [];
+    [menuEl, overlayEl].forEach(el => {
+        const info = {
+            id: el.id || '(sem id)',
+            tag: el.tagName,
+            computedZ: window.getComputedStyle(el).zIndex || '(auto)'
+        };
+        report.push(`Elemento: ${info.tag}#${info.id} - z-index: ${info.computedZ}`);
+        let parent = el.parentElement;
+        while (parent) {
+            const sc = createsStackingContext(parent);
+            const ps = window.getComputedStyle(parent);
+            if (sc) {
+                report.push(`STACKING CONTEXT: ${parent.tagName}#${parent.id || '(sem id)'} - position:${ps.position} z-index:${ps.zIndex}`);
+            }
+            parent = parent.parentElement;
+        }
+    });
+    return report;
 }
 
 function fetchSearchResults(query, dropdown) {
@@ -452,7 +538,7 @@ function fetchSearchResults(query, dropdown) {
             dropdown.innerHTML = html;
         })
         .catch(error => {
-            console.error('Erro na busca:', error);
+            // falha na busca - notificamos visualmente
             dropdown.innerHTML = '<div class="search-error">Erro ao buscar jogos</div>';
         });
 }
@@ -846,7 +932,7 @@ document.head.appendChild(style);
 
 // ==== PROFILE PAGE - TABS ====
 document.addEventListener('DOMContentLoaded', () => {
-    // Profile main tabs (Perfil, Jogos, Atividade)
+    // Abas principais do perfil (Perfil, Jogos, Atividade)
     const profileTabs = document.querySelectorAll('.profile-tab');
     const profileTabContents = document.querySelectorAll('.profile-page .tab-content');
     
@@ -873,7 +959,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Games filter tabs (Jogando, Jogado, Abandonado, Favorito)
+    // Abas de filtro de jogos (Jogando, Jogado, Abandonado, Favorito)
     const filterTabs = document.querySelectorAll('.filter-tab');
     const filterContents = document.querySelectorAll('.filter-content');
     
@@ -903,7 +989,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ==== EDIT PROFILE PAGE - TABS ====
 document.addEventListener('DOMContentLoaded', () => {
-    // Settings tabs (Perfil, Autenticação, Avatar, Notificações)
+    // Abas de configurações (Perfil, Autenticação, Avatar, Notificações)
     const settingsTabs = document.querySelectorAll('.settings-tab');
     const settingsTabContents = document.querySelectorAll('.edit-profile-page .tab-content');
     
