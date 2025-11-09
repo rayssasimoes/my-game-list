@@ -237,10 +237,6 @@
     color: rgba(255,255,255,0.85);
 }
 
-.footer-inner {
-    /* usa a .container para larguras, apenas ajuste interno */
-}
-
 .footer-top {
     display: flex;
     justify-content: space-between;
@@ -271,16 +267,12 @@
     margin: 0;
 }
 
-.footer-links li a {
+/* Texto não-clicável para protótipo visual */
+.footer-link-text {
     color: rgba(255,255,255,0.65);
-    text-decoration: none;
     font-size: 0.95rem;
 }
 
-.footer-links li a:hover {
-    color: #ffffff;
-    text-decoration: underline;
-}
 
 .footer-divider {
     border: 0;

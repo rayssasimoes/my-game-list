@@ -9,6 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileMenu = document.getElementById('mobileMenu');
     
     if (hamburgerBtn && mobileMenu) {
+        // Move the mobile menu out of the <nav> into document.body so it isn't
+        // trapped inside the navbar's stacking context (nav has z-index:1000).
+        // This allows the menu (z-index:1003) to stack above the overlay (z-index:1002).
+        if (mobileMenu.parentElement !== document.body) {
+            document.body.appendChild(mobileMenu);
+        }
         // Criar overlay
         const overlay = document.createElement('div');
         overlay.className = 'mobile-menu-overlay';

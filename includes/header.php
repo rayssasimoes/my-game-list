@@ -164,9 +164,7 @@
                 <a class="mobile-menu-item" href="index.php">
                     <i class="bi bi-house"></i> Início
                 </a>
-                <a class="mobile-menu-item" href="index.php?page=search">
-                    <i class="bi bi-search"></i> Buscar
-                </a>
+                <!-- search removed from mobile menu (now lives in separate mobile search bar) -->
                 
                 <?php if (isLoggedIn()): ?>
                     <!-- Menu para usuários logados -->

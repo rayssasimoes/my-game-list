@@ -556,7 +556,7 @@
     height: 100vh;
     background: #1a1a1a;
     border-left: 1px solid #333;
-    z-index: 999;
+    z-index: 1003; /* ensure the slide-in menu sits above the overlay */
     transition: right 0.3s ease;
     overflow-y: auto;
 }
@@ -576,7 +576,6 @@
     padding: 1rem 2rem;
     color: #ccc;
     text-decoration: none;
-    font-size: 1rem;
     font-weight: 500;
     transition: all 0.3s ease;
     border-left: 3px solid transparent;
@@ -628,7 +627,7 @@
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.7);
-    z-index: 998;
+    z-index: 1002; /* should sit above navbar but below the slide-in menu */
     display: none;
     backdrop-filter: blur(2px);
 }
