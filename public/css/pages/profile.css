@@ -1,0 +1,458 @@
+/* ===== PROFILE PAGE ===== */
+.profile-page {
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.profile-container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+/* Profile Header - Compact */
+.profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #333;
+    margin-bottom: 0.75rem;
+}
+
+.profile-header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.profile-avatar {
+    font-size: 3.5rem;
+    color: #666;
+    line-height: 1;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-avatar i {
+    display: block;
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-header-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.profile-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.btn-edit-profile {
+    padding: 0.4rem 0.85rem;
+    background: transparent;
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: #999;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: 'Inter', sans-serif;
+    text-decoration: none;
+}
+
+.btn-edit-profile:hover {
+    background: #2a2a2a;
+    border-color: #555;
+    color: #fff;
+}
+
+/* Profile Bio */
+.profile-bio {
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #333;
+    margin-bottom: 1.5rem;
+}
+
+.bio-text {
+    color: #999;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Profile Stats - Horizontal Layout */
+.profile-stats {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.stat-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    text-align: left;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.7rem;
+    color: #999;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.stat-divider {
+    width: 1px;
+    height: 25px;
+    background: #333;
+}
+
+/* Profile Tabs - Compact */
+.profile-tabs {
+    display: flex;
+    gap: 0.25rem;
+    border-bottom: 1px solid #333;
+    margin-bottom: 2rem;
+}
+
+.profile-tab {
+    padding: 0.75rem 1.25rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #999;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.profile-tab:hover {
+    color: #fff;
+}
+
+.profile-tab.active {
+    color: #fff;
+    border-bottom-color: #E93D82;
+}
+
+/* Tab Content */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Section Titles - Compact */
+.section-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0 0 1rem 0;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+/* Favorite Games Section - Compact */
+.favorite-games-section {
+    margin-bottom: 2.5rem;
+}
+
+.favorite-games-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.75rem;
+}
+
+.favorite-game-card {
+    aspect-ratio: 3 / 4;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    background: #242424;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+}
+
+.favorite-game-card:hover {
+    transform: translateY(-4px);
+    border-color: #444;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.favorite-game-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.favorite-game-card.empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1a1a1a;
+    border: 2px dashed #333;
+}
+
+.btn-add-favorite {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #242424;
+    border: 1px solid #444;
+    color: #666;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-add-favorite:hover {
+    background: #2a2a2a;
+    border-color: #E93D82;
+    color: #E93D82;
+    transform: scale(1.1);
+}
+
+/* Games List Section - Compact */
+.games-list-section {
+    margin-bottom: 2rem;
+}
+
+.games-filter-tabs {
+    display: flex;
+    gap: 0.25rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #333;
+}
+
+.filter-tab {
+    padding: 0.6rem 1rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: #999;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+}
+
+.filter-tab:hover {
+    color: #fff;
+}
+
+.filter-tab.active {
+    color: #fff;
+    border-bottom-color: #667eea;
+}
+
+.games-filter-content {
+    position: relative;
+}
+
+.filter-content {
+    display: none;
+}
+
+.filter-content.active {
+    display: block;
+}
+
+.games-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+}
+
+.game-list-card {
+    aspect-ratio: 3 / 4;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    background: #242424;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+}
+
+.game-list-card:hover {
+    transform: translateY(-4px);
+    border-color: #444;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.game-list-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.game-rating-badge {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #fbbf24;
+}
+
+.game-rating-badge i {
+    font-size: 0.75rem;
+}
+
+.empty-message {
+    text-align: center;
+    color: #666;
+    font-size: 1rem;
+    padding: 3rem 0;
+}
+
+/* Responsive - Profile */
+@media (max-width: 768px) {
+    .profile-container {
+        padding: 0 1rem;
+    }
+    
+    .profile-page {
+        padding: 1.5rem 0;
+    }
+    
+    .profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding-bottom: 0.75rem;
+        margin-bottom: 1rem;
+    }
+    
+    .profile-header-left {
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+    }
+    
+    .profile-header-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .profile-name {
+        font-size: 1.25rem;
+    }
+    
+    .profile-avatar {
+        font-size: 2.5rem;
+        width: 70px;
+        height: 70px;
+    }
+    
+    .profile-bio {
+        max-width: 100%;
+        padding: 0.5rem 0;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+    
+    .profile-stats {
+        justify-content: flex-start;
+        gap: 1rem;
+        width: 100%;
+        flex-wrap: wrap;
+    }
+    
+    .stat-item {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .stat-value {
+        font-size: 1.25rem;
+    }
+    
+    .stat-label {
+        font-size: 0.65rem;
+    }
+    
+    .profile-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+    
+    .profile-tabs::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .favorite-games-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .games-list-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-avatar {
+        font-size: 2rem;
+        width: 60px;
+        height: 60px;
+    }
+    
+    .profile-name {
+        font-size: 1.1rem;
+    }
+    
+    .favorite-games-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .games-list-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

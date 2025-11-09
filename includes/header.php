@@ -5,7 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $pageTitle ?? 'MyGameList'; ?></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="public/css/style.css">
+    
+    <!-- CSS Global (sempre carregado) -->
+    <link rel="stylesheet" href="public/css/global.css">
+    
+    <!-- CSS Components (sempre carregado) -->
+    <link rel="stylesheet" href="public/css/components/navbar.css">
+    <link rel="stylesheet" href="public/css/components/modals.css">
+    <link rel="stylesheet" href="public/css/components/buttons.css">
+    <link rel="stylesheet" href="public/css/components/forms.css">
+    <link rel="stylesheet" href="public/css/components/common.css">
+    
+    <!-- CSS específico da página -->
+    <?php
+    $currentPage = $_GET['page'] ?? 'home';
+    
+    // Carregar CSS específico da página
+    if ($currentPage === 'profile'):
+    ?>
+        <link rel="stylesheet" href="public/css/pages/profile.css">
+    <?php elseif ($currentPage === 'edit-profile'): ?>
+        <link rel="stylesheet" href="public/css/pages/edit-profile.css">
+    <?php elseif ($currentPage === 'search'): ?>
+        <link rel="stylesheet" href="public/css/pages/search.css">
+    <?php elseif ($currentPage === 'my-list' || $currentPage === 'games'): ?>
+        <link rel="stylesheet" href="public/css/pages/games.css">
+    <?php else: ?>
+        <!-- Home e outras páginas carregam games.css por padrão -->
+        <link rel="stylesheet" href="public/css/pages/games.css">
+    <?php endif; ?>
+    
+    <!-- CSS Responsivo (sempre por último) -->
+    <link rel="stylesheet" href="public/css/responsive.css">
 </head>
 <body>
     <!-- Navbar -->

@@ -137,14 +137,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_avatar'])) {
             if (move_uploaded_file($file['tmp_name'], $uploadPath)) {
                 // Deletar avatar antigo se existir
                 if (!empty($user['avatar_path'])) {
-                    $oldAvatarPath = __DIR__ . '/../public' . $user['avatar_path'];
+                    $oldAvatarPath = __DIR__ . '/../' . $user['avatar_path'];
                     if (file_exists($oldAvatarPath)) {
                         unlink($oldAvatarPath);
                     }
                 }
                 
-                // Salvar caminho no banco (relativo à raiz do site)
-                $avatarPath = '/public/uploads/avatars/' . $newFileName;
+                // Salvar caminho no banco (relativo à raiz do projeto)
+                $avatarPath = 'public/uploads/avatars/' . $newFileName;
                 $stmt = $db->prepare("UPDATE users SET avatar_path = ? WHERE id = ?");
                 
                 if ($stmt->execute([$avatarPath, $userId])) {

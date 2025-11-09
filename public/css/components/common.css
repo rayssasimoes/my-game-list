@@ -1,0 +1,260 @@
+/* ===== HERO SECTION (USUÁRIO LOGADO) ===== */
+.hero-section {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.hero-title {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 25px;
+    font-weight: 300;
+    color: #708090;
+    margin: 0;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+}
+
+.hero-name {
+    font-weight: 700;
+    color: #ffffff;
+}
+
+/* Welcome message compacta (não logado) */
+.welcome-message-compact {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.welcome-title {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 25px;
+    font-weight: 300;
+    color: #708090;
+    margin: 0;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+}
+
+.welcome-name-app {
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.welcome-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.welcome-message {
+    margin-bottom: 3rem;
+    text-align: center;
+}
+
+.display-5 {
+    font-size: 2.5rem;
+}
+
+.fw-bold {
+    font-weight: 700;
+}
+
+.text-white {
+    color: #ffffff;
+}
+
+.mb-3 {
+    margin-bottom: 1rem;
+}
+
+.mb-5 {
+    margin-bottom: 3rem;
+}
+
+.lead {
+    font-size: 1.25rem;
+}
+
+.text-white-50 {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* ===== SECTION HEADER ===== */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.section-header-with-arrow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 0;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: #ffffff;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 12px;
+}
+
+/* Linha rosa abaixo do título */
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: #E93D82;
+    border-radius: 2px;
+}
+
+/* Scroll Indicator (Seta à direita) */
+.scroll-indicator {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1.5rem;
+    font-weight: 300;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    line-height: 1;
+}
+
+.scroll-indicator:hover {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ===== DISCOVERY SECTION (TRÊS COLUNAS ESTILO BACKLOGGD) ===== */
+.discovery-section {
+    margin-top: 3rem;
+    margin-bottom: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.discovery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.discovery-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.discovery-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+    margin: 0;
+}
+
+.discovery-see-more {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    line-height: 1;
+}
+
+.discovery-see-more:hover {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.discovery-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.discovery-item {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    padding: 0.35rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+
+.discovery-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.discovery-cover {
+    width: 40px;
+    height: 53px;
+    object-fit: cover;
+    border-radius: 0.25rem;
+    flex-shrink: 0;
+}
+
+.discovery-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.discovery-game-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #ffffff;
+    margin-bottom: 0.2rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    line-height: 1.3;
+}
+
+.discovery-meta {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 400;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+    background-color: #212529;
+    padding: 2rem 0;
+    margin-top: auto;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.footer-copyright {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.875rem;
+}
+
+.footer-brand {
+    color: #E93D82;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.footer-brand:hover {
+    color: #d62a6e;
+}

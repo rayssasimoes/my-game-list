@@ -1,0 +1,577 @@
+/* ===== GAMES GRID & CARDS ===== */
+.games-grid {
+    display: flex;
+    overflow-x: auto;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox - oculta scrollbar */
+    -ms-overflow-style: none; /* IE/Edge - oculta scrollbar */
+}
+
+/* Oculta scrollbar em Chrome, Safari, Opera */
+.games-grid::-webkit-scrollbar {
+    display: none;
+}
+
+.game-card {
+    position: relative;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    flex: 0 0 180px; /* Largura fixa para scroll horizontal */
+    width: 180px;
+}
+
+.game-card-image {
+    width: 100%;
+    height: 240px; /* Altura reduzida para ficar compacto */
+    object-fit: cover;
+    display: block;
+    transition: filter 0.3s ease;
+}
+
+/* Escurece a imagem no hover */
+.game-card:hover .game-card-image {
+    filter: brightness(0.3);
+}
+
+.game-card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+    padding: 1rem 0.75rem;
+    transition: opacity 0.3s ease;
+}
+
+/* Esconde overlay padrão no hover */
+.game-card:hover .game-card-overlay {
+    opacity: 0;
+}
+
+/* Novo overlay que aparece no hover */
+.game-card-hover-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    padding: 1rem;
+    background: linear-gradient(180deg, 
+        rgba(0, 0, 0, 0) 0%, 
+        rgba(0, 0, 0, 0.3) 40%, 
+        rgba(0, 0, 0, 0.75) 100%);
+}
+
+.game-card:hover .game-card-hover-content {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Quick Actions - Estilo Backloggd */
+.quick-actions {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: center;
+    align-items: flex-end;
+    padding-bottom: 0.25rem;
+    margin-top: auto;
+}
+
+.quick-action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+    color: #fff;
+    font-size: 1.1rem;
+}
+
+.quick-action-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: translateY(-2px);
+}
+
+.quick-action-btn:active {
+    transform: translateY(0);
+}
+
+/* Botões com ações específicas - cores no hover */
+.quick-action-btn[data-action="completed"]:hover {
+    background: rgba(34, 197, 94, 0.9);
+    border-color: #22c55e;
+}
+
+.quick-action-btn[data-action="playing"]:hover {
+    background: rgba(59, 130, 246, 0.9);
+    border-color: #3b82f6;
+}
+
+.quick-action-btn[data-action="want_to_play"]:hover {
+    background: rgba(233, 61, 130, 0.9);
+    border-color: #E93D82;
+}
+
+.quick-action-btn[data-action="more"]:hover {
+    background: rgba(156, 163, 175, 0.9);
+    border-color: #9ca3af;
+}
+
+/* Estado ativo (já adicionado à lista) */
+.quick-action-btn.active {
+    background: rgba(233, 61, 130, 0.9);
+    border-color: #E93D82;
+}
+
+.quick-action-btn.active[data-action="completed"] {
+    background: rgba(34, 197, 94, 0.9);
+    border-color: #22c55e;
+}
+
+.quick-action-btn.active[data-action="playing"] {
+    background: rgba(59, 130, 246, 0.9);
+    border-color: #3b82f6;
+}
+
+.quick-action-btn.active[data-action="want_to_play"] {
+    background: rgba(233, 61, 130, 0.9);
+    border-color: #E93D82;
+}
+
+.game-card-hover-title {
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-align: center;
+    padding: 0 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    line-height: 1.3;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    word-break: break-word;
+    margin-bottom: auto;
+}
+
+.game-card-title {
+    color: #ffffff;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+.game-card-status {
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    opacity: 0.9;
+    color: #ffffff;
+}
+
+.game-card-rating {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    color: #ffffff;
+    margin: 0;
+}
+
+/* ===== MY LIST PAGE ===== */
+
+/* Hero Section */
+.mylist-hero {
+    text-align: center;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+}
+
+.mylist-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #E93D82 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+}
+
+.mylist-subtitle {
+    color: #999;
+    font-size: 1rem;
+}
+
+.total-games-text {
+    color: #666;
+    font-size: 0.95rem;
+    font-weight: 400;
+    margin-top: 0.5rem;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: #242424;
+    border-radius: 12px;
+    padding: 1.5rem;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    border-color: #444;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+}
+
+.stat-icon.completed {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.stat-icon.playing {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.stat-icon.want-to-play {
+    background: rgba(233, 61, 130, 0.1);
+    color: #E93D82;
+}
+
+.stat-icon.dropped {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Filter Tabs */
+.filter-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.filter-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.filter-tab {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.filter-tab:hover {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.filter-tab.active {
+    color: #ffffff;
+    border-bottom-color: #667eea;
+}
+
+.filter-tab-count {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.15rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+}
+
+/* Games Grid for My List */
+.mylist-games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.empty-state i {
+    font-size: 4rem;
+    color: rgba(255, 255, 255, 0.2);
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn-browse {
+    background: #E93D82;
+    color: #fff;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-browse:hover {
+    background: #d62a6e;
+    transform: translateY(-2px);
+}
+
+/* ===== RESPONSIVE - GAMES ===== */
+@media (max-width: 768px) {
+    /* TABLET: 6 cards confortáveis com scroll mínimo */
+    .games-grid {
+        display: flex;
+        overflow-x: auto;
+        gap: 1rem;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .games-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .game-card {
+        flex: 0 0 110px;
+        max-width: 110px;
+    }
+
+    .game-card-image {
+        height: 165px; /* Proporção 2:3 mantida */
+    }
+
+    .game-card-title {
+        font-size: 0.8rem;
+    }
+
+    .game-card-overlay {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .game-card-hover-title {
+        font-size: 0.9rem;
+    }
+
+    .quick-action-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 0.95rem;
+    }
+
+    .quick-actions {
+        gap: 0.4rem;
+    }
+
+    /* My List responsive - tablet */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .stat-card {
+        padding: 1.25rem;
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1.25rem;
+    }
+
+    .stat-value {
+        font-size: 1.75rem;
+    }
+
+    .stat-label {
+        font-size: 0.8rem;
+    }
+
+    .mylist-games-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 1rem;
+    }
+
+    .filter-tab {
+        padding: 0.65rem 1.25rem;
+        font-size: 0.9rem;
+    }
+
+    .mylist-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-card {
+        flex: 0 0 100px;
+        max-width: 100px;
+    }
+
+    .game-card-image {
+        height: 150px;
+    }
+
+    .game-card-title {
+        font-size: 0.75rem;
+    }
+
+    .quick-action-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.85rem;
+    }
+
+    /* My List responsive - mobile */
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+
+    .stat-card {
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .stat-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1rem;
+        margin-bottom: 0;
+    }
+
+    .stat-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .stat-value {
+        font-size: 1.5rem;
+        margin-bottom: 0;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+    }
+
+    .mylist-games-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .filter-tab {
+        padding: 0.55rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .filter-tab-count {
+        font-size: 0.75rem;
+        padding: 0.1rem 0.4rem;
+    }
+
+    .mylist-title {
+        font-size: 1.75rem;
+    }
+
+    .mylist-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .empty-state {
+        padding: 3rem 1rem;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+    }
+
+    .empty-state h3 {
+        font-size: 1.25rem;
+    }
+
+    .empty-state p {
+        font-size: 0.85rem;
+    }
+}

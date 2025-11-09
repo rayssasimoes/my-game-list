@@ -1,0 +1,389 @@
+/* ===== MODAL ===== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw; /* Previne scroll horizontal */
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1050;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+}
+
+.modal.show {
+    display: flex;
+}
+
+/* Prevenir scroll do body quando modal aberto */
+body.modal-open {
+    overflow-y: scroll;
+    position: fixed;
+    width: 100%;
+}
+
+.modal-dialog {
+    width: 90%;
+    max-width: 500px;
+    margin: 1rem auto;
+}
+
+.modal-content {
+    background-color: #2d2d2d;
+    border-radius: 24px; /* Bem arredondado */
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    overflow: hidden; /* Garante que o conteúdo respeita o border-radius */
+}
+
+.modal-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center; /* Centraliza o título */
+    align-items: center;
+    position: relative; /* Para posicionar o botão de fechar */
+    border-radius: 24px 24px 0 0; /* Arredonda o topo do header */
+}
+
+.modal-title {
+    color: #ffffff;
+    font-size: 1.25rem;
+    margin: 0;
+    text-align: center; /* Centraliza o texto */
+}
+
+.btn-close {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    opacity: 0.7;
+    position: absolute; /* Posiciona absolutamente */
+    right: 1.5rem; /* Alinha à direita */
+    top: 50%; /* Centraliza verticalmente */
+    transform: translateY(-50%); /* Ajuste fino do centro */
+}
+
+.btn-close:hover {
+    opacity: 1;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-body form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Garante que os filhos ocupem toda a largura */
+}
+
+/* ===== MODAL DARK THEME (Auth Modals) ===== */
+.modal-dark-theme {
+    background-color: #212529;
+    color: #fff;
+}
+
+.modal-dark-theme .modal-header {
+    background-color: #1a1a1a;
+    border-radius: 24px 24px 0 0; /* Mantém o arredondamento */
+}
+
+.modal-dark-theme .modal-header .modal-title {
+    color: #fff;
+    font-weight: 600;
+    text-align: center; /* Centraliza o título */
+}
+
+.modal-dark-theme .modal-header .modal-title i {
+    color: #E93D82;
+}
+
+.modal-dark-theme .modal-body {
+    background-color: #212529;
+    padding: 1.5rem;
+}
+
+.modal-dark-theme .modal-body p {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 1rem;
+}
+
+/* Form controls dentro do modal dark */
+.modal-dark-theme .form-control {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.modal-dark-theme .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.modal-dark-theme .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: #E93D82;
+    color: #fff;
+    box-shadow: 0 0 0 0.25rem rgba(233, 61, 130, 0.25);
+    outline: none;
+}
+
+.modal-dark-theme .form-control.is-invalid {
+    border-color: #dc3545;
+}
+
+.modal-dark-theme .form-control.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+.modal-dark-theme .form-label {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+.modal-dark-theme .form-check-input {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.modal-dark-theme .form-check-input:checked {
+    background-color: #E93D82;
+    border-color: #E93D82;
+}
+
+.modal-dark-theme .form-check-input:focus {
+    border-color: #E93D82;
+    box-shadow: 0 0 0 0.25rem rgba(233, 61, 130, 0.25);
+}
+
+.modal-dark-theme .form-check-label {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.modal-dark-theme .btn-link {
+    color: #E93D82;
+}
+
+.modal-dark-theme .btn-link:hover {
+    color: #d62a6e;
+}
+
+.modal-dark-theme a:not(.btn) {
+    color: #E93D82;
+}
+
+.modal-dark-theme a:not(.btn):hover {
+    color: #d62a6e;
+}
+
+.modal-dark-theme .form-text {
+    color: rgba(255, 255, 255, 0.6);
+    transition: color 0.3s ease;
+}
+
+.modal-dark-theme .form-text.text-danger {
+    color: #dc3545 !important;
+}
+
+/* Validação de senha em tempo real */
+.modal-dark-theme .form-control.password-invalid {
+    border-color: #dc3545 !important;
+}
+
+.modal-dark-theme .form-control.password-invalid:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.modal-dark-theme .password-hint {
+    transition: color 0.3s ease;
+}
+
+.modal-dark-theme .password-hint.invalid {
+    color: #dc3545 !important;
+}
+
+/* Validação de disponibilidade (username/email) */
+.modal-dark-theme .form-control.availability-invalid {
+    border-color: #dc3545 !important;
+}
+
+.modal-dark-theme .form-control.availability-invalid:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.modal-dark-theme .form-control.availability-valid {
+    border-color: #28a745 !important;
+}
+
+.modal-dark-theme .form-control.availability-valid:focus {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25) !important;
+}
+
+.modal-dark-theme .availability-hint {
+    transition: color 0.3s ease;
+}
+
+.modal-dark-theme .availability-hint.invalid {
+    color: #dc3545 !important;
+    display: block !important;
+}
+
+.modal-dark-theme .availability-hint.valid {
+    color: #28a745 !important;
+    display: block !important;
+}
+
+.modal-dark-theme .invalid-feedback {
+    color: #dc3545;
+}
+
+.modal-dark-theme .modal-footer {
+    background-color: #212529;
+}
+
+.modal-dark-theme .modal-footer .btn-secondary {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.modal-dark-theme .modal-footer .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.modal-dark-theme .modal-footer .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.modal-dark-theme .modal-footer .btn-danger:hover {
+    background-color: #bb2d3b;
+    border-color: #b02a37;
+}
+
+/* ===== PASSWORD TOGGLE ===== */
+.password-wrapper {
+    position: relative;
+}
+
+.password-container {
+    position: relative;
+}
+
+.password-container .form-control-with-icon.is-invalid {
+    background-image: none !important;
+    padding-right: 3rem !important;
+}
+
+.password-container .form-control-with-icon {
+    background-image: none !important;
+}
+
+/* Hint de erro do login */
+.login-error-hint {
+    display: none;
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 0.35rem;
+}
+
+.form-control-with-icon {
+    padding-right: 3rem;
+}
+
+.password-toggle-icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0.75rem;
+    font-size: 1.2rem;
+    z-index: 10;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+/* Estado inativo do ícone (senha vazia) */
+.password-icon-inactive {
+    color: #AAAAAA !important;
+    opacity: 0.5;
+    cursor: default !important;
+    pointer-events: none;
+}
+
+/* Estado ativo do ícone (senha preenchida) */
+.password-icon-active {
+    opacity: 1;
+    cursor: pointer !important;
+    pointer-events: auto;
+}
+
+/* Quando a senha está VISÍVEL (olho aberto -> usar bi-eye-slash) */
+.password-icon-active.bi-eye-slash {
+    color: #212121 !important;
+}
+
+/* Quando a senha está OCULTA mas tem texto (olho fechado -> usar bi-eye) */
+.password-icon-active.bi-eye {
+    color: #AAAAAA !important;
+}
+
+.password-icon-active:hover {
+    opacity: 0.8;
+}
+
+/* ===== INPUT GROUP (com ícone à esquerda) ===== */
+.input-group {
+    display: flex;
+    width: 100%;
+    position: relative;
+}
+
+.input-group-addon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.75rem;
+    font-size: 1.1rem;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-right: 0;
+    border-radius: 1rem 0 0 1rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.input-group-addon i {
+    line-height: 1;
+}
+
+.input-group .form-control {
+    border-radius: 0 1rem 1rem 0;
+    flex: 1;
+}
+
+/* Quando o input ganha foco, muda a cor do addon */
+.input-group .form-control:focus ~ .input-group-addon,
+.input-group .form-control:focus + .input-group-addon {
+    border-color: #E93D82;
+    color: #E93D82;
+}
+
+/* Ajustes para modal dark theme */
+.modal-dark-theme .input-group-addon {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.modal-dark-theme .input-group .form-control:focus ~ .input-group-addon,
+.modal-dark-theme .input-group .form-control:focus + .input-group-addon {
+    border-color: #E93D82;
+    color: #E93D82;
+}

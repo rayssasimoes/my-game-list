@@ -1,0 +1,346 @@
+/* =========================================
+   RESPONSIVE - MEDIA QUERIES GLOBAIS
+   ========================================= */
+
+/* ===== DESKTOP (min-width: 769px) ===== */
+@media (min-width: 769px) {
+    body {
+        padding-top: 70px; /* Apenas altura da navbar principal */
+    }
+    
+    .navbar-container {
+        gap: 2rem;
+    }
+    
+    .navbar-right {
+        gap: 1.5rem;
+    }
+    
+    /* Ocultar busca mobile no desktop */
+    .navbar-search {
+        display: none;
+    }
+    
+    /* Ocultar hambúrguer no desktop */
+    .btn-hamburger {
+        display: none;
+    }
+    
+    /* Ocultar menu mobile no desktop */
+    .mobile-menu {
+        display: none;
+    }
+}
+
+/* ===== TABLET & MOBILE (max-width: 768px) ===== */
+@media (max-width: 768px) {
+    body {
+        padding-top: 128px; /* Navbar main + Navbar search */
+    }
+
+    .container {
+        padding: 0 1rem;
+    }
+
+    .navbar-container {
+        padding: 0.75rem 1rem;
+    }
+
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+
+    /* Ocultar busca desktop no mobile */
+    .search-desktop {
+        display: none !important;
+    }
+
+    /* Mostrar busca mobile (linha separada) */
+    .navbar-search {
+        display: block !important;
+    }
+
+    /* Mostrar hambúrguer no mobile */
+    .btn-hamburger {
+        display: flex !important;
+    }
+
+    /* Ajustar botões de login/cadastrar no mobile */
+    .btn-login,
+    .btn-register {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.75rem;
+    }
+
+    /* Avatar e notificações menores */
+    .user-profile-avatar {
+        width: 28px;
+        height: 28px;
+    }
+
+    .user-profile-name {
+        display: none; /* Ocultar nome no mobile */
+    }
+
+    .user-profile-arrow {
+        display: none; /* Ocultar seta no mobile */
+    }
+
+    .btn-user-profile {
+        padding: 0.25rem;
+    }
+
+    .btn-notifications {
+        font-size: 1.1rem;
+    }
+
+    /* Dropdown do usuário - ESCONDER em mobile/tablet */
+    .user-dropdown-menu {
+        display: none !important; /* Remove dropdown em telas pequenas */
+    }
+    
+    .user-profile-wrapper:hover .user-dropdown-menu {
+        display: none !important; /* Garante que não apareça nem no hover */
+    }
+    
+    .user-dropdown-menu.show {
+        display: none !important; /* Garante que não apareça nem no click */
+    }
+
+    /* Busca mobile responsiva */
+    .navbar-search .navbar-container {
+        padding: 0.6rem 1rem;
+    }
+
+    .navbar-search .search-container {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .search-input {
+        font-size: 0.9rem;
+        padding: 0.6rem 2.75rem 0.6rem 2.5rem;
+    }
+
+    .search-dropdown {
+        max-height: 300px;
+    }
+
+    .search-result-item {
+        padding: 0.6rem 0.75rem;
+    }
+
+    .search-result-image {
+        width: 35px;
+        height: 47px;
+    }
+
+    .search-result-name {
+        font-size: 0.85rem;
+    }
+
+    /* Hero Section responsiva */
+    .hero-section {
+        margin-bottom: 2rem;
+    }
+
+    .hero-title {
+        font-size: 1.5rem;
+    }
+
+    .welcome-title {
+        font-size: 1.5rem;
+    }
+
+    /* Discovery Section responsiva - 1 coluna em tablet/mobile */
+    .discovery-section {
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+        padding-top: 1.5rem;
+    }
+
+    .discovery-grid {
+        grid-template-columns: 1fr !important;
+        gap: 2rem;
+    }
+
+    .discovery-column:last-child {
+        grid-column: auto;
+    }
+
+    .discovery-title {
+        font-size: 0.9rem;
+    }
+    
+    /* Scroll indicator menor */
+    .scroll-indicator {
+        font-size: 1.1rem;
+    }
+
+    .welcome-message-compact {
+        max-width: 100%;
+    }
+
+    .welcome-actions {
+        flex-wrap: wrap;
+    }
+
+    .section-title {
+        font-size: 18px;
+    }
+
+    /* Botões responsivos */
+    .btn-primary-custom,
+    .btn-secondary-custom {
+        padding: 0.6rem 1.25rem;
+        font-size: 0.85rem;
+    }
+
+    .btn-primary-custom-compact {
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .btn-link-custom {
+        font-size: 0.85rem;
+    }
+
+    .login-actions {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .login-actions .btn-link-custom {
+        text-align: center;
+        order: 2; /* Coloca "Esqueceu senha" embaixo */
+    }
+
+    .login-actions .btn-primary-custom-compact {
+        order: 1; /* Coloca "Entrar" em cima */
+        width: 100%;
+    }
+}
+
+/* ===== MOBILE SMALL (max-width: 575px) ===== */
+@media (max-width: 575px) {
+    .navbar-brand {
+        font-size: 1rem;
+    }
+
+    .nav-link {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.5rem;
+    }
+
+    /* Hero Section mobile */
+    .hero-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+        font-size: 1.25rem;
+        line-height: 1.4;
+        padding: 0 0.5rem;
+    }
+
+    .welcome-title {
+        font-size: 1.25rem;
+    }
+
+    /* Discovery Section mobile - 1 coluna */
+    .discovery-section {
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+        padding-top: 1rem;
+    }
+
+    .discovery-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .discovery-column:last-child {
+        grid-column: auto;
+    }
+
+    .discovery-title {
+        font-size: 0.85rem;
+    }
+
+    .discovery-item {
+        gap: 0.5rem;
+        padding: 0.3rem;
+    }
+
+    .discovery-cover {
+        width: 35px;
+        height: 47px;
+    }
+
+    .discovery-game-name {
+        font-size: 0.8rem;
+    }
+
+    .discovery-meta {
+        font-size: 0.7rem;
+    }
+
+    .section-title {
+        font-size: 16px;
+    }
+}
+
+/* ===== MOBILE EXTRA SMALL (max-width: 480px) ===== */
+@media (max-width: 480px) {
+    .btn-login {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.6rem;
+    }
+
+    .btn-register {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.75rem;
+    }
+
+    .navbar-brand {
+        font-size: 1rem;
+    }
+
+    .navbar-right {
+        gap: 0.5rem;
+        justify-content: center;
+    }
+
+    /* Dropdown removido em mobile extra pequeno também */
+    .user-dropdown-menu {
+        display: none !important;
+    }
+
+    .container {
+        padding: 0 0.75rem;
+    }
+}
+
+/* ===== TOUCH SUPPORT (dispositivos touch) ===== */
+@media (hover: none) and (pointer: coarse) {
+    .game-card-hover-content {
+        background: linear-gradient(180deg, 
+            rgba(0, 0, 0, 0) 0%, 
+            rgba(0, 0, 0, 0.4) 40%, 
+            rgba(0, 0, 0, 0.8) 100%);
+    }
+    
+    /* Mobile: Mostrar overlay ao tocar */
+    .game-card.touch-active .game-card-hover-content {
+        opacity: 1;
+        pointer-events: auto;
+    }
+}
+
+/* ===== LARGE TABLETS (max-width: 1024px) ===== */
+@media (max-width: 1024px) {
+    .discovery-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
