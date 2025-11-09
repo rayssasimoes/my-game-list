@@ -78,7 +78,11 @@ include 'includes/header.php';
         <div class="profile-header">
             <div class="profile-header-left">
                 <div class="profile-avatar">
-                    <i class="bi bi-person-circle"></i>
+                    <?php if (!empty($user['avatar_path'])): ?>
+                        <img src="<?php echo htmlspecialchars($user['avatar_path']); ?>" alt="Avatar de <?php echo htmlspecialchars($firstName); ?>">
+                    <?php else: ?>
+                        <i class="bi bi-person-circle"></i>
+                    <?php endif; ?>
                 </div>
                 <div class="profile-header-info">
                     <h1 class="profile-name"><?php echo htmlspecialchars($firstName); ?></h1>

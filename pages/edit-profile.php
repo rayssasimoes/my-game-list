@@ -143,8 +143,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_avatar'])) {
                     }
                 }
                 
-                // Salvar caminho no banco (relativo à pasta public)
-                $avatarPath = '/uploads/avatars/' . $newFileName;
+                // Salvar caminho no banco (relativo à raiz do site)
+                $avatarPath = '/public/uploads/avatars/' . $newFileName;
                 $stmt = $db->prepare("UPDATE users SET avatar_path = ? WHERE id = ?");
                 
                 if ($stmt->execute([$avatarPath, $userId])) {
