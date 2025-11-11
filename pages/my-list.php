@@ -4,6 +4,15 @@ requireLogin();
 $pageTitle = 'Minha Lista - MyGameList';
 $user = getUser();
 
+// Pegar o status da URL (se fornecido)
+$activeTab = $_GET['tab'] ?? 'completed';
+
+// Validar tab
+$validTabs = ['completed', 'playing', 'dropped', 'want_to_play'];
+if (!in_array($activeTab, $validTabs)) {
+    $activeTab = 'completed';
+}
+
 // Buscar jogos da lista do usuário
 $db = getDB();
 $stmt = $db->prepare("
@@ -52,124 +61,79 @@ foreach ($myGames as $game) {
     $gamesByStatus[$game['status']][] = $game;
 }
 
+// Mapeamento de títulos das tabs
+$tabTitles = [
+    'completed' => 'Jogado',
+    'playing' => 'Jogando',
+    'dropped' => 'Abandonado',
+    'want_to_play' => 'Lista de Desejos'
+];
+
 include 'includes/header.php';
 ?>
 
-<div class="container py-5">
+<div class="mylist-container">
     <!-- Hero Section -->
-    <div class="hero-section">
-        <h1 class="hero-title">
-            Minha Lista de <span class="hero-name">Jogos</span>
-        </h1>
-        <p class="total-games-text"><?php echo $stats['total']; ?> jogos na coleção</p>
-    </div>
-
-    <!-- Estatísticas -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-icon stat-icon-completed">
-                <i class="bi bi-check-circle"></i>
-            </div>
-            <div class="stat-info">
-                <div class="stat-value"><?php echo $stats['completed']; ?></div>
-                <div class="stat-label">Completados</div>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon stat-icon-playing">
-                <i class="bi bi-controller"></i>
-            </div>
-            <div class="stat-info">
-                <div class="stat-value"><?php echo $stats['playing']; ?></div>
-                <div class="stat-label">Jogando</div>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon">
-                <i class="bi bi-x-circle"></i>
-            </div>
-            <div class="stat-info">
-                <div class="stat-value"><?php echo $stats['dropped']; ?></div>
-                <div class="stat-label">Abandonado</div>
-            </div>
-        </div>
-
-        <div class="stat-card">
-            <div class="stat-icon stat-icon-wishlist">
-                <i class="bi bi-bookmark-heart"></i>
-            </div>
-            <div class="stat-info">
-                <div class="stat-value"><?php echo $stats['want_to_play']; ?></div>
-                <div class="stat-label">Lista de Desejos</div>
-            </div>
-        </div>
+    <div class="mylist-hero">
+        <h1 class="mylist-title">Minha Lista</h1>
+        <p class="mylist-subtitle"><?php echo $stats['total']; ?> jogos na coleção</p>
     </div>
 
     <?php if (empty($myGames)): ?>
         <!-- Estado vazio -->
         <div class="empty-state">
-            <i class="bi bi-inbox empty-state-icon"></i>
-            <h3 class="empty-state-title">Sua lista está vazia</h3>
-            <p class="empty-state-text">Comece adicionando seus jogos favoritos para organizar sua coleção!</p>
-            <a href="index.php" class="btn-primary-custom">
+            <i class="bi bi-inbox"></i>
+            <h3>Sua lista está vazia</h3>
+            <p>Comece adicionando seus jogos favoritos!</p>
+            <a href="index.php" class="btn-browse">
                 <i class="bi bi-search"></i> Explorar Jogos
             </a>
         </div>
     <?php else: ?>
-        <!-- Barra de Filtros -->
-        <div class="filter-bar">
-            <button class="filter-link" id="filterToggle">
-                Filtrar <i class="bi bi-chevron-down"></i>
-            </button>
-        </div>
-
-        <!-- Tabs de Status -->
-        <div class="list-tabs" id="filterTabs">
-            <button class="list-tab active" data-status="all">
-                <i class="bi bi-grid-3x3-gap"></i>
-                Todos <span class="tab-count"><?php echo $stats['total']; ?></span>
-            </button>
-            <button class="list-tab" data-status="playing">
-                <i class="bi bi-controller"></i>
-                Jogando <span class="tab-count"><?php echo $stats['playing']; ?></span>
-            </button>
-            <button class="list-tab" data-status="completed">
+        <!-- Tabs de Navegação -->
+        <div class="mylist-tabs">
+            <button class="mylist-tab <?php echo $activeTab === 'completed' ? 'active' : ''; ?>" data-tab="completed">
                 <i class="bi bi-check-circle"></i>
-                Completados <span class="tab-count"><?php echo $stats['completed']; ?></span>
+                <span>Jogado</span>
+                <span class="tab-count"><?php echo $stats['completed']; ?></span>
             </button>
-            <button class="list-tab" data-status="want_to_play">
-                <i class="bi bi-bookmark"></i>
-                Quero Jogar <span class="tab-count"><?php echo $stats['want_to_play']; ?></span>
+            <button class="mylist-tab <?php echo $activeTab === 'playing' ? 'active' : ''; ?>" data-tab="playing">
+                <i class="bi bi-controller"></i>
+                <span>Jogando</span>
+                <span class="tab-count"><?php echo $stats['playing']; ?></span>
             </button>
-            <button class="list-tab" data-status="dropped">
+            <button class="mylist-tab <?php echo $activeTab === 'dropped' ? 'active' : ''; ?>" data-tab="dropped">
                 <i class="bi bi-x-circle"></i>
-                Abandonados <span class="tab-count"><?php echo $stats['dropped']; ?></span>
+                <span>Abandonado</span>
+                <span class="tab-count"><?php echo $stats['dropped']; ?></span>
+            </button>
+            <button class="mylist-tab <?php echo $activeTab === 'want_to_play' ? 'active' : ''; ?>" data-tab="want_to_play">
+                <i class="bi bi-bookmark-heart"></i>
+                <span>Lista de Desejos</span>
+                <span class="tab-count"><?php echo $stats['want_to_play']; ?></span>
             </button>
         </div>
 
         <!-- Conteúdo das Tabs -->
-        <div class="tab-content active" data-status="all">
-            <div class="games-grid-mylist">
-                <?php foreach ($myGames as $game): ?>
-                    <?php include 'includes/game-card-mylist.php'; ?>
-                <?php endforeach; ?>
-            </div>
-        </div>
-
-        <?php foreach (['playing', 'completed', 'want_to_play', 'dropped'] as $status): ?>
-            <div class="tab-content" data-status="<?php echo $status; ?>">
+        <?php foreach (['completed', 'playing', 'dropped', 'want_to_play'] as $status): ?>
+            <div class="mylist-tab-content <?php echo $activeTab === $status ? 'active' : ''; ?>" data-tab="<?php echo $status; ?>">
                 <?php if (empty($gamesByStatus[$status])): ?>
                     <div class="empty-tab-state">
                         <i class="bi bi-inbox"></i>
-                        <p>Nenhum jogo nesta categoria</p>
+                        <p>Nenhum jogo em "<?php echo $tabTitles[$status]; ?>"</p>
                     </div>
                 <?php else: ?>
-                    <div class="games-grid-mylist">
+                    <div class="mylist-games-grid">
                         <?php foreach ($gamesByStatus[$status] as $game): ?>
                             <?php include 'includes/game-card-mylist.php'; ?>
                         <?php endforeach; ?>
+                    </div>
+
+                    <!-- Paginação (placeholder) -->
+                    <div class="mylist-pagination">
+                        <a href="#" class="pagination-link">‹ Prev</a>
+                        <span class="pagination-current">1</span>
+                        <a href="#" class="pagination-link">Next ›</a>
                     </div>
                 <?php endif; ?>
             </div>

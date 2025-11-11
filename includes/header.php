@@ -28,7 +28,10 @@
         <link rel="stylesheet" href="public/css/pages/edit-profile.css?v=<?php echo filemtime(__DIR__ . '/../public/css/pages/edit-profile.css'); ?>">
     <?php elseif ($currentPage === 'search'): ?>
         <link rel="stylesheet" href="public/css/pages/search.css?v=<?php echo filemtime(__DIR__ . '/../public/css/pages/search.css'); ?>">
-    <?php elseif ($currentPage === 'my-list' || $currentPage === 'games'): ?>
+    <?php elseif ($currentPage === 'my-list'): ?>
+        <link rel="stylesheet" href="public/css/pages/games.css?v=<?php echo filemtime(__DIR__ . '/../public/css/pages/games.css'); ?>">
+        <link rel="stylesheet" href="public/css/pages/my-list.css?v=<?php echo filemtime(__DIR__ . '/../public/css/pages/my-list.css'); ?>">
+    <?php elseif ($currentPage === 'games'): ?>
         <link rel="stylesheet" href="public/css/pages/games.css?v=<?php echo filemtime(__DIR__ . '/../public/css/pages/games.css'); ?>">
     <?php else: ?>
         <!-- Home e outras páginas carregam games.css por padrão -->
@@ -117,9 +120,20 @@
                             <a class="user-dropdown-item" href="index.php?page=profile">
                                 <i class="bi bi-person"></i> Ver Perfil
                             </a>
-                            <a class="user-dropdown-item" href="index.php?page=my-list">
-                                <i class="bi bi-list-ul"></i> Minha Lista
+                            <div class="user-dropdown-divider"></div>
+                            <a class="user-dropdown-item" href="index.php?page=my-list&tab=completed">
+                                <i class="bi bi-check-circle"></i> Jogado
                             </a>
+                            <a class="user-dropdown-item" href="index.php?page=my-list&tab=playing">
+                                <i class="bi bi-controller"></i> Jogando
+                            </a>
+                            <a class="user-dropdown-item" href="index.php?page=my-list&tab=dropped">
+                                <i class="bi bi-x-circle"></i> Abandonado
+                            </a>
+                            <a class="user-dropdown-item" href="index.php?page=my-list&tab=want_to_play">
+                                <i class="bi bi-bookmark-heart"></i> Lista de Desejos
+                            </a>
+                            <div class="user-dropdown-divider"></div>
                             <a class="user-dropdown-item" href="index.php?page=edit-profile">
                                 <i class="bi bi-gear"></i> Configurações
                             </a>
@@ -168,9 +182,19 @@
                 
                 <?php if (isLoggedIn()): ?>
                     <!-- Menu para usuários logados -->
-                    <a class="mobile-menu-item" href="index.php?page=my-list">
-                        <i class="bi bi-list-ul"></i> Minha Lista
+                    <a class="mobile-menu-item" href="index.php?page=my-list&tab=completed">
+                        <i class="bi bi-check-circle"></i> Jogado
                     </a>
+                    <a class="mobile-menu-item" href="index.php?page=my-list&tab=playing">
+                        <i class="bi bi-controller"></i> Jogando
+                    </a>
+                    <a class="mobile-menu-item" href="index.php?page=my-list&tab=dropped">
+                        <i class="bi bi-x-circle"></i> Abandonado
+                    </a>
+                    <a class="mobile-menu-item" href="index.php?page=my-list&tab=want_to_play">
+                        <i class="bi bi-bookmark-heart"></i> Lista de Desejos
+                    </a>
+                    <div class="mobile-menu-divider"></div>
                     <a class="mobile-menu-item" href="index.php?page=profile">
                         <i class="bi bi-person"></i> Perfil
                     </a>

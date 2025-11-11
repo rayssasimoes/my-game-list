@@ -662,13 +662,13 @@ function checkAvailability(value, type, input, hint) {
 
 // ==== MY LIST PAGE - TAB SWITCHING ====
 document.addEventListener('DOMContentLoaded', () => {
-    const tabs = document.querySelectorAll('.list-tab');
-    const tabContents = document.querySelectorAll('.tab-content');
+    const tabs = document.querySelectorAll('.mylist-tab');
+    const tabContents = document.querySelectorAll('.mylist-tab-content');
     
     if (tabs.length > 0 && tabContents.length > 0) {
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
-                const targetStatus = tab.getAttribute('data-status');
+                const targetTab = tab.getAttribute('data-tab');
                 
                 // Remove active de todas as tabs
                 tabs.forEach(t => t.classList.remove('active'));
@@ -680,49 +680,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 tab.classList.add('active');
                 
                 // Adiciona active no conteúdo correspondente
-                const targetContent = document.getElementById(`tab-${targetStatus}`);
+                const targetContent = document.querySelector(`.mylist-tab-content[data-tab="${targetTab}"]`);
                 if (targetContent) {
                     targetContent.classList.add('active');
                 }
                 
-                // Atualiza URL hash
-                window.location.hash = targetStatus;
+                // Atualiza URL (opcional - muda o parâmetro tab sem recarregar)
+                const url = new URL(window.location);
+                url.searchParams.set('tab', targetTab);
+                window.history.pushState({}, '', url);
             });
         });
-        
-        // Verifica se há hash na URL ao carregar
-        const hash = window.location.hash.substring(1);
-        if (hash) {
-            const targetTab = document.querySelector(`.list-tab[data-status="${hash}"]`);
-            if (targetTab) {
-                targetTab.click();
-            }
-        }
     }
 });
 
-// ==== MY LIST PAGE - FILTER TOGGLE ====
-document.addEventListener('DOMContentLoaded', () => {
-    const filterToggle = document.getElementById('filterToggle');
-    const filterTabs = document.getElementById('filterTabs');
-    
-    if (filterToggle && filterTabs) {
-        // Inicialmente esconder as tabs
-        filterTabs.style.display = 'none';
-        
-        filterToggle.addEventListener('click', () => {
-            const isVisible = filterTabs.style.display !== 'none';
-            
-            if (isVisible) {
-                filterTabs.style.display = 'none';
-                filterToggle.classList.remove('active');
-            } else {
-                filterTabs.style.display = 'flex';
-                filterToggle.classList.add('active');
-            }
-        });
-    }
-});
+
 
 // ==== MY LIST PAGE - GAME ACTIONS ====
 function editGame(gameId) {

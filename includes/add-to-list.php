@@ -61,8 +61,6 @@ try {
     
     // Se o jogo não existir, inserir na tabela games
     if (!$gameExists) {
-        error_log("Jogo não existe no banco, inserindo...");
-        
         // Se não temos o nome do jogo, não podemos inserir
         if (!$gameName) {
             echo json_encode([
@@ -72,19 +70,18 @@ try {
             exit;
         }
         
-        // Inserir jogo com igdb_id
-        $stmt = $db->prepare("
-            INSERT INTO games (igdb_id, rawg_id, name, slug, cover_url, created_at, updated_at) 
-            VALUES (?, 0, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-        ");
         // Criar slug simples a partir do nome
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $gameName)));
+        
+        // Inserir jogo com igdb_id
+        $stmt = $db->prepare("
+            INSERT INTO games (igdb_id, name, slug, cover_url, created_at, updated_at) 
+            VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        ");
         $stmt->execute([$gameId, $gameName, $slug, $gameCover]);
         
         // Pegar o ID auto-incremento do jogo recém inserido
         $internalGameId = $db->lastInsertId();
-        
-        error_log("Jogo inserido com sucesso: $gameName (internal ID: $internalGameId)");
     } else {
         // Usar o ID interno do banco
         $internalGameId = $gameExists['id'];
@@ -93,8 +90,6 @@ try {
     // Verificar se o jogo já está na lista do usuário (usar ID interno do banco)
     $stmt = $db->prepare("SELECT id, status FROM game_user WHERE user_id = ? AND game_id = ?");
     $stmt->execute([$userId, $internalGameId]);
-    $stmt = $db->prepare("SELECT id, status FROM game_user WHERE user_id = ? AND game_id = ?");
-    $stmt->execute([$userId, $gameId]);
     $existing = $stmt->fetch();
     
     if ($existing) {
