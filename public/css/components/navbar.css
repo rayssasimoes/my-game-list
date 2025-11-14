@@ -7,7 +7,7 @@
     top: 0;
     left: 0;
     right: 0;
-    background-color: #1a1a1a;
+    background-color: #16181C;
     z-index: 1000;
 }
 
@@ -357,7 +357,7 @@
    ========================================= */
 
 .navbar-search {
-    background-color: #1a1a1a;
+    background-color: #16181C;
     border-bottom: 1px solid #333;
     display: none; /* Oculta por padrão (desktop) */
 }
