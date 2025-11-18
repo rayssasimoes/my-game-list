@@ -525,13 +525,13 @@ function fetchSearchResults(query, dropdown) {
             games.forEach(game => {
                 const year = game.year ? `${game.year}` : 'Ano desconhecido';
                 html += `
-                    <div class="search-result-item" data-game-id="${game.id}">
+                    <a href="index.php?page=game&id=${game.id}" class="search-result-item" data-game-id="${game.id}">
                         <img src="${game.cover}" alt="${game.name}" class="search-result-image">
                         <div class="search-result-info">
                             <div class="search-result-name">${game.name}</div>
                             <div class="search-result-year">${year}</div>
                         </div>
-                    </div>
+                    </a>
                 `;
             });
 

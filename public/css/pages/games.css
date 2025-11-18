@@ -25,6 +25,13 @@
     width: 180px;
 }
 
+.game-card-link {
+    display: block;
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+}
+
 .game-card-image {
     width: 100%;
     height: 240px; /* Altura reduzida para ficar compacto */
@@ -158,6 +165,12 @@
     border-color: #E93D82;
 }
 
+.game-card-hover-title-link {
+    text-decoration: none;
+    display: block;
+    margin-bottom: auto;
+}
+
 .game-card-hover-title {
     color: #ffffff;
     font-size: 0.95rem;
@@ -171,7 +184,11 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
     word-break: break-word;
-    margin-bottom: auto;
+    margin: 0;
+}
+
+.game-card-hover-title-link:hover .game-card-hover-title {
+    text-decoration: underline;
 }
 
 .game-card-title {

@@ -178,11 +178,13 @@ function searchGames($searchTerm, $limit = 20) {
     return $formatted;
 }
 
-// Buscar detalhes de um jogo
+// Buscar detalhes de um jogo (foco em catalogação, sem métricas comunitárias)
 function getGameDetails($gameId) {
     $query = "
-        fields name, cover.url, summary, rating, genres.name, platforms.name, 
-               release_dates.date, screenshots.url;
+        fields name, cover.url, summary, genres.name, platforms.name, 
+               release_dates.date, release_dates.human, 
+               involved_companies.company.name, involved_companies.developer,
+               involved_companies.publisher, screenshots.url, hypes;
         where id = {$gameId};
     ";
     
@@ -197,14 +199,44 @@ function getGameDetails($gameId) {
         ? str_replace('t_thumb', 't_cover_big', 'https:' . $game['cover']['url'])
         : 'https://via.placeholder.com/264x352?text=No+Image';
     
+    // Processar data de lançamento
+    $releaseDate = null;
+    if (isset($game['release_dates']) && !empty($game['release_dates'])) {
+        $firstRelease = $game['release_dates'][0];
+        if (isset($firstRelease['human'])) {
+            $releaseDate = $firstRelease['human'];
+        } elseif (isset($firstRelease['date'])) {
+            $releaseDate = date('d M Y', $firstRelease['date']);
+        }
+    }
+    
+    // Processar empresas envolvidas
+    $developers = [];
+    $publishers = [];
+    if (isset($game['involved_companies'])) {
+        foreach ($game['involved_companies'] as $company) {
+            if (isset($company['company']['name'])) {
+                if (isset($company['developer']) && $company['developer']) {
+                    $developers[] = $company['company']['name'];
+                }
+                if (isset($company['publisher']) && $company['publisher']) {
+                    $publishers[] = $company['company']['name'];
+                }
+            }
+        }
+    }
+    
     return [
         'id' => $game['id'],
         'name' => $game['name'],
         'cover' => $coverUrl,
         'summary' => $game['summary'] ?? 'Sem descrição disponível',
-        'rating' => $game['rating'] ?? 0,
         'genres' => array_column($game['genres'] ?? [], 'name'),
         'platforms' => array_column($game['platforms'] ?? [], 'name'),
+        'release_date' => $releaseDate,
+        'developers' => $developers,
+        'publishers' => $publishers,
+        'hypes' => $game['hypes'] ?? 0,
         'screenshots' => array_map(function($s) {
             return 'https:' . str_replace('t_thumb', 't_screenshot_big', $s['url']);
         }, $game['screenshots'] ?? [])

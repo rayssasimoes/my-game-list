@@ -73,14 +73,18 @@ include 'includes/header.php';
             <div class="games-grid">
                 <?php foreach ($games as $game): ?>
                     <div class="game-card">
-                        <img src="<?php echo htmlspecialchars($game['cover']); ?>" 
-                             alt="<?php echo htmlspecialchars($game['name']); ?>" 
-                             class="game-card-image">
+                        <a href="index.php?page=game&id=<?php echo $game['id']; ?>" class="game-card-link">
+                            <img src="<?php echo htmlspecialchars($game['cover']); ?>" 
+                                 alt="<?php echo htmlspecialchars($game['name']); ?>" 
+                                 class="game-card-image">
+                        </a>
                         
                         <!-- Overlay de hover (ações rápidas + nome) -->
                         <div class="game-card-hover-content">
                             <!-- Título do jogo -->
-                            <h3 class="game-card-hover-title"><?php echo htmlspecialchars($game['name']); ?></h3>
+                            <a href="index.php?page=game&id=<?php echo $game['id']; ?>" class="game-card-hover-title-link">
+                                <h3 class="game-card-hover-title"><?php echo htmlspecialchars($game['name']); ?></h3>
+                            </a>
                             
                             <!-- Ações rápidas embaixo (apenas para logados) -->
                             <?php if (isLoggedIn()): ?>
@@ -143,7 +147,7 @@ include 'includes/header.php';
                         <p class="text-white-50 small">Nenhum jogo encontrado.</p>
                     <?php else: ?>
                         <?php foreach ($upcomingGames as $game): ?>
-                            <div class="discovery-item">
+                            <a href="index.php?page=game&id=<?php echo $game['id']; ?>" class="discovery-item">
                                 <img src="<?php echo htmlspecialchars($game['cover']); ?>" 
                                      alt="<?php echo htmlspecialchars($game['name']); ?>" 
                                      class="discovery-cover">
@@ -151,7 +155,7 @@ include 'includes/header.php';
                                     <div class="discovery-game-name"><?php echo htmlspecialchars($game['name']); ?></div>
                                     <div class="discovery-meta"><?php echo htmlspecialchars($game['release_date']); ?></div>
                                 </div>
-                            </div>
+                            </a>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
@@ -170,7 +174,7 @@ include 'includes/header.php';
                         <p class="text-white-50 small">Nenhum jogo encontrado.</p>
                     <?php else: ?>
                         <?php foreach ($hypedGames as $game): ?>
-                            <div class="discovery-item">
+                            <a href="index.php?page=game&id=<?php echo $game['id']; ?>" class="discovery-item">
                                 <img src="<?php echo htmlspecialchars($game['cover']); ?>" 
                                      alt="<?php echo htmlspecialchars($game['name']); ?>" 
                                      class="discovery-cover">
@@ -178,7 +182,7 @@ include 'includes/header.php';
                                     <div class="discovery-game-name"><?php echo htmlspecialchars($game['name']); ?></div>
                                     <div class="discovery-meta"><?php echo htmlspecialchars($game['release_date']); ?></div>
                                 </div>
-                            </div>
+                            </a>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
@@ -197,7 +201,7 @@ include 'includes/header.php';
                         <p class="text-white-50 small">Nenhum jogo encontrado.</p>
                     <?php else: ?>
                         <?php foreach ($hiddenGems as $game): ?>
-                            <div class="discovery-item">
+                            <a href="index.php?page=game&id=<?php echo $game['id']; ?>" class="discovery-item">
                                 <img src="<?php echo htmlspecialchars($game['cover']); ?>" 
                                      alt="<?php echo htmlspecialchars($game['name']); ?>" 
                                      class="discovery-cover">
@@ -205,7 +209,7 @@ include 'includes/header.php';
                                     <div class="discovery-game-name"><?php echo htmlspecialchars($game['name']); ?></div>
                                     <div class="discovery-meta">Méd <?php echo $game['rating']; ?>★</div>
                                 </div>
-                            </div>
+                            </a>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>

@@ -31,8 +31,10 @@
     <?php elseif ($currentPage === 'my-list'): ?>
         <link rel="stylesheet" href="public/css/pages/games.css?v=<?php echo filemtime(__DIR__ . '/../public/css/pages/games.css'); ?>">
         <link rel="stylesheet" href="public/css/pages/my-list.css?v=<?php echo filemtime(__DIR__ . '/../public/css/pages/my-list.css'); ?>">
-    <?php elseif ($currentPage === 'games'): ?>
-        <link rel="stylesheet" href="public/css/pages/games.css?v=<?php echo filemtime(__DIR__ . '/../public/css/pages/games.css'); ?>">
+    <?php elseif ($currentPage === 'all-games'): ?>
+        <link rel="stylesheet" href="public/css/pages/all-games.css?v=<?php echo filemtime(__DIR__ . '/../public/css/pages/all-games.css'); ?>">
+    <?php elseif ($currentPage === 'game'): ?>
+        <link rel="stylesheet" href="public/css/pages/game.css?v=<?php echo filemtime(__DIR__ . '/../public/css/pages/game.css'); ?>">
     <?php else: ?>
         <!-- Home e outras páginas carregam games.css por padrão -->
         <link rel="stylesheet" href="public/css/pages/games.css?v=<?php echo filemtime(__DIR__ . '/../public/css/pages/games.css'); ?>">

@@ -54,7 +54,7 @@ include 'includes/header.php';
                 <?php foreach ($games as $game): ?>
                     <div class="search-result-card">
                         <!-- Coluna Esquerda: Informações do jogo -->
-                        <div class="search-card-info">
+                        <a href="index.php?page=game&id=<?php echo $game['id']; ?>" class="search-card-info">
                             <img src="<?php echo htmlspecialchars($game['cover']); ?>" 
                                  alt="<?php echo htmlspecialchars($game['name']); ?>" 
                                  class="search-card-cover">
@@ -81,7 +81,7 @@ include 'includes/header.php';
                                     </span>
                                 </div>
                             </div>
-                        </div>
+                        </a>
 
                         <!-- Coluna Direita: Botões de ação -->
                         <?php if (isLoggedIn()): ?>

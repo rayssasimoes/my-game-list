@@ -17,7 +17,9 @@ $validPages = [
     'my-list',
     'search',
     'profile',
-    'edit-profile'
+    'edit-profile',
+    'all-games',
+    'game'
 ];
 
 // Verificar se a página existe

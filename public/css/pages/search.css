@@ -105,6 +105,18 @@
     gap: 1.5rem;
     flex: 1;
     align-items: center;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.search-card-info:hover {
+    opacity: 0.8;
+}
+
+.search-card-info:hover .search-card-title {
+    text-decoration: underline;
 }
 
 .search-card-cover {
