@@ -54,6 +54,31 @@ body.modal-open {
     text-align: center; /* Centraliza o texto */
 }
 
+/* Estilo para o botão "Voltar" no modal */
+.modal-header .btn-back {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    cursor: pointer;
+}
+
+.modal-header .btn-back:hover {
+    text-decoration: underline;
+}
+
+/* Adiciona espaçamento entre o parágrafo e o campo de email */
+#forgotPasswordModal .modal-body p {
+    margin-bottom: 2rem; /* Ajuste o valor conforme necessário */
+}
+
 .btn-close {
     background: transparent;
     border: none;
