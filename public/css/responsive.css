@@ -211,10 +211,7 @@
         gap: 0.75rem;
     }
 
-    .login-actions .btn-link-custom {
-        text-align: center;
-        order: 2; /* Coloca "Esqueceu senha" embaixo */
-    }
+    /* Forgot password link removed; layout keeps compact order */
 
     .login-actions .btn-primary-custom-compact {
         order: 1; /* Coloca "Entrar" em cima */

@@ -179,11 +179,19 @@ include 'includes/header.php';
                         <?php else: ?>
                             <div class="games-list-grid">
                                 <?php foreach ($gamesByStatus['playing'] as $game): ?>
-                                    <div class="game-list-card">
-                                        <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
-                                             alt="<?php echo htmlspecialchars($game['name']); ?>"
-                                             class="game-list-cover">
-                                    </div>
+                                            <div class="game-list-card">
+                                                <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
+                                                     alt="<?php echo htmlspecialchars($game['name']); ?>"
+                                                     class="game-list-cover">
+                                                <div class="game-card-overlay">
+                                                    <button class="game-action-btn" onclick="editGame(<?php echo $game['id']; ?>)" title="Editar">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </button>
+                                                    <button class="game-action-btn btn-danger" onclick="removeGame(<?php echo $game['id']; ?>)" title="Remover">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
                                 <?php endforeach; ?>
                             </div>
                         <?php endif; ?>
@@ -200,6 +208,14 @@ include 'includes/header.php';
                                         <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
                                              alt="<?php echo htmlspecialchars($game['name']); ?>"
                                              class="game-list-cover">
+                                        <div class="game-card-overlay">
+                                            <button class="game-action-btn" onclick="editGame(<?php echo $game['id']; ?>)" title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="game-action-btn btn-danger" onclick="removeGame(<?php echo $game['id']; ?>)" title="Remover">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -217,6 +233,14 @@ include 'includes/header.php';
                                         <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
                                              alt="<?php echo htmlspecialchars($game['name']); ?>"
                                              class="game-list-cover">
+                                        <div class="game-card-overlay">
+                                            <button class="game-action-btn" onclick="editGame(<?php echo $game['id']; ?>)" title="Editar">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="game-action-btn btn-danger" onclick="removeGame(<?php echo $game['id']; ?>)" title="Remover">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -598,3 +622,124 @@ function removeFavorite(gameId, gameName) {
 </style>
 
 <?php include 'includes/footer.php'; ?>
+
+<!-- Modal: Editar Status do Jogo (perfil) -->
+<div id="editGameModal" class="modal">
+    <div class="modal-content modal-small">
+        <div class="modal-header">
+            <h2 class="modal-title">Editar Jogo</h2>
+            <button class="modal-close" onclick="closeEditGameModal()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="editGameForm">
+                <input type="hidden" id="editGameId" name="game_id">
+                
+                <div class="form-group">
+                    <label class="form-label">Nome do Jogo</label>
+                    <p id="editGameName" class="game-name-display"></p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editGameStatus" class="form-label">Status</label>
+                    <select id="editGameStatus" name="status" class="form-input" required>
+                        <option value="playing">🎮 Jogando</option>
+                        <option value="completed">✅ Jogado</option>
+                        <option value="want_to_play">⭐ Lista de Desejos</option>
+                        <option value="dropped">❌ Abandonado</option>
+                    </select>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeEditGameModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentEditGameId = null;
+
+function editGame(gameId) {
+    currentEditGameId = gameId;
+    fetch(`includes/get-game-info.php?game_id=${gameId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('editGameId').value = gameId;
+                document.getElementById('editGameName').textContent = data.game.name;
+                document.getElementById('editGameStatus').value = data.game.status;
+                document.getElementById('editGameModal').classList.add('show');
+                document.body.classList.add('modal-open');
+            } else {
+                alert('Erro ao carregar informações do jogo');
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Erro ao carregar informações do jogo');
+        });
+}
+
+function closeEditGameModal() {
+    document.getElementById('editGameModal').classList.remove('show');
+    document.body.classList.remove('modal-open');
+}
+
+document.getElementById('editGameForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    fetch('includes/update-game-status.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            closeEditGameModal();
+            window.location.reload();
+        } else {
+            alert(data.message || 'Erro ao atualizar jogo');
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao atualizar jogo');
+    });
+});
+
+function removeGame(gameId) {
+    if (!confirm('Tem certeza que deseja remover este jogo da sua lista?')) {
+        return;
+    }
+    fetch('includes/remove-game.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `game_id=${gameId}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        } else {
+            alert(data.message || 'Erro ao remover jogo');
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao remover jogo');
+    });
+}
+
+// Fechar modal ao clicar fora
+document.addEventListener('click', (e) => {
+    if (e.target.id === 'editGameModal') {
+        closeEditGameModal();
+    }
+});
+</script>

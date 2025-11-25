@@ -51,9 +51,6 @@
                     
                     <!-- Botões de ação -->
                     <div class="login-actions">
-                        <button type="button" class="btn-link-custom" onclick="closeModal('loginModal'); openModal('forgotPasswordModal');">
-                            Esqueceu a senha?
-                        </button>
                         <button type="submit" class="btn btn-primary-custom-compact">Entrar</button>
                     </div>
                 </form>
@@ -133,40 +130,4 @@
     </div>
 </div>
  
-<!-- Forgot Password Modal -->
-<div class="modal" id="forgotPasswordModal">
-    <div class="modal-dialog">
-        <div class="modal-content modal-dark-theme">
-            <div class="modal-header">
-                <!-- Botão Voltar -->
-                <button type="button" class="btn-link-custom btn-back" onclick="closeModal('forgotPasswordModal'); openModal('loginModal');">
-                    <i class="bi bi-arrow-left"></i> Voltar
-                </button>
-                <h5 class="modal-title">
-                    <i class="bi bi-envelope"></i> Recuperar Senha
-                </h5>
-                <button type="button" class="btn-close" onclick="closeModal('forgotPasswordModal')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <!-- Mensagem de feedback -->
-                <div id="forgot-password-message" class="alert" style="display: none; margin-bottom: 1rem;"></div>
-                
-                <p>Insira o seu email cadastrado para receber um link de redefinição de senha.</p>
-                <form method="POST" action="includes/password-reset.php" id="forgotPasswordForm">
-                    <!-- Campo de Email -->
-                    <div class="mb-3">
-                        <label for="forgot_email" class="form-label">Email</label>
-                        <div class="input-group">
-                            <span class="input-group-addon">
-                                <i class="bi bi-envelope"></i>
-                            </span>
-                            <input id="forgot_email" class="form-control" type="email" name="email" placeholder="seu@email.com" required>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="btn btn-primary-custom w-100" id="forgotPasswordBtn">Enviar Link de Redefinição</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- Forgot password UI removed -->

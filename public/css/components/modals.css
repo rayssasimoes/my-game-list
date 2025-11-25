@@ -74,10 +74,7 @@ body.modal-open {
     text-decoration: underline;
 }
 
-/* Adiciona espaçamento entre o parágrafo e o campo de email */
-#forgotPasswordModal .modal-body p {
-    margin-bottom: 2rem; /* Ajuste o valor conforme necessário */
-}
+/* Forgot password modal removed - related styles cleaned up */
 
 .btn-close {
     background: transparent;
