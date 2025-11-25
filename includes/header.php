@@ -76,14 +76,8 @@
                             <span></span>
                         </button>
                     <?php else: ?>
-                        <!-- Logado: Notificações + Avatar -->
+                        <!-- Logado: Avatar -->
                         <?php $user = getUser(); ?>
-                        
-                        <!-- Ícone de Notificações -->
-                        <button class="btn-notifications" title="Notificações">
-                            <i class="bi bi-bell"></i>
-                            <span class="notification-badge">3</span>
-                        </button>
                         
                         <!-- Avatar + Nome do Usuário -->
                         <div class="user-profile-wrapper">

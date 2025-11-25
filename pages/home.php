@@ -62,10 +62,12 @@ include 'includes/header.php';
 
     <!-- Seção: Populares no Momento -->
     <section class="popular-games-section mb-5">
-        <div class="section-header-with-arrow">
-            <h2 class="section-title"><?php echo $sectionTitle; ?></h2>
-            <span class="scroll-indicator">›</span>
-        </div>
+        <a href="index.php?page=populares" class="section-header-link">
+            <div class="section-header-with-arrow">
+                <h2 class="section-title"><?php echo $sectionTitle; ?></h2>
+                <span class="scroll-indicator">›</span>
+            </div>
+        </a>
         
         <?php if (empty($games)): ?>
             <p class="text-white-50">Nenhum jogo encontrado.</p>

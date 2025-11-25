@@ -19,7 +19,8 @@ $validPages = [
     'profile',
     'edit-profile',
     'all-games',
-    'game'
+    'game',
+    'populares'
 ];
 
 // Verificar se a página existe

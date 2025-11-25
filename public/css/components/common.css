@@ -134,6 +134,25 @@
     color: rgba(255, 255, 255, 0.9);
 }
 
+/* Link da section header */
+.section-header-link {
+    text-decoration: none;
+    display: block;
+    transition: opacity 0.2s ease;
+}
+
+.section-header-link:hover {
+    opacity: 0.9;
+}
+
+.section-header-link:hover .section-header-with-arrow {
+    cursor: pointer;
+}
+
+.section-header-link:hover .scroll-indicator {
+    color: rgba(255, 255, 255, 0.9);
+}
+
 /* ===== DISCOVERY SECTION (TRÊS COLUNAS ESTILO BACKLOGGD) ===== */
 .discovery-section {
     margin-top: 3rem;

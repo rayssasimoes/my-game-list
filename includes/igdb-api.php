@@ -20,6 +20,8 @@ function env($key, $default = null) {
             list($k, $v) = explode('=', $line, 2);
             $k = trim($k);
             $v = trim($v);
+            // Remover aspas simples ou duplas do valor
+            $v = trim($v, '"\'');
             if ($k === $key) return $v;
         }
     }
@@ -49,16 +51,24 @@ function getIGDBToken() {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     
     $response = curl_exec($ch);
+    $error = curl_error($ch);
     curl_close($ch);
+    
+    if ($error) {
+        error_log("IGDB Token Error (cURL): " . $error);
+        return null;
+    }
     
     $data = json_decode($response, true);
     
     if (isset($data['access_token'])) {
         $_SESSION['igdb_token'] = $data['access_token'];
         $_SESSION['igdb_token_expires'] = time() + $data['expires_in'];
+        error_log("IGDB Token obtido com sucesso");
         return $data['access_token'];
     }
     
+    error_log("IGDB Token Error: " . print_r($data, true));
     return null;
 }
 
@@ -83,12 +93,21 @@ function igdbRequest($endpoint, $query) {
     
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $error = curl_error($ch);
     curl_close($ch);
     
-    if ($httpCode === 200) {
-        return json_decode($response, true);
+    if ($error) {
+        error_log("IGDB API Error (cURL): " . $error);
+        return [];
     }
     
+    if ($httpCode === 200) {
+        $decoded = json_decode($response, true);
+        error_log("IGDB API Success - Endpoint: {$endpoint} - Jogos retornados: " . count($decoded));
+        return $decoded;
+    }
+    
+    error_log("IGDB API Error - HTTP {$httpCode} - Response: " . substr($response, 0, 200));
     return [];
 }
 
@@ -123,6 +142,76 @@ function getPopularGames($limit = 12) {
             'name' => $game['name'],
             'cover' => $coverUrl,
             'rating' => $game['rating'] ?? 0
+        ];
+    }
+    
+    // Salvar em cache
+    $_SESSION[$cacheKey] = $formatted;
+    $_SESSION[$cacheKey . '_time'] = time();
+    
+    return $formatted;
+}
+
+// Buscar jogos populares com filtros (para página populares.php)
+function getPopularGamesFiltered($limit = 48, $page = 1, $genreId = '', $platformId = '') {
+    // Validar credenciais
+    if (empty(IGDB_CLIENT_ID) || empty(IGDB_CLIENT_SECRET)) {
+        error_log("ERRO: Credenciais IGDB não configuradas!");
+        return [];
+    }
+    
+    // Calcular offset
+    $offset = ($page - 1) * $limit;
+    
+    // Cache baseado nos parâmetros
+    $cacheKey = "popular_games_filtered_{$limit}_{$page}_{$genreId}_{$platformId}";
+    
+    if (isset($_SESSION[$cacheKey]) && isset($_SESSION[$cacheKey . '_time']) && 
+        (time() - $_SESSION[$cacheKey . '_time']) < 1800) { // Cache de 30 minutos
+        error_log("Retornando jogos do cache: {$cacheKey}");
+        return $_SESSION[$cacheKey];
+    }
+    
+    error_log("Buscando jogos da API - Página: {$page}, Limite: {$limit}, Gênero: {$genreId}, Plataforma: {$platformId}");
+    
+    // Construir query com filtros - tornando mais flexível
+    // Usar total_rating ao invés de rating para ter mais resultados
+    $whereConditions = ['total_rating != null', 'cover != null'];
+    
+    if ($genreId) {
+        $whereConditions[] = "genres = [{$genreId}]";
+    }
+    
+    if ($platformId) {
+        $whereConditions[] = "platforms = [{$platformId}]";
+    }
+    
+    $whereClause = implode(' & ', $whereConditions);
+    
+    $query = "
+        fields name, cover.url, total_rating, first_release_date;
+        where {$whereClause};
+        sort total_rating desc;
+        limit {$limit};
+        offset {$offset};
+    ";
+    
+    error_log("Query IGDB: " . $query);
+    $games = igdbRequest('games', $query);
+    error_log("Jogos retornados pela API: " . count($games));
+    
+    // Formatar dados
+    $formatted = [];
+    foreach ($games as $game) {
+        $coverUrl = isset($game['cover']['url']) 
+            ? str_replace('t_thumb', 't_cover_big', 'https:' . $game['cover']['url'])
+            : 'https://via.placeholder.com/264x352?text=No+Image';
+            
+        $formatted[] = [
+            'id' => $game['id'],
+            'name' => $game['name'],
+            'cover' => $coverUrl,
+            'rating' => $game['total_rating'] ?? $game['rating'] ?? 0
         ];
     }
     

@@ -202,7 +202,6 @@ include 'includes/header.php';
             <button class="settings-tab active" data-tab="profile">Perfil</button>
             <button class="settings-tab" data-tab="auth">Autenticação</button>
             <button class="settings-tab" data-tab="avatar">Avatar</button>
-            <button class="settings-tab" data-tab="notifications">Notificações</button>
         </div>
         
         <!-- Conteúdo da Aba Perfil -->
@@ -468,15 +467,6 @@ include 'includes/header.php';
                     <i class="bi bi-upload"></i> Salvar Avatar
                 </button>
             </form>
-        </div>
-        
-        <!-- Conteúdo da Aba Notificações -->
-        <div class="tab-content" data-tab-content="notifications">
-            <h2 class="section-subtitle">Notificações</h2>
-            <div class="placeholder-content">
-                <i class="bi bi-bell"></i>
-                <p>Configurações de notificação (Em breve)</p>
-            </div>
         </div>
     </div>
 </div>

@@ -157,7 +157,7 @@
             </div>
             <div class="modal-body">
                 <p>Insira o seu email cadastrado para receber um link de redefinição de senha.</p>
-                <form method="POST" action="index.php" id="forgotPasswordForm">
+                <form method="POST" action="includes/password-reset.php" id="forgotPasswordForm">
                     <input type="hidden" name="action" value="forgot-password">
                     
                     <!-- Campo de Email -->

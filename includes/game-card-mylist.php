@@ -15,14 +15,6 @@
             echo $statusLabels[$game['status']] ?? $game['status'];
             ?>
         </div>
-        
-        <!-- Rating -->
-        <?php if ($game['rating']): ?>
-            <div class="card-rating-badge">
-                <i class="bi bi-star-fill"></i>
-                <?php echo $game['rating']; ?>
-            </div>
-        <?php endif; ?>
     </div>
     
     <div class="mylist-card-info">

@@ -18,34 +18,49 @@ if (!$game) {
 $pageTitle = $game['name'] . ' - MyGameList';
 
 // Buscar estatísticas de catalogação do banco de dados
-$db = getDB();
-$statsQuery = $db->prepare("
-    SELECT 
-        SUM(CASE WHEN gu.status = 'completed' THEN 1 ELSE 0 END) as plays,
-        SUM(CASE WHEN gu.status = 'playing' THEN 1 ELSE 0 END) as playing,
-        SUM(CASE WHEN gu.status = 'dropped' THEN 1 ELSE 0 END) as backlogs,
-        SUM(CASE WHEN gu.status = 'want_to_play' THEN 1 ELSE 0 END) as wishlists
-    FROM game_user gu
-    INNER JOIN games g ON gu.game_id = g.id
-    WHERE g.igdb_id = ?
-");
-$statsQuery->execute([$gameId]);
-$stats = $statsQuery->fetch();
+$stats = ['plays' => 0, 'playing' => 0, 'backlogs' => 0, 'wishlists' => 0];
+try {
+    $db = getDB();
+    $statsQuery = $db->prepare("
+        SELECT 
+            SUM(CASE WHEN gu.status = 'completed' THEN 1 ELSE 0 END) as plays,
+            SUM(CASE WHEN gu.status = 'playing' THEN 1 ELSE 0 END) as playing,
+            SUM(CASE WHEN gu.status = 'dropped' THEN 1 ELSE 0 END) as backlogs,
+            SUM(CASE WHEN gu.status = 'want_to_play' THEN 1 ELSE 0 END) as wishlists
+        FROM game_user gu
+        INNER JOIN games g ON gu.game_id = g.id
+        WHERE g.igdb_id = ?
+    ");
+    $statsQuery->execute([$gameId]);
+    $fetchedStats = $statsQuery->fetch();
+    if ($fetchedStats) {
+        $stats = $fetchedStats;
+    }
+} catch (Exception $e) {
+    // Se houver erro de conexão, continua com valores padrão
+    error_log("Erro ao buscar estatísticas: " . $e->getMessage());
+}
 
 // Verificar se o usuário está logado e se o jogo está na sua lista
 $userGameStatus = null;
 if (isLoggedIn()) {
-    $user = getUser();
-    $statusQuery = $db->prepare("
-        SELECT gu.status 
-        FROM game_user gu
-        INNER JOIN games g ON gu.game_id = g.id
-        WHERE gu.user_id = ? AND g.igdb_id = ?
-    ");
-    $statusQuery->execute([$user['id'], $gameId]);
-    $userGame = $statusQuery->fetch();
-    if ($userGame) {
-        $userGameStatus = $userGame['status'];
+    try {
+        $user = getUser();
+        $db = getDB();
+        $statusQuery = $db->prepare("
+            SELECT gu.status 
+            FROM game_user gu
+            INNER JOIN games g ON gu.game_id = g.id
+            WHERE gu.user_id = ? AND g.igdb_id = ?
+        ");
+        $statusQuery->execute([$user['id'], $gameId]);
+        $userGame = $statusQuery->fetch();
+        if ($userGame) {
+            $userGameStatus = $userGame['status'];
+        }
+    } catch (Exception $e) {
+        // Se houver erro de conexão, continua sem status
+        error_log("Erro ao buscar status do usuário: " . $e->getMessage());
     }
 }
 
@@ -227,16 +242,115 @@ document.addEventListener('DOMContentLoaded', function() {
             const gameCover = this.dataset.gameCover;
             const status = this.dataset.status;
             
-            // Chamar a função de adicionar à lista (assumindo que existe no app.js)
-            if (typeof addToList === 'function') {
-                addToList(gameId, gameName, gameCover, status);
-                
-                // Atualizar UI
-                statusButtons.forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
-            }
+            // Desabilitar botão temporariamente
+            const btnElement = this;
+            btnElement.disabled = true;
+            btnElement.style.opacity = '0.6';
+            
+            // Fazer requisição AJAX para adicionar o jogo
+            fetch('includes/add-to-list.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `game_id=${gameId}&status=${status}&game_name=${encodeURIComponent(gameName)}&game_cover=${encodeURIComponent(gameCover)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Remover classe active de todos os botões
+                    statusButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Marcar apenas o botão clicado como ativo
+                    btnElement.classList.add('active');
+                    
+                    // Feedback visual temporário
+                    const originalHTML = btnElement.innerHTML;
+                    btnElement.innerHTML = '<i class="bi bi-check"></i> <span>Adicionado!</span>';
+                    
+                    setTimeout(() => {
+                        btnElement.innerHTML = originalHTML;
+                        btnElement.style.opacity = '1';
+                        btnElement.disabled = false;
+                    }, 1500);
+                    
+                    // Mostrar notificação de sucesso
+                    const messages = {
+                        'completed': 'Marcado como Jogado!',
+                        'playing': 'Adicionado em Jogando!',
+                        'want_to_play': 'Adicionado à Lista de Desejos!',
+                        'dropped': 'Marcado como Abandonado!'
+                    };
+                    showGameNotification(messages[status] || 'Jogo adicionado à sua lista!', 'success');
+                } else {
+                    // Erro ao adicionar
+                    btnElement.style.opacity = '1';
+                    btnElement.disabled = false;
+                    showGameNotification(data.message || 'Erro ao adicionar jogo', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                btnElement.style.opacity = '1';
+                btnElement.disabled = false;
+                showGameNotification('Erro ao adicionar jogo', 'error');
+            });
         });
     });
+    
+    // Função para mostrar notificação
+    function showGameNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.className = `game-notification ${type}`;
+        notification.textContent = message;
+        notification.style.cssText = `
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: ${type === 'success' ? '#22c55e' : '#ef4444'};
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            animation: slideInRight 0.3s ease;
+            font-weight: 600;
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.animation = 'slideOutRight 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+    
+    // Adicionar animações CSS
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideInRight {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
 });
 </script>
 

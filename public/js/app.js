@@ -697,20 +697,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // ==== MY LIST PAGE - GAME ACTIONS ====
-function editGame(gameId) {
-    // TODO: Abrir modal de edição do jogo
-    console.log('Edit game:', gameId);
-    alert('Funcionalidade de edição em desenvolvimento');
-}
-
-function removeGame(gameId) {
-    // Confirmar remoção
-    if (confirm('Tem certeza que deseja remover este jogo da sua lista?')) {
-        // TODO: Fazer requisição para remover o jogo
-        console.log('Remove game:', gameId);
-        alert('Funcionalidade de remoção em desenvolvimento');
-    }
-}
+// Funções editGame() e removeGame() agora estão em my-list.php
 
 // ==== HOME PAGE - QUICK ACTIONS ====
 document.addEventListener('DOMContentLoaded', () => {
