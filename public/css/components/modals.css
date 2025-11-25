@@ -409,3 +409,169 @@ body.modal-open {
     border-color: #E93D82;
     color: #E93D82;
 }
+
+/* ===== EDIT GAME MODAL (específico) ===== */
+/* Fundo mais escuro e texto contrastante para melhorar leitura ao editar status */
+#editGameModal .modal-content {
+    background-color: #0b1220; /* Azul bem escuro / quase preto */
+    color: #E6F0FF; /* Texto claro e suave (azulado) */
+}
+
+#editGameModal .modal-header,
+#editGameModal .modal-body,
+#editGameModal .modal-footer {
+    background: transparent; /* mantém o mesmo fundo do container */
+}
+
+#editGameModal .modal-title {
+    color: #E6F0FF;
+}
+
+#editGameModal .game-name-display {
+    color: #E6F0FF;
+}
+
+#editGameModal .form-label {
+    color: rgba(230, 240, 255, 0.95);
+}
+
+#editGameModal .form-input {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(230, 240, 255, 0.06);
+    color: #E6F0FF;
+}
+
+#editGameModal .form-input:focus {
+    border-color: #5b8def;
+    box-shadow: 0 0 0 0.2rem rgba(91,141,239,0.12);
+}
+
+#editGameModal .btn-primary {
+    background: #5b8def; /* azul vibrante que combina com o fundo */
+    color: #fff;
+}
+
+#editGameModal .btn-primary:hover {
+    background: #4773d1;
+}
+
+#editGameModal .btn-secondary {
+    background: rgba(255,255,255,0.06);
+    color: #E6F0FF;
+}
+
+#editGameModal .modal-close {
+    color: #E6F0FF;
+}
+
+/* Botão fechar estilizado como ícone no canto superior direito do modal de edição */
+#editGameModal .modal-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    color: #E6F0FF;
+    border-radius: 6px;
+    transition: background-color 0.12s ease, transform 0.08s ease;
+    z-index: 3;
+}
+
+#editGameModal .modal-close i {
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+#editGameModal .modal-close:hover {
+    background: rgba(255, 255, 255, 0.03);
+    transform: translateY(-1px);
+}
+
+#editGameModal .modal-header {
+    padding-top: 1.25rem; /* garante espaço para o ícone */
+}
+
+#editGameModal select.form-input option {
+    background: #0b1220;
+    color: #E6F0FF;
+}
+
+/* ===== FAVORITE SEARCH MODAL (mesma estilização do editGameModal) ===== */
+#favoriteSearchModal .modal-content {
+    background-color: #0b1220;
+    color: #E6F0FF;
+}
+
+#favoriteSearchModal .modal-header,
+#favoriteSearchModal .modal-body,
+#favoriteSearchModal .modal-footer {
+    background: transparent;
+}
+
+#favoriteSearchModal .modal-title {
+    color: #E6F0FF;
+}
+
+#favoriteSearchModal .favorite-search-input {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(230, 240, 255, 0.06);
+    color: #E6F0FF;
+}
+
+#favoriteSearchModal .favorite-search-input:focus {
+    border-color: #5b8def;
+    box-shadow: 0 0 0 0.2rem rgba(91,141,239,0.12);
+}
+
+#favoriteSearchModal .btn-add-to-favorites,
+#favoriteSearchModal .btn-add-favorite-search {
+    background: #5b8def;
+    color: #fff;
+}
+
+#favoriteSearchModal .btn-add-to-favorites:hover,
+#favoriteSearchModal .btn-add-favorite-search:hover {
+    background: #4773d1;
+}
+
+/* Close icon positioning for this modal */
+#favoriteSearchModal .modal-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    color: #E6F0FF;
+    border-radius: 6px;
+    transition: background-color 0.12s ease, transform 0.08s ease;
+    z-index: 3;
+}
+
+#favoriteSearchModal .modal-close i {
+    font-size: 1.25rem;
+}
+
+#favoriteSearchModal .modal-close:hover {
+    background: rgba(255, 255, 255, 0.03);
+    transform: translateY(-1px);
+}
+
+#favoriteSearchModal .modal-header {
+    padding-top: 1.25rem;
+}

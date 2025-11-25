@@ -272,12 +272,12 @@ include 'includes/header.php';
 </div>
 
 <!-- Modal: Adicionar Jogo Favorito -->
-<div id="favoriteSearchModal" class="modal">
+<div id="favoriteSearchModal" class="modal" role="dialog" aria-modal="true">
     <div class="modal-content modal-medium">
         <div class="modal-header">
             <h2 class="modal-title">Adicionar Jogo Favorito</h2>
-            <button class="modal-close" onclick="closeFavoriteSearchModal()">
-                <i class="bi bi-x-lg"></i>
+            <button class="modal-close" aria-label="Fechar" onclick="closeFavoriteSearchModal()">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
             </button>
         </div>
         <div class="modal-body">
@@ -628,8 +628,8 @@ function removeFavorite(gameId, gameName) {
     <div class="modal-content modal-small">
         <div class="modal-header">
             <h2 class="modal-title">Editar Jogo</h2>
-            <button class="modal-close" onclick="closeEditGameModal()">
-                <i class="bi bi-x-lg"></i>
+            <button class="modal-close" aria-label="Fechar" onclick="closeEditGameModal()">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
             </button>
         </div>
         <div class="modal-body">

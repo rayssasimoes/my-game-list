@@ -139,10 +139,7 @@
     border-color: #E93D82;
 }
 
-.quick-action-btn[data-action="more"]:hover {
-    background: rgba(156, 163, 175, 0.9);
-    border-color: #9ca3af;
-}
+
 
 /* Estado ativo (já adicionado à lista) */
 .quick-action-btn.active {

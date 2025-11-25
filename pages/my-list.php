@@ -137,8 +137,8 @@ include 'includes/header.php';
     <div class="modal-content modal-small">
         <div class="modal-header">
             <h2 class="modal-title">Editar Jogo</h2>
-            <button class="modal-close" onclick="closeEditGameModal()">
-                <i class="bi bi-x-lg"></i>
+            <button class="modal-close" aria-label="Fechar" onclick="closeEditGameModal()">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
             </button>
         </div>
         <div class="modal-body">

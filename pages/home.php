@@ -118,12 +118,7 @@ include 'includes/header.php';
                                             title="Lista de Desejos">
                                         <i class="bi bi-bookmark-heart"></i>
                                     </button>
-                                    <button class="quick-action-btn quick-action-more" 
-                                            data-action="more" 
-                                            data-game-id="<?php echo $game['id']; ?>"
-                                            title="Mais opções">
-                                        <i class="bi bi-three-dots"></i>
-                                    </button>
+                                    <!-- botão 'mais' removido conforme solicitado -->
                                 </div>
                             <?php endif; ?>
                         </div>

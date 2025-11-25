@@ -301,10 +301,7 @@ include 'includes/header.php';
                     <i class="bi bi-check-circle"></i> Salvar Alterações
                 </button>
                 
-                <!-- Link de Excluir Conta (abaixo do botão Salvar Alterações) -->
-                <div style="width:100%; display:flex; justify-content:center; margin:1.5rem 0 1.5rem 0;">
-                    <a href="#" class="delete-account-link" onclick="openDeleteAccountModal(); return false;" style="color:#6b7280; text-decoration:underline; font-weight:500;">Excluir minha conta</a>
-                </div>
+                <!-- Link de Excluir Conta removido daqui para posição menos proeminente -->
             </form>
             
             <!-- Informações da Conta -->
@@ -349,6 +346,15 @@ include 'includes/header.php';
                             ?>
                         </span>
                     </div>
+                </div>
+            </div>
+
+            <!-- Seção de perigo (link de exclusão posicionado de forma discreta) -->
+            <div class="danger-zone" style="margin-top:1.5rem; border-top:1px solid rgba(0,0,0,0.05); padding-top:1rem;">
+                <h3 class="section-subtitle-small">Perigo</h3>
+                <p class="text-muted" style="margin:0 0 0.5rem 0; color: #ffffff;">Ações nesta seção são irreversíveis. Este botão é propositalmente discreto para evitar exclusões acidentais.</p>
+                <div style="display:flex; gap:0.75rem; align-items:center;">
+                    <button type="button" class="btn-link" style="color:#ffffff; text-decoration:underline; font-weight:500; font-size:0.95rem; background:none; border:none; padding:0; cursor:pointer;" onclick="openDeleteAccountModal()">Excluir minha conta</button>
                 </div>
             </div>
         </div>
@@ -485,8 +491,8 @@ include 'includes/header.php';
     <div class="modal-content modal-small">
         <div class="modal-header">
             <h2 class="modal-title">Confirmar Exclusão</h2>
-            <button class="modal-close" onclick="closeDeleteAccountModal()">
-                <i class="bi bi-x-lg"></i>
+            <button class="modal-close" aria-label="Fechar" onclick="closeDeleteAccountModal()">
+                <i class="bi bi-x-lg" aria-hidden="true"></i>
             </button>
         </div>
         <div class="modal-body">
