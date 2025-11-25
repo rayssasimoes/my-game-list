@@ -327,7 +327,7 @@ function getGameDetails($gameId) {
         'publishers' => $publishers,
         'hypes' => $game['hypes'] ?? 0,
         'screenshots' => array_map(function($s) {
-            return 'https:' . str_replace('t_thumb', 't_screenshot_big', $s['url']);
+            return 'https:' . str_replace('t_thumb', 't_1080p', $s['url']);
         }, $game['screenshots'] ?? [])
     ];
 }

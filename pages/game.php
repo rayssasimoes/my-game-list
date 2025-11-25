@@ -17,6 +17,14 @@ if (!$game) {
 
 $pageTitle = $game['name'] . ' - MyGameList';
 
+// Incluir função de tradução
+require_once __DIR__ . '/../includes/translate.php';
+
+// Traduzir o summary se estiver em inglês
+if (!empty($game['summary'])) {
+    $game['summary'] = translateText($game['summary'], 'pt-BR', 'en');
+}
+
 // Buscar estatísticas de catalogação do banco de dados
 $stats = ['plays' => 0, 'playing' => 0, 'backlogs' => 0, 'wishlists' => 0];
 try {
@@ -286,13 +294,32 @@ function updateScreenshotModal() {
 }
 
 function downloadScreenshot() {
-    const link = document.createElement('a');
-    link.href = screenshots[currentScreenshotIndex];
-    link.download = `screenshot-${currentScreenshotIndex + 1}.jpg`;
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    const imageUrl = screenshots[currentScreenshotIndex];
+    const fileName = `screenshot-${currentScreenshotIndex + 1}.jpg`;
+    
+    // Fazer fetch da imagem para converter em blob
+    fetch(imageUrl)
+        .then(response => response.blob())
+        .then(blob => {
+            // Criar URL do blob
+            const blobUrl = window.URL.createObjectURL(blob);
+            
+            // Criar link de download
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Limpar URL do blob
+            window.URL.revokeObjectURL(blobUrl);
+        })
+        .catch(error => {
+            console.error('Erro ao baixar imagem:', error);
+            // Fallback: abrir em nova aba
+            window.open(imageUrl, '_blank');
+        });
 }
 
 // Fechar modal com ESC
