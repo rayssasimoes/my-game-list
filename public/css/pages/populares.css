@@ -3,7 +3,7 @@
 /* Hero Section */
 .populares-hero {
     text-align: center;
-    padding: 2.5rem 0 1.5rem;
+    padding: 2.5rem 1rem 1.5rem;
     margin-bottom: 2rem;
 }
 
@@ -15,12 +15,15 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: 0.5rem;
+    line-height: 1.2;
 }
 
 .populares-subtitle {
     color: #999;
     font-size: 1.1rem;
     font-weight: 400;
+    line-height: 1.4;
+    padding: 0 1rem;
 }
 
 /* Filtros Section */
@@ -28,7 +31,7 @@
     background: rgba(36, 36, 36, 0.5);
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 1.5rem 0;
+    padding: 1.5rem 1rem;
     margin-bottom: 3rem;
 }
 
@@ -37,6 +40,8 @@
     align-items: flex-end;
     gap: 1rem;
     flex-wrap: wrap;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .filter-group {
@@ -450,6 +455,10 @@
 
 /* Tablet pequeno (600px - 768px) */
 @media (max-width: 768px) {
+    .populares-hero {
+        padding: 2rem 1rem 1.25rem;
+    }
+    
     .populares-title {
         font-size: 2rem;
     }
@@ -464,20 +473,27 @@
     }
     
     .populares-games-grid .game-card-image {
-        height: 200px;
+        height: 220px;
     }
     
     .filters-section {
-        padding: 1.25rem 0;
+        padding: 1.25rem 1rem;
+        margin-bottom: 2rem;
     }
     
     .filters-wrapper {
         flex-direction: column;
         align-items: stretch;
+        gap: 0.75rem;
     }
     
     .filter-group {
         min-width: 100%;
+        width: 100%;
+    }
+    
+    .filter-select {
+        width: 100%;
     }
     
     .btn-apply-filters,
@@ -499,35 +515,48 @@
     }
 }
 
-/* Mobile (480px - 600px) */
+/* Mobile grande (480px - 600px) - Mantém 3 colunas */
 @media (max-width: 600px) {
-    .populares-games-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
-    }
-    
-    .populares-games-grid .game-card-image {
-        height: 240px;
-    }
-}
-
-/* Mobile pequeno (< 480px) */
-@media (max-width: 480px) {
     .populares-hero {
-        padding: 1.5rem 0 1rem;
+        padding: 1.75rem 0.75rem 1rem;
     }
     
     .populares-title {
-        font-size: 1.75rem;
+        font-size: 1.85rem;
     }
     
     .populares-subtitle {
         font-size: 0.9rem;
+        padding: 0 0.5rem;
+    }
+    
+    .filters-section {
+        padding: 1rem 0.75rem;
+    }
+    
+    .filters-wrapper {
+        gap: 0.65rem;
+    }
+    
+    .filter-label {
+        font-size: 0.8rem;
+    }
+    
+    .filter-select {
+        padding: 0.7rem 0.9rem;
+        font-size: 0.9rem;
+        padding-right: 2.25rem;
+    }
+    
+    .btn-apply-filters,
+    .btn-clear-filters {
+        padding: 0.7rem 1.25rem;
+        font-size: 0.9rem;
     }
     
     .populares-games-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
     }
     
     .populares-games-grid .game-card-image {
@@ -536,6 +565,82 @@
     
     .populares-games-grid .game-card-hover-title {
         font-size: 0.85rem;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+    }
+    
+    .populares-games-grid .quick-action-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
+    }
+    
+    .populares-games-grid .quick-actions {
+        gap: 0.4rem;
+    }
+}
+
+/* Mobile médio (380px - 480px) - Mantém 3 colunas */
+@media (max-width: 480px) {
+    .populares-hero {
+        padding: 1.5rem 0.5rem 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .populares-title {
+        font-size: 1.65rem;
+    }
+    
+    .populares-subtitle {
+        font-size: 0.85rem;
+        padding: 0 0.5rem;
+    }
+    
+    .filters-section {
+        padding: 1rem 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .filters-wrapper {
+        gap: 0.6rem;
+    }
+    
+    .filter-label {
+        font-size: 0.75rem;
+        gap: 0.35rem;
+    }
+    
+    .filter-label i {
+        font-size: 0.8rem;
+    }
+    
+    .filter-select {
+        padding: 0.65rem 0.85rem;
+        font-size: 0.875rem;
+        padding-right: 2rem;
+        border-radius: 6px;
+    }
+    
+    .btn-apply-filters,
+    .btn-clear-filters {
+        padding: 0.65rem 1.15rem;
+        font-size: 0.875rem;
+        border-radius: 6px;
+    }
+    
+    .populares-games-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .populares-games-grid .game-card-image {
+        height: 180px;
+    }
+    
+    .populares-games-grid .game-card-hover-title {
+        font-size: 0.8rem;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
     }
     
     .populares-games-grid .quick-action-btn {
@@ -545,18 +650,7 @@
     }
     
     .populares-games-grid .quick-actions {
-        gap: 0.35rem;
-    }
-    
-    .filter-select {
-        padding: 0.65rem 0.85rem;
-        font-size: 0.9rem;
-    }
-    
-    .btn-apply-filters,
-    .btn-clear-filters {
-        padding: 0.65rem 1.25rem;
-        font-size: 0.9rem;
+        gap: 0.3rem;
     }
     
     .pagination-list {
@@ -581,5 +675,74 @@
     
     .pagination-next::after {
         content: '>';
+    }
+}
+
+/* Mobile pequeno (< 380px) - Mantém 3 colunas mas compacto */
+@media (max-width: 380px) {
+    .populares-hero {
+        padding: 1.25rem 0.5rem 0.75rem;
+        margin-bottom: 1.25rem;
+    }
+    
+    .populares-title {
+        font-size: 1.5rem;
+    }
+    
+    .populares-subtitle {
+        font-size: 0.8rem;
+    }
+    
+    .filters-section {
+        padding: 0.85rem 0.5rem;
+        margin-bottom: 1.25rem;
+    }
+    
+    .filters-wrapper {
+        gap: 0.55rem;
+    }
+    
+    .filter-label {
+        font-size: 0.7rem;
+    }
+    
+    .filter-select {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.825rem;
+        padding-right: 1.85rem;
+    }
+    
+    .btn-apply-filters,
+    .btn-clear-filters {
+        padding: 0.6rem 1rem;
+        font-size: 0.825rem;
+        gap: 0.35rem;
+    }
+    
+    .btn-apply-filters i,
+    .btn-clear-filters i {
+        font-size: 0.85rem;
+    }
+    
+    .populares-games-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.4rem;
+    }
+    
+    .populares-games-grid .game-card-image {
+        height: 160px;
+    }
+    
+    .populares-games-grid .quick-action-btn {
+        width: 26px;
+        height: 26px;
+        font-size: 0.8rem;
+    }
+    
+    .pagination-link {
+        min-width: 30px;
+        height: 30px;
+        padding: 0 0.4rem;
+        font-size: 0.75rem;
     }
 }
