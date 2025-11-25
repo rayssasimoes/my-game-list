@@ -47,15 +47,7 @@
                         </div>
                     </div>
 
-                    <!-- Checkbox Manter Conectado -->
-                    <div class="mb-3">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="remember_me" name="remember_me">
-                            <label class="form-check-label" for="remember_me">
-                                Manter conectado
-                            </label>
-                        </div>
-                    </div>
+                    <!-- (removed) Manter Conectado - simplified login modal -->
                     
                     <!-- Botões de ação -->
                     <div class="login-actions">
