@@ -1,7 +1,37 @@
 /* ===== HERO SECTION (USUÁRIO LOGADO) ===== */
 .hero-section {
     text-align: center;
+    margin-top: 2.5rem;
     margin-bottom: 2rem;
+}
+
+/* ==========================================
+   Ocultar controles nativos de password
+   (reveal / clear) injetados pelos navegadores
+   ========================================== */
+/* Microsoft Edge / IE */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* WebKit-based browsers (Chrome, Safari, Edge Chromium)
+   - cobre botões de autofill/credentials e decorações internas */
+input[type="password"]::-webkit-textfield-decoration-container,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-clear-button {
+    display: none !important;
+    visibility: hidden !important;
+    -webkit-appearance: none !important;
+}
+
+/* Fallback geral: remover aparência nativa (pode ajudar em alguns casos) */
+input[type="password"] {
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .hero-title {
@@ -22,6 +52,7 @@
 /* Welcome message compacta (não logado) */
 .welcome-message-compact {
     text-align: center;
+    margin-top: 2.5rem;
     margin-bottom: 2rem;
 }
 

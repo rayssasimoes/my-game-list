@@ -1120,3 +1120,60 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// ==== FORGOT PASSWORD FORM ====
+document.addEventListener('DOMContentLoaded', () => {
+    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+    if (!forgotPasswordForm) return;
+    
+    const messageDiv = document.getElementById('forgot-password-message');
+    const submitBtn = document.getElementById('forgotPasswordBtn');
+    
+    forgotPasswordForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Desabilitar botão
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enviando...';
+        
+        // Esconder mensagem anterior
+        if (messageDiv) messageDiv.style.display = 'none';
+        
+        const formData = new FormData(this);
+        
+        fetch('includes/password-reset.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Enviar Link de Redefinição';
+            
+            if (messageDiv) {
+                messageDiv.style.display = 'block';
+                messageDiv.className = 'alert';
+                
+                if (data.success) {
+                    messageDiv.classList.add('alert-success');
+                    messageDiv.innerHTML = '<i class="bi bi-check-circle"></i> ' + data.message;
+                    forgotPasswordForm.reset();
+                } else {
+                    messageDiv.classList.add('alert-error');
+                    messageDiv.innerHTML = '<i class="bi bi-exclamation-circle"></i> ' + data.message;
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Enviar Link de Redefinição';
+            
+            if (messageDiv) {
+                messageDiv.style.display = 'block';
+                messageDiv.className = 'alert alert-error';
+                messageDiv.innerHTML = '<i class="bi bi-exclamation-circle"></i> Erro ao processar solicitação.';
+            }
+        });
+    });
+});

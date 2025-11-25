@@ -84,6 +84,26 @@ CREATE TABLE IF NOT EXISTS game_user (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- =========================================
+-- TABELA: password_resets
+-- Armazena tokens de redefinição de senha
+-- =========================================
+CREATE TABLE IF NOT EXISTS password_resets (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    fk_user_id BIGINT UNSIGNED NOT NULL,
+    token VARCHAR(64) NOT NULL UNIQUE,
+    expires_at DATETIME NOT NULL,
+    created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+    
+    CONSTRAINT fk_password_resets_user 
+        FOREIGN KEY (fk_user_id) 
+        REFERENCES users(id) 
+        ON DELETE CASCADE,
+    
+    INDEX idx_token (token),
+    INDEX idx_expires_at (expires_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- =========================================
 -- VERIFICAÇÃO
 -- =========================================
 SELECT 

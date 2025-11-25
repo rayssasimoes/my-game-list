@@ -156,10 +156,11 @@
                 <button type="button" class="btn-close" onclick="closeModal('forgotPasswordModal')">&times;</button>
             </div>
             <div class="modal-body">
+                <!-- Mensagem de feedback -->
+                <div id="forgot-password-message" class="alert" style="display: none; margin-bottom: 1rem;"></div>
+                
                 <p>Insira o seu email cadastrado para receber um link de redefinição de senha.</p>
                 <form method="POST" action="includes/password-reset.php" id="forgotPasswordForm">
-                    <input type="hidden" name="action" value="forgot-password">
-                    
                     <!-- Campo de Email -->
                     <div class="mb-3">
                         <label for="forgot_email" class="form-label">Email</label>
@@ -171,7 +172,7 @@
                         </div>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary-custom w-100">Enviar Link para login</button>
+                    <button type="submit" class="btn btn-primary-custom w-100" id="forgotPasswordBtn">Enviar Link de Redefinição</button>
                 </form>
             </div>
         </div>
