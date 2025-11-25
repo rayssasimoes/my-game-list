@@ -221,11 +221,11 @@ include 'includes/header.php';
                     <!-- Botão Anterior -->
                     <?php if ((int)$currentPageInt > 1): ?>
                         <li class="pagination-item">
-                            <a href="<?= htmlspecialchars($buildPageUrl($currentPageInt - 1, $baseParams)) ?>" class="pagination-link pagination-prev">&lt; Prev</a>
+                            <a href="<?= htmlspecialchars($buildPageUrl($currentPageInt - 1, $baseParams)) ?>" class="pagination-link pagination-prev">&lt;</a>
                         </li>
                     <?php else: ?>
                         <li class="pagination-item">
-                            <span class="pagination-link pagination-prev disabled">&lt; Prev</span>
+                            <span class="pagination-link pagination-prev disabled">&lt;</span>
                         </li>
                     <?php endif; ?>
 
@@ -259,11 +259,11 @@ include 'includes/header.php';
                     <!-- Botão Próximo -->
                     <?php if ($currentPageInt < $totalPagesInt): ?>
                         <li class="pagination-item">
-                            <a href="<?= htmlspecialchars($buildPageUrl($currentPageInt + 1, $baseParams)) ?>" class="pagination-link pagination-next">Next &gt;</a>
+                            <a href="<?= htmlspecialchars($buildPageUrl($currentPageInt + 1, $baseParams)) ?>" class="pagination-link pagination-next">&gt;</a>
                         </li>
                     <?php else: ?>
                         <li class="pagination-item">
-                            <span class="pagination-link pagination-next disabled">Next &gt;</span>
+                            <span class="pagination-link pagination-next disabled">&gt;</span>
                         </li>
                     <?php endif; ?>
                 </ul>

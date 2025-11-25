@@ -315,6 +315,7 @@
 .pagination-list {
     display: flex;
     gap: 0.5rem;
+    flex-wrap: wrap; /* permitir quebra de linha quando necessário (sem scroll) */
     list-style: none;
     padding: 0;
     margin: 0;
@@ -323,6 +324,7 @@
 
 .pagination-item {
     display: flex;
+    flex: 0 0 auto; /* impedir que itens estiquem; manter tamanho fixo para touch targets */
 }
 
 .pagination-link {
@@ -341,6 +343,40 @@
     font-weight: 500;
     transition: all 0.2s ease;
     cursor: pointer;
+}
+
+/* Ajustes responsivos: permitir quebra e reduzir espaçamento em telas pequenas */
+@media (max-width: 768px) {
+    .pagination-container {
+        padding: 1rem 0 1.5rem;
+    }
+    .pagination-list {
+        white-space: nowrap;
+        gap: 0.35rem;
+        padding: 0 0.5rem;
+    }
+    .pagination-item {
+        display: inline-flex;
+    }
+    .pagination-link {
+        min-width: 36px;
+        height: 36px;
+        padding: 0 0.5rem;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .pagination-list {
+        gap: 0.25rem;
+        padding: 0 0.4rem;
+    }
+    .pagination-link {
+        min-width: 34px;
+        height: 34px;
+        padding: 0 0.4rem;
+        font-size: 0.8rem;
+    }
 }
 
 .pagination-link:hover:not(.disabled):not(.pagination-current) {
@@ -680,18 +716,7 @@
         font-size: 0.8rem;
     }
     
-    .pagination-prev span,
-    .pagination-next span {
-        display: none;
-    }
-    
-    .pagination-prev::before {
-        content: '<';
-    }
-    
-    .pagination-next::after {
-        content: '>';
-    }
+    /* manter os textos simples '<' e '>' — sem pseudo-elementos */
 }
 
 /* Mobile pequeno (< 380px) - Mantém 3 colunas mas compacto */
