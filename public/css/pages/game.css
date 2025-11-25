@@ -3,16 +3,17 @@
    ========================================== */
 
 .game-details-page {
-    padding: 2rem 0;
+    padding: 1.5rem 0;
     min-height: calc(100vh - 120px);
 }
 
 .game-details-layout {
     display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 2.5rem;
+    grid-template-columns: 280px 1fr;
+    gap: 2rem;
     max-width: 1400px;
     margin: 0 auto;
+    padding: 0 1rem;
 }
 
 /* ==========================================
@@ -22,7 +23,7 @@
 .game-sidebar {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
 .game-cover-wrapper {
@@ -42,19 +43,19 @@
 .game-status-buttons {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.5rem;
 }
 
 .status-btn {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.875rem 1rem;
+    gap: 0.6rem;
+    padding: 0.7rem 0.85rem;
     background-color: rgba(255, 255, 255, 0.05);
     color: rgba(255, 255, 255, 0.7);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 6px;
-    font-size: 0.938rem;
+    font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -62,7 +63,7 @@
 }
 
 .status-btn i {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
 }
 
 .status-btn:hover {
@@ -86,44 +87,44 @@
     background: linear-gradient(135deg, rgba(0, 123, 255, 0.15) 0%, rgba(0, 86, 179, 0.1) 100%);
     border: 1px solid rgba(0, 123, 255, 0.3);
     border-radius: 8px;
-    padding: 1.5rem;
+    padding: 1.25rem;
     text-align: center;
 }
 
 .cta-icon {
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .cta-icon i {
-    font-size: 3rem;
+    font-size: 2.5rem;
     color: #4da3ff;
 }
 
 .cta-title {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 700;
     color: #ffffff;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
 }
 
 .cta-description {
-    font-size: 0.938rem;
+    font-size: 0.875rem;
     color: rgba(255, 255, 255, 0.7);
     line-height: 1.5;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
 }
 
 .cta-buttons {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.6rem;
 }
 
 .btn-cta-primary,
 .btn-cta-secondary {
-    padding: 0.75rem 1.25rem;
+    padding: 0.65rem 1.15rem;
     border-radius: 6px;
-    font-size: 0.938rem;
+    font-size: 0.875rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -153,26 +154,26 @@
 .game-stats-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
+    gap: 0.5rem;
 }
 
 .stat-card {
     background-color: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 6px;
-    padding: 1rem;
+    padding: 0.75rem;
     text-align: center;
 }
 
 .stat-value {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: #ffffff;
     margin-bottom: 0.25rem;
 }
 
 .stat-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: rgba(255, 255, 255, 0.6);
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -185,16 +186,16 @@
 .game-main-content {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 .game-header {
-    padding-bottom: 1rem;
+    padding-bottom: 0.75rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .game-title {
-    font-size: 2.5rem;
+    font-size: 2rem;
     font-weight: 700;
     color: #ffffff;
     margin: 0;
@@ -205,13 +206,13 @@
 .game-info-section {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.65rem;
 }
 
 .info-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem;
+    gap: 1.25rem;
 }
 
 .info-item {
@@ -221,7 +222,7 @@
 }
 
 .info-label {
-    font-size: 0.813rem;
+    font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.5);
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -229,7 +230,7 @@
 }
 
 .info-value {
-    font-size: 1rem;
+    font-size: 0.938rem;
     color: rgba(255, 255, 255, 0.9);
     font-weight: 500;
 }
@@ -239,35 +240,36 @@
     background-color: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 8px;
-    padding: 1.5rem;
+    padding: 1.25rem;
 }
 
 .section-title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: #ffffff;
-    margin-bottom: 1rem;
+    margin-bottom: 0.85rem;
 }
 
 .game-summary {
-    font-size: 1rem;
-    line-height: 1.7;
+    font-size: 0.938rem;
+    line-height: 1.6;
     color: rgba(255, 255, 255, 0.8);
     margin: 0;
 }
 
 /* Screenshots */
 .game-screenshots-section {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
 }
 
 .screenshots-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
 .screenshot-item {
+    position: relative;
     aspect-ratio: 16/9;
     border-radius: 6px;
     overflow: hidden;
@@ -280,6 +282,10 @@
     transform: scale(1.03);
 }
 
+.screenshot-item:hover .screenshot-overlay {
+    opacity: 1;
+}
+
 .screenshot-item img {
     width: 100%;
     height: 100%;
@@ -287,36 +293,166 @@
     display: block;
 }
 
+.screenshot-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.screenshot-overlay i {
+    font-size: 2rem;
+    color: white;
+}
+
+/* Modal de Screenshot */
+.screenshot-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+}
+
+.screenshot-modal.active {
+    display: flex;
+}
+
+.screenshot-modal-content {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.screenshot-modal-close {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+    z-index: 10001;
+}
+
+.screenshot-modal-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.screenshot-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+    z-index: 10001;
+}
+
+.screenshot-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.screenshot-prev {
+    left: 20px;
+}
+
+.screenshot-next {
+    right: 20px;
+}
+
+#screenshotModalImg {
+    max-width: 100%;
+    max-height: calc(90vh - 80px);
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.screenshot-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
+    width: 100%;
+    padding: 0 1rem;
+}
+
+.screenshot-download-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.938rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.screenshot-download-btn:hover {
+    background: #5568d3;
+    transform: translateY(-1px);
+}
+
+.screenshot-counter {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.938rem;
+    font-weight: 500;
+}
+
 /* ==========================================
    Responsividade
    ========================================== */
 
-/* Tablets (até 1024px) */
-@media (max-width: 1024px) {
+/* Tablets grandes (até 1200px) */
+@media (max-width: 1200px) {
     .game-details-layout {
-        grid-template-columns: 280px 1fr;
-        gap: 2rem;
-    }
-
-    .game-title {
-        font-size: 2rem;
-    }
-
-    .screenshots-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 260px 1fr;
+        gap: 1.75rem;
     }
 }
 
-/* Tablets pequenos (até 768px) */
-@media (max-width: 768px) {
+/* Tablets (até 1024px) */
+@media (max-width: 1024px) {
     .game-details-layout {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
-
-    .game-sidebar {
-        max-width: 400px;
-        margin: 0 auto;
+        grid-template-columns: 240px 1fr;
+        gap: 1.5rem;
     }
 
     .game-title {
@@ -325,22 +461,68 @@
 
     .screenshots-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
+    }
+    
+    .section-title {
+        font-size: 1.125rem;
+    }
+}
+
+/* Tablets pequenos (até 768px) */
+@media (max-width: 768px) {
+    .game-details-page {
+        padding: 1.25rem 0;
+    }
+    
+    .game-details-layout {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 0 0.75rem;
+    }
+
+    .game-sidebar {
+        max-width: 350px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .game-title {
+        font-size: 1.65rem;
+    }
+
+    .screenshots-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.65rem;
+    }
+    
+    .game-main-content {
+        gap: 1.25rem;
+    }
+    
+    .game-summary-section {
+        padding: 1rem;
+    }
+    
+    .game-summary {
+        font-size: 0.875rem;
+        line-height: 1.55;
     }
 }
 
 /* Mobile (até 576px) */
 @media (max-width: 576px) {
     .game-details-page {
-        padding: 1.5rem 0;
+        padding: 1rem 0;
     }
 
     .game-details-layout {
-        gap: 1.5rem;
+        gap: 1.25rem;
+        padding: 0 0.5rem;
     }
 
     .game-sidebar {
-        gap: 1rem;
+        gap: 0.85rem;
+        max-width: 100%;
     }
 
     .game-title {
@@ -348,37 +530,140 @@
     }
 
     .section-title {
-        font-size: 1.25rem;
+        font-size: 1.125rem;
+        margin-bottom: 0.75rem;
     }
 
     .game-stats-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
+        gap: 0.45rem;
     }
 
     .stat-card {
-        padding: 0.75rem;
+        padding: 0.65rem 0.5rem;
     }
 
     .stat-value {
-        font-size: 1.25rem;
+        font-size: 1.125rem;
+    }
+    
+    .stat-label {
+        font-size: 0.65rem;
     }
 
     .screenshots-grid {
         grid-template-columns: 1fr;
+        gap: 0.6rem;
     }
 
     .status-btn {
-        padding: 0.75rem;
-        font-size: 0.875rem;
+        padding: 0.65rem 0.75rem;
+        font-size: 0.813rem;
+        gap: 0.5rem;
     }
 
     .status-btn i {
-        font-size: 1.125rem;
+        font-size: 1rem;
     }
 
     .info-row {
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.85rem;
+    }
+    
+    .info-label {
+        font-size: 0.7rem;
+    }
+    
+    .info-value {
+        font-size: 0.875rem;
+    }
+    
+    .cta-icon i {
+        font-size: 2rem;
+    }
+    
+    .cta-title {
+        font-size: 1rem;
+    }
+    
+    .cta-description {
+        font-size: 0.813rem;
+    }
+    
+    /* Modal de Screenshot - Mobile */
+    .screenshot-modal-content {
+        max-width: 95vw;
+        max-height: 95vh;
+    }
+    
+    .screenshot-modal-close {
+        top: -45px;
+        width: 36px;
+        height: 36px;
+        font-size: 1.25rem;
+    }
+    
+    .screenshot-nav-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.25rem;
+    }
+    
+    .screenshot-prev {
+        left: 10px;
+    }
+    
+    .screenshot-next {
+        right: 10px;
+    }
+    
+    #screenshotModalImg {
+        max-height: calc(95vh - 70px);
+    }
+    
+    .screenshot-modal-footer {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 0 0.5rem;
+    }
+    
+    .screenshot-download-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.65rem 1rem;
+        font-size: 0.875rem;
+    }
+}
+
+/* Mobile muito pequeno (até 380px) */
+@media (max-width: 380px) {
+    .game-title {
+        font-size: 1.35rem;
+    }
+    
+    .section-title {
+        font-size: 1rem;
+    }
+    
+    .game-stats-grid {
+        gap: 0.4rem;
+    }
+    
+    .stat-value {
+        font-size: 1rem;
+    }
+    
+    .stat-label {
+        font-size: 0.625rem;
+    }
+    
+    .status-btn {
+        padding: 0.6rem 0.7rem;
+        font-size: 0.75rem;
+    }
+    
+    .game-summary {
+        font-size: 0.813rem;
     }
 }

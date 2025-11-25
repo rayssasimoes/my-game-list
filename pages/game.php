@@ -170,7 +170,7 @@ include 'includes/header.php';
 
                         <?php if (!empty($game['genres'])): ?>
                             <div class="info-item">
-                                <span class="info-label">Géneros:</span>
+                                <span class="info-label">Gêneros:</span>
                                 <span class="info-value"><?php echo htmlspecialchars(implode(', ', $game['genres'])); ?></span>
                             </div>
                         <?php endif; ?>
@@ -213,13 +213,16 @@ include 'includes/header.php';
                 <!-- Screenshots -->
                 <?php if (!empty($game['screenshots'])): ?>
                     <div class="game-screenshots-section">
-                        <h2 class="section-title">Capturas de Ecrã</h2>
+                        <h2 class="section-title">Capturas de Tela</h2>
                         <div class="screenshots-grid">
-                            <?php foreach (array_slice($game['screenshots'], 0, 6) as $screenshot): ?>
-                                <div class="screenshot-item">
+                            <?php foreach (array_slice($game['screenshots'], 0, 6) as $index => $screenshot): ?>
+                                <div class="screenshot-item" onclick="openScreenshotModal(<?php echo $index; ?>)">
                                     <img src="<?php echo htmlspecialchars($screenshot); ?>" 
-                                         alt="Screenshot" 
+                                         alt="Captura de tela <?php echo $index + 1; ?>" 
                                          loading="lazy">
+                                    <div class="screenshot-overlay">
+                                        <i class="bi bi-zoom-in"></i>
+                                    </div>
                                 </div>
                             <?php endforeach; ?>
                         </div>
@@ -230,7 +233,75 @@ include 'includes/header.php';
     </div>
 </div>
 
+<!-- Modal de Screenshot -->
+<div id="screenshotModal" class="screenshot-modal">
+    <div class="screenshot-modal-content">
+        <button class="screenshot-modal-close" onclick="closeScreenshotModal()">
+            <i class="bi bi-x-lg"></i>
+        </button>
+        <button class="screenshot-nav-btn screenshot-prev" onclick="navigateScreenshot(-1)">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+        <button class="screenshot-nav-btn screenshot-next" onclick="navigateScreenshot(1)">
+            <i class="bi bi-chevron-right"></i>
+        </button>
+        <img id="screenshotModalImg" src="" alt="Screenshot expandida">
+        <div class="screenshot-modal-footer">
+            <button class="screenshot-download-btn" onclick="downloadScreenshot()">
+                <i class="bi bi-download"></i> Baixar Imagem
+            </button>
+            <span class="screenshot-counter"><span id="currentScreenshot">1</span> / <span id="totalScreenshots">1</span></span>
+        </div>
+    </div>
+</div>
+
 <script>
+// Screenshots
+const screenshots = <?php echo json_encode(!empty($game['screenshots']) ? array_slice($game['screenshots'], 0, 6) : []); ?>;
+let currentScreenshotIndex = 0;
+
+function openScreenshotModal(index) {
+    currentScreenshotIndex = index;
+    updateScreenshotModal();
+    document.getElementById('screenshotModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeScreenshotModal() {
+    document.getElementById('screenshotModal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function navigateScreenshot(direction) {
+    currentScreenshotIndex += direction;
+    if (currentScreenshotIndex < 0) currentScreenshotIndex = screenshots.length - 1;
+    if (currentScreenshotIndex >= screenshots.length) currentScreenshotIndex = 0;
+    updateScreenshotModal();
+}
+
+function updateScreenshotModal() {
+    document.getElementById('screenshotModalImg').src = screenshots[currentScreenshotIndex];
+    document.getElementById('currentScreenshot').textContent = currentScreenshotIndex + 1;
+    document.getElementById('totalScreenshots').textContent = screenshots.length;
+}
+
+function downloadScreenshot() {
+    const link = document.createElement('a');
+    link.href = screenshots[currentScreenshotIndex];
+    link.download = `screenshot-${currentScreenshotIndex + 1}.jpg`;
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Fechar modal com ESC
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeScreenshotModal();
+    if (e.key === 'ArrowLeft') navigateScreenshot(-1);
+    if (e.key === 'ArrowRight') navigateScreenshot(1);
+});
+
 // Handler para os botões de status
 document.addEventListener('DOMContentLoaded', function() {
     const statusButtons = document.querySelectorAll('.status-btn');
@@ -242,59 +313,102 @@ document.addEventListener('DOMContentLoaded', function() {
             const gameCover = this.dataset.gameCover;
             const status = this.dataset.status;
             
+            // Verificar se o botão já está ativo (remover do jogo da lista)
+            const isActive = this.classList.contains('active');
+            
             // Desabilitar botão temporariamente
             const btnElement = this;
             btnElement.disabled = true;
             btnElement.style.opacity = '0.6';
             
-            // Fazer requisição AJAX para adicionar o jogo
-            fetch('includes/add-to-list.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `game_id=${gameId}&status=${status}&game_name=${encodeURIComponent(gameName)}&game_cover=${encodeURIComponent(gameCover)}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Remover classe active de todos os botões
-                    statusButtons.forEach(btn => btn.classList.remove('active'));
-                    
-                    // Marcar apenas o botão clicado como ativo
-                    btnElement.classList.add('active');
-                    
-                    // Feedback visual temporário
-                    const originalHTML = btnElement.innerHTML;
-                    btnElement.innerHTML = '<i class="bi bi-check"></i> <span>Adicionado!</span>';
-                    
-                    setTimeout(() => {
-                        btnElement.innerHTML = originalHTML;
+            if (isActive) {
+                // Remover jogo da lista
+                fetch('includes/remove-from-list.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `game_id=${gameId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remover classe active
+                        btnElement.classList.remove('active');
+                        
+                        // Feedback visual temporário
+                        const originalHTML = btnElement.innerHTML;
+                        btnElement.innerHTML = '<i class="bi bi-check"></i> <span>Removido!</span>';
+                        
+                        setTimeout(() => {
+                            btnElement.innerHTML = originalHTML;
+                            btnElement.style.opacity = '1';
+                            btnElement.disabled = false;
+                        }, 1500);
+                        
+                        showGameNotification('Jogo removido da lista!', 'success');
+                    } else {
                         btnElement.style.opacity = '1';
                         btnElement.disabled = false;
-                    }, 1500);
-                    
-                    // Mostrar notificação de sucesso
-                    const messages = {
-                        'completed': 'Marcado como Jogado!',
-                        'playing': 'Adicionado em Jogando!',
-                        'want_to_play': 'Adicionado à Lista de Desejos!',
-                        'dropped': 'Marcado como Abandonado!'
-                    };
-                    showGameNotification(messages[status] || 'Jogo adicionado à sua lista!', 'success');
-                } else {
-                    // Erro ao adicionar
+                        showGameNotification(data.message || 'Erro ao remover jogo', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
                     btnElement.style.opacity = '1';
                     btnElement.disabled = false;
-                    showGameNotification(data.message || 'Erro ao adicionar jogo', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                btnElement.style.opacity = '1';
-                btnElement.disabled = false;
-                showGameNotification('Erro ao adicionar jogo', 'error');
-            });
+                    showGameNotification('Erro ao remover jogo', 'error');
+                });
+            } else {
+                // Adicionar jogo à lista
+                fetch('includes/add-to-list.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `game_id=${gameId}&status=${status}&game_name=${encodeURIComponent(gameName)}&game_cover=${encodeURIComponent(gameCover)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Remover classe active de todos os botões
+                        statusButtons.forEach(btn => btn.classList.remove('active'));
+                        
+                        // Marcar apenas o botão clicado como ativo
+                        btnElement.classList.add('active');
+                        
+                        // Feedback visual temporário
+                        const originalHTML = btnElement.innerHTML;
+                        btnElement.innerHTML = '<i class="bi bi-check"></i> <span>Adicionado!</span>';
+                        
+                        setTimeout(() => {
+                            btnElement.innerHTML = originalHTML;
+                            btnElement.style.opacity = '1';
+                            btnElement.disabled = false;
+                        }, 1500);
+                        
+                        // Mostrar notificação de sucesso
+                        const messages = {
+                            'completed': 'Marcado como Jogado!',
+                            'playing': 'Adicionado em Jogando!',
+                            'want_to_play': 'Adicionado à Lista de Desejos!',
+                            'dropped': 'Marcado como Abandonado!'
+                        };
+                        showGameNotification(messages[status] || 'Jogo adicionado à sua lista!', 'success');
+                    } else {
+                        // Erro ao adicionar
+                        btnElement.style.opacity = '1';
+                        btnElement.disabled = false;
+                        showGameNotification(data.message || 'Erro ao adicionar jogo', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    btnElement.style.opacity = '1';
+                    btnElement.disabled = false;
+                    showGameNotification('Erro ao adicionar jogo', 'error');
+                });
+            }
         });
     });
     

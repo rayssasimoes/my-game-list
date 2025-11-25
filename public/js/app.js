@@ -757,82 +757,114 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function addGameToList(gameId, status, btnElement, gameName, gameCover) {
+    // Verificar se o botão já está ativo (remover do jogo da lista)
+    const isActive = btnElement.classList.contains('active');
+    
     // Mostrar feedback visual
     btnElement.disabled = true;
     btnElement.style.opacity = '0.6';
     
-    console.log('Tentando adicionar jogo:', gameId, 'com status:', status);
-    console.log('Nome:', gameName, 'Cover:', gameCover);
-    
-    // Caminho relativo à raiz do projeto
-    const url = 'includes/add-to-list.php';
-    
-    console.log('URL da requisição:', url);
-    
-    // Fazer requisição AJAX para adicionar o jogo
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `game_id=${gameId}&status=${status}&game_name=${encodeURIComponent(gameName)}&game_cover=${encodeURIComponent(gameCover)}`
-    })
-    .then(response => {
-        console.log('Response status:', response.status);
-        return response.text().then(text => {
-            console.log('Response text:', text);
+    if (isActive) {
+        // Remover jogo da lista
+        console.log('Removendo jogo:', gameId);
+        
+        fetch('includes/remove-from-list.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `game_id=${gameId}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Remover classe active
+                btnElement.classList.remove('active');
+                
+                // Feedback visual temporário
+                const originalHTML = btnElement.innerHTML;
+                btnElement.innerHTML = '<i class="bi bi-check"></i>';
+                
+                setTimeout(() => {
+                    btnElement.innerHTML = originalHTML;
+                    btnElement.style.opacity = '1';
+                    btnElement.disabled = false;
+                }, 1000);
+                
+                showNotification('Jogo removido da lista!', 'success');
+            } else {
+                btnElement.style.opacity = '1';
+                btnElement.disabled = false;
+                showNotification(data.message || 'Erro ao remover jogo', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao remover:', error);
+            btnElement.style.opacity = '1';
+            btnElement.disabled = false;
+            showNotification('Erro ao remover jogo', 'error');
+        });
+    } else {
+        // Adicionar jogo à lista
+        console.log('Adicionando jogo:', gameId, 'com status:', status);
+        
+        fetch('includes/add-to-list.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `game_id=${gameId}&status=${status}&game_name=${encodeURIComponent(gameName)}&game_cover=${encodeURIComponent(gameCover)}`
+        })
+        .then(response => response.text().then(text => {
             try {
                 return JSON.parse(text);
             } catch (e) {
                 console.error('Erro ao fazer parse do JSON:', e);
-                console.error('Resposta recebida:', text);
                 throw new Error('Resposta inválida do servidor');
             }
-        });
-    })
-    .then(data => {
-        console.log('Data recebida:', data);
-        if (data.success) {
-            // Remover classe active de todos os botões do mesmo card
-            const card = btnElement.closest('.game-card');
-            const allBtns = card.querySelectorAll('.quick-action-btn[data-action]:not([data-action="more"])');
-            allBtns.forEach(btn => btn.classList.remove('active'));
-            
-            // Marcar apenas o botão clicado como ativo
-            btnElement.classList.add('active');
-            
-            // Feedback visual temporário
-            const originalHTML = btnElement.innerHTML;
-            btnElement.innerHTML = '<i class="bi bi-check"></i>';
-            
-            setTimeout(() => {
-                btnElement.innerHTML = originalHTML;
+        }))
+        .then(data => {
+            if (data.success) {
+                // Remover classe active de todos os botões do mesmo card
+                const card = btnElement.closest('.game-card');
+                const allBtns = card.querySelectorAll('.quick-action-btn[data-action]:not([data-action="more"])');
+                allBtns.forEach(btn => btn.classList.remove('active'));
+                
+                // Marcar apenas o botão clicado como ativo
+                btnElement.classList.add('active');
+                
+                // Feedback visual temporário
+                const originalHTML = btnElement.innerHTML;
+                btnElement.innerHTML = '<i class="bi bi-check"></i>';
+                
+                setTimeout(() => {
+                    btnElement.innerHTML = originalHTML;
+                    btnElement.style.opacity = '1';
+                    btnElement.disabled = false;
+                }, 1000);
+                
+                // Mostrar notificação de sucesso
+                const messages = {
+                    'completed': 'Marcado como Jogado!',
+                    'playing': 'Adicionado em Jogando!',
+                    'want_to_play': 'Adicionado à Lista de Desejos!',
+                    'dropped': 'Marcado como Abandonado!'
+                };
+                showNotification(messages[status] || 'Jogo adicionado à sua lista!', 'success');
+            } else {
+                console.error('Erro retornado pelo servidor:', data.message);
                 btnElement.style.opacity = '1';
                 btnElement.disabled = false;
-            }, 1000);
-            
-            // Mostrar notificação de sucesso
-            const messages = {
-                'completed': 'Marcado como Jogado!',
-                'playing': 'Adicionado em Jogando!',
-                'want_to_play': 'Adicionado à Lista de Desejos!',
-                'dropped': 'Marcado como Abandonado!'
-            };
-            showNotification(messages[status] || 'Jogo adicionado à sua lista!', 'success');
-        } else {
-            // Erro ao adicionar
-            console.error('Erro retornado pelo servidor:', data.message);
+                showNotification(data.message || 'Erro ao adicionar jogo', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error completo:', error);
             btnElement.style.opacity = '1';
             btnElement.disabled = false;
-            showNotification(data.message || 'Erro ao adicionar jogo', 'error');
-        }
-    })
-    .catch(error => {
-        console.error('Error completo:', error);
-        btnElement.style.opacity = '1';
-        btnElement.disabled = false;
-        showNotification('Erro ao adicionar jogo: ' + error.message, 'error');
-    });
+            showNotification('Erro ao adicionar jogo: ' + error.message, 'error');
+        });
+    }
 }
 
 function showNotification(message, type = 'success') {
