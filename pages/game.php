@@ -81,7 +81,13 @@ include 'includes/header.php';
             <!-- Coluna Esquerda: Capa e Ações -->
             <aside class="game-sidebar">
                 <div class="game-cover-wrapper">
-                    <img src="<?php echo htmlspecialchars($game['cover']); ?>" 
+                    <?php
+                        $cover1 = $game['cover'];
+                        // Tentar derivar uma versão maior (t_original) para telas 2x
+                        $cover2 = preg_replace('/t_[^\\/]+/', 't_original', $cover1);
+                    ?>
+                    <img src="<?php echo htmlspecialchars($cover1); ?>" 
+                         srcset="<?php echo htmlspecialchars($cover1); ?> 1x, <?php echo htmlspecialchars($cover2); ?> 2x"
                          alt="<?php echo htmlspecialchars($game['name']); ?>" 
                          class="game-cover-large">
                 </div>

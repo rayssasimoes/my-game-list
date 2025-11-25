@@ -743,3 +743,10 @@ document.addEventListener('click', (e) => {
     }
 });
 </script>
+<script>
+document.addEventListener('click', (e) => {
+    if (e.target.id === 'editGameModal') {
+        closeEditGameModal();
+    }
+});
+</script>

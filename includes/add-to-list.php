@@ -72,7 +72,13 @@ try {
         
         // Criar slug simples a partir do nome
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $gameName)));
-        
+
+        // Normalizar cover_url para uma versão maior quando possível
+        if ($gameCover) {
+            // Trocar tokens de tamanho (ex: t_thumb, t_cover_small) por t_720p para melhor qualidade
+            $gameCover = preg_replace('/t_[^\\/]+/', 't_720p', $gameCover);
+        }
+
         // Inserir jogo com igdb_id
         $stmt = $db->prepare("
             INSERT INTO games (igdb_id, name, slug, cover_url, created_at, updated_at) 

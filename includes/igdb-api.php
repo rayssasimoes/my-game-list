@@ -72,6 +72,9 @@ function getIGDBToken() {
     return null;
 }
 
+// Incluir tradução (se disponível)
+require_once __DIR__ . '/translate.php';
+
 // Função para fazer requisição na API do IGDB
 function igdbRequest($endpoint, $query) {
     $token = getIGDBToken();
@@ -340,7 +343,7 @@ function getGameDetails($gameId) {
     
     $game = $games[0];
     $coverUrl = isset($game['cover']['url']) 
-        ? str_replace('t_thumb', 't_cover_big', 'https:' . $game['cover']['url'])
+        ? str_replace('t_thumb', 't_1080p', 'https:' . $game['cover']['url'])
         : 'https://via.placeholder.com/264x352?text=No+Image';
     
     // Processar data de lançamento
@@ -370,11 +373,21 @@ function getGameDetails($gameId) {
         }
     }
     
+    // Traduzir summary para pt-BR quando possível
+    $summaryText = $game['summary'] ?? 'Sem descrição disponível';
+    if (!empty($summaryText) && function_exists('translateText')) {
+        $translated = translateText($summaryText, 'pt-BR', 'en');
+        // Caso a tradução retorne uma mensagem de erro, manter o original
+        if (!preg_match('/QUERY\s+LENGTH\s+LIMIT|MAX\s+ALLOWED\s+QUERY|LENGTH\s+LIMIT\s+EXCEEDED/i', $translated)) {
+            $summaryText = $translated;
+        }
+    }
+
     return [
         'id' => $game['id'],
         'name' => $game['name'],
         'cover' => $coverUrl,
-        'summary' => $game['summary'] ?? 'Sem descrição disponível',
+        'summary' => $summaryText,
         'genres' => array_column($game['genres'] ?? [], 'name'),
         'platforms' => array_column($game['platforms'] ?? [], 'name'),
         'release_date' => $releaseDate,

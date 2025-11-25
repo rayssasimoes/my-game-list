@@ -300,6 +300,11 @@ include 'includes/header.php';
                 <button type="submit" name="save_profile" class="btn btn-primary">
                     <i class="bi bi-check-circle"></i> Salvar Alterações
                 </button>
+                
+                <!-- Link de Excluir Conta (abaixo do botão Salvar Alterações) -->
+                <div style="width:100%; display:flex; justify-content:center; margin:1.5rem 0 1.5rem 0;">
+                    <a href="#" class="delete-account-link" onclick="openDeleteAccountModal(); return false;" style="color:#6b7280; text-decoration:underline; font-weight:500;">Excluir minha conta</a>
+                </div>
             </form>
             
             <!-- Informações da Conta -->
@@ -472,3 +477,71 @@ include 'includes/header.php';
 </div>
 
 <?php include 'includes/footer.php'; ?>
+
+<!-- (Link de exclusão movido para ficar abaixo do botão de salvar alterações) -->
+
+<!-- Modal: Excluir Conta -->
+<div id="deleteAccountModal" class="modal">
+    <div class="modal-content modal-small">
+        <div class="modal-header">
+            <h2 class="modal-title">Confirmar Exclusão</h2>
+            <button class="modal-close" onclick="closeDeleteAccountModal()">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p>Tem certeza que deseja excluir permanentemente sua conta? Esta ação não pode ser desfeita e todos os seus dados serão apagados.</p>
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn-secondary" onclick="closeDeleteAccountModal()">Cancelar</button>
+            <button type="button" id="confirmDeleteAccountBtn" class="btn-danger" onclick="deleteAccount()">Excluir Conta</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function openDeleteAccountModal() {
+    const modal = document.getElementById('deleteAccountModal');
+    modal.classList.add('show');
+    document.body.classList.add('modal-open');
+}
+
+function closeDeleteAccountModal() {
+    const modal = document.getElementById('deleteAccountModal');
+    modal.classList.remove('show');
+    document.body.classList.remove('modal-open');
+}
+
+function deleteAccount() {
+    const btn = document.getElementById('confirmDeleteAccountBtn');
+    btn.disabled = true;
+    btn.textContent = 'Excluindo...';
+
+    fetch('includes/delete-account.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'confirm=1'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Redirecionar para home após logout
+            window.location.href = 'index.php';
+        } else {
+            alert(data.message || 'Erro ao excluir conta');
+            btn.disabled = false;
+            btn.textContent = 'Excluir Conta';
+            closeDeleteAccountModal();
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Erro ao excluir conta');
+        btn.disabled = false;
+        btn.textContent = 'Excluir Conta';
+        closeDeleteAccountModal();
+    });
+}
+</script>
