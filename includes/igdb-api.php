@@ -174,18 +174,25 @@ function getPopularGamesFiltered($limit = 48, $page = 1, $genreId = '', $platfor
     
     error_log("Buscando jogos da API - Página: {$page}, Limite: {$limit}, Gênero: {$genreId}, Plataforma: {$platformId}");
     
-    // Construir query com filtros - tornando mais flexível
+    // Construir query com filtros - tornar a filtragem server-side
     // Usar total_rating ao invés de rating para ter mais resultados
     $whereConditions = ['total_rating != null', 'cover != null'];
-    
-    if ($genreId) {
-        $whereConditions[] = "genres = [{$genreId}]";
+
+    // Suporte a múltiplos ids (ex: "12,34") - garantir sanitização
+    if (!empty($genreId)) {
+        $genreIds = array_filter(array_map('intval', explode(',', $genreId)));
+        if (!empty($genreIds)) {
+            $whereConditions[] = 'genres = (' . implode(',', $genreIds) . ')';
+        }
     }
-    
-    if ($platformId) {
-        $whereConditions[] = "platforms = [{$platformId}]";
+
+    if (!empty($platformId)) {
+        $platformIds = array_filter(array_map('intval', explode(',', $platformId)));
+        if (!empty($platformIds)) {
+            $whereConditions[] = 'platforms = (' . implode(',', $platformIds) . ')';
+        }
     }
-    
+
     $whereClause = implode(' & ', $whereConditions);
     
     $query = "
@@ -220,6 +227,54 @@ function getPopularGamesFiltered($limit = 48, $page = 1, $genreId = '', $platfor
     $_SESSION[$cacheKey . '_time'] = time();
     
     return $formatted;
+}
+
+// Retorna o total de jogos que casam com os filtros (usado para paginação)
+function getPopularGamesCount($genreId = '', $platformId = '') {
+    // Validar credenciais
+    if (empty(IGDB_CLIENT_ID) || empty(IGDB_CLIENT_SECRET)) {
+        error_log("ERRO: Credenciais IGDB não configuradas!");
+        return 0;
+    }
+
+    // Construir where igual ao usado em getPopularGamesFiltered
+    $whereConditions = ['total_rating != null', 'cover != null'];
+
+    if (!empty($genreId)) {
+        $genreIds = array_filter(array_map('intval', explode(',', $genreId)));
+        if (!empty($genreIds)) {
+            $whereConditions[] = 'genres = (' . implode(',', $genreIds) . ')';
+        }
+    }
+
+    if (!empty($platformId)) {
+        $platformIds = array_filter(array_map('intval', explode(',', $platformId)));
+        if (!empty($platformIds)) {
+            $whereConditions[] = 'platforms = (' . implode(',', $platformIds) . ')';
+        }
+    }
+
+    $whereClause = implode(' & ', $whereConditions);
+
+    // Usar 'count' no corpo da query para obter somente o número total
+    $query = "
+        where {$whereClause};
+        count;
+    ";
+
+    error_log("IGDB Count Query: " . $query);
+    $res = igdbRequest('games', $query);
+
+    // A resposta do IGDB para 'count' costuma ser um número simples ou um array com o número
+    if (is_int($res)) return $res;
+    if (is_array($res) && count($res) > 0) {
+        // Pode vir como [123] ou ['count' => 123]
+        $first = reset($res);
+        if (is_int($first)) return $first;
+        if (is_array($first) && isset($first['count'])) return (int)$first['count'];
+    }
+
+    return 0;
 }
 
 // Buscar jogos por termo de busca

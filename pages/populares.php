@@ -2,8 +2,25 @@
 $pageTitle = 'Jogos Populares - MyGameList';
 
 // Parâmetros de paginação
-$gamesPerPage = 48;
-$currentPage = (int)(isset($_GET['pageNum']) && is_numeric($_GET['pageNum']) ? max(1, (int)$_GET['pageNum']) : 1);
+// Usar 54 itens por página (divisível por 6 para manter o grid sem buracos)
+$gamesPerPage = 54;
+// Capturar número da página atual:
+// - Priorizar $_GET['page'] quando for numérico (compatibilidade com requisições que enviem apenas o número)
+// - Fallback para $_GET['pageNum'] (implementação existente)
+// - Padrão: 1
+$currentPageNum = 1;
+if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+    $currentPageNum = max(1, (int)$_GET['page']);
+} elseif (isset($_GET['pageNum']) && is_numeric($_GET['pageNum'])) {
+    $currentPageNum = max(1, (int)$_GET['pageNum']);
+}
+// Garantir tipo inteiro durante todo o uso
+$currentPageNum = (int) $currentPageNum;
+// Debug temporário: registrar _GET e o número de página calculado
+error_log('[DEBUG|Populares] $_GET: ' . json_encode($_GET));
+error_log('[DEBUG|Populares] currentPageNum (computed): ' . $currentPageNum);
+
+// Estimativa de páginas (teto) — será ajustada dinamicamente quando soubermos que não há próxima página
 $totalPages = 50; // Limitado para performance
 
 // Filtros
@@ -19,9 +36,14 @@ if (isset($_GET['clearcache'])) {
     exit;
 }
 
-// Buscar jogos
-$games = getPopularGamesFiltered($gamesPerPage, $currentPage, $selectedGenre, $selectedPlatform);
-error_log("[Populares] Jogos retornados: " . count($games));
+// Buscar jogos: solicitar exatamente $gamesPerPage itens (limit = 54 conforme solicitado)
+$games = getPopularGamesFiltered($gamesPerPage, $currentPageNum, $selectedGenre, $selectedPlatform);
+
+// Verificar existência provável de próxima página: se retornou exatamente $gamesPerPage, pode haver próxima.
+// Obs: para detectar com certeza é preciso solicitar +1 item ao IGDB (método alternativo),
+// mas aqui obedecemos ao requisito de enviar limit=54.
+$hasNextPage = count($games) === $gamesPerPage;
+error_log("[Populares] Jogos retornados (exibindo): " . count($games) . ", hasNext (provável): " . ($hasNextPage ? '1' : '0'));
 
 // Jogos do usuário
 $userGames = [];
@@ -87,7 +109,7 @@ include 'includes/header.php';
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" id="lista-jogos">
         <?php if (empty($games)): ?>
             <div class="no-games-message">
                 <i class="bi bi-search"></i>
@@ -156,58 +178,90 @@ include 'includes/header.php';
             <nav class="pagination-container">
                 <ul class="pagination-list">
                     <?php
-                    $currentPageInt = intval($currentPage);
-                    $totalPagesInt = intval($totalPages);
-                    $startPage = max(1, $currentPageInt - 2);
-                    $endPage = min($totalPagesInt, $currentPageInt + 2);
+                    // Preparar parâmetros base (preservar filtros)
+                    $baseParams = [];
+                    if ($selectedGenre) $baseParams['genre'] = $selectedGenre;
+                    if ($selectedPlatform) $baseParams['platform'] = $selectedPlatform;
+
+                    $currentPageInt = max(1, intval($currentPageNum));
+
+                    // Obter total de resultados do IGDB para calcular páginas corretamente
+                    $totalCount = 0;
+                    try {
+                        $totalCount = intval(getPopularGamesCount($selectedGenre, $selectedPlatform));
+                    } catch (Exception $e) {
+                        error_log('Erro ao obter contagem de jogos: ' . $e->getMessage());
+                        $totalCount = 0;
+                    }
+
+                    if ($totalCount > 0) {
+                        $totalPagesInt = max(1, intval(ceil($totalCount / $gamesPerPage)));
+                    } else {
+                        // Fallback: se não conseguimos obter a contagem, estimar com heurística
+                        $totalPagesInt = intval($totalPages);
+                        if (isset($hasNextPage) && !$hasNextPage) {
+                            $totalPagesInt = max($currentPageInt, 1);
+                        }
+                    }
+
+                    // Janela de páginas
+                    $window = 5;
+                    $half = floor($window / 2);
+                    $startPage = max(1, $currentPageInt - $half);
+                    $endPage = min($totalPagesInt, $startPage + $window - 1);
+                    $startPage = max(1, $endPage - $window + 1);
+
+                    // Helper para construir URL com parâmetros (closure local para evitar redeclaração)
+                    $buildPageUrl = function($pageNum, $baseParams) {
+                        $params = array_merge(['page' => 'populares', 'pageNum' => $pageNum], $baseParams);
+                        $url = 'index.php?' . http_build_query($params);
+                        // Adicionar âncora para rolar até a lista de jogos após carregamento
+                        return $url . '#lista-jogos';
+                    };
                     ?>
-                    
+
                     <!-- Botão Anterior -->
-                    <?php if ($currentPageInt > 1): ?>
+                    <?php if ((int)$currentPageInt > 1): ?>
                         <li class="pagination-item">
-                            <a href="index.php?page=populares&pageNum=<?php echo $currentPageInt - 1; ?><?php if($selectedGenre) echo '&genre='.urlencode($selectedGenre); ?><?php if($selectedPlatform) echo '&platform='.urlencode($selectedPlatform); ?>" class="pagination-link pagination-prev">&lt; Prev</a>
+                            <a href="<?= htmlspecialchars($buildPageUrl($currentPageInt - 1, $baseParams)) ?>" class="pagination-link pagination-prev">&lt; Prev</a>
                         </li>
                     <?php else: ?>
                         <li class="pagination-item">
                             <span class="pagination-link pagination-prev disabled">&lt; Prev</span>
                         </li>
                     <?php endif; ?>
-                    
-                    <!-- Primeira página -->
+
+                    <!-- Primeira página e reticências antes da janela -->
                     <?php if ($startPage > 1): ?>
-                        <li class="pagination-item">
-                            <a href="index.php?page=populares&pageNum=1<?php if($selectedGenre) echo '&genre='.urlencode($selectedGenre); ?><?php if($selectedPlatform) echo '&platform='.urlencode($selectedPlatform); ?>" class="pagination-link">1</a>
-                        </li>
+                        <li class="pagination-item"><a href="<?= htmlspecialchars($buildPageUrl(1, $baseParams)) ?>" class="pagination-link">1</a></li>
                         <?php if ($startPage > 2): ?>
                             <li class="pagination-item"><span class="pagination-ellipsis">...</span></li>
                         <?php endif; ?>
                     <?php endif; ?>
-                    
-                    <!-- Páginas do meio -->
+
+                    <!-- Páginas da janela -->
                     <?php for ($i = $startPage; $i <= $endPage; $i++): ?>
                         <li class="pagination-item">
-                            <?php if ($i == $currentPageInt): ?>
-                                <span class="pagination-link pagination-current"><?php echo $i; ?></span>
+                            <?php if ((int)$currentPageInt === (int)$i): ?>
+                                <span class="pagination-link pagination-current active" aria-current="page"><?php echo $i; ?></span>
                             <?php else: ?>
-                                <a href="index.php?page=populares&pageNum=<?php echo $i; ?><?php if($selectedGenre) echo '&genre='.urlencode($selectedGenre); ?><?php if($selectedPlatform) echo '&platform='.urlencode($selectedPlatform); ?>" class="pagination-link"><?php echo $i; ?></a>
+                                <a href="<?= htmlspecialchars($buildPageUrl($i, $baseParams)) ?>" class="pagination-link"><?php echo $i; ?></a>
                             <?php endif; ?>
                         </li>
                     <?php endfor; ?>
-                    
-                    <!-- Última página -->
+
+                    <!-- Reticências e última página -->
                     <?php if ($endPage < $totalPagesInt): ?>
                         <?php if ($endPage < $totalPagesInt - 1): ?>
                             <li class="pagination-item"><span class="pagination-ellipsis">...</span></li>
                         <?php endif; ?>
-                        <li class="pagination-item">
-                            <a href="index.php?page=populares&pageNum=<?php echo $totalPagesInt; ?><?php if($selectedGenre) echo '&genre='.urlencode($selectedGenre); ?><?php if($selectedPlatform) echo '&platform='.urlencode($selectedPlatform); ?>" class="pagination-link"><?php echo $totalPagesInt; ?></a>
-                        </li>
+                        <li class="pagination-item"><a href="<?= htmlspecialchars($buildPageUrl($totalPagesInt, $baseParams)) ?>" class="pagination-link"><?php echo $totalPagesInt; ?></a></li>
                     <?php endif; ?>
-                    
+
                     <!-- Botão Próximo -->
                     <?php if ($currentPageInt < $totalPagesInt): ?>
                         <li class="pagination-item">
-                            <a href="index.php?page=populares&pageNum=<?php echo $currentPageInt + 1; ?><?php if($selectedGenre) echo '&genre='.urlencode($selectedGenre); ?><?php if($selectedPlatform) echo '&platform='.urlencode($selectedPlatform); ?>" class="pagination-link pagination-next">Next &gt;</a>
+                            <a href="<?= htmlspecialchars($buildPageUrl($currentPageInt + 1, $baseParams)) ?>" class="pagination-link pagination-next">Next &gt;</a>
                         </li>
                     <?php else: ?>
                         <li class="pagination-item">

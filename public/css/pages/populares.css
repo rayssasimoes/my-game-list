@@ -357,6 +357,22 @@
     cursor: default;
 }
 
+/* Garantir que a classe .active também aplique o estado visual do botão atual */
+.pagination-link.active,
+.pagination-link.pagination-current.active {
+    background: #667eea;
+    border-color: #667eea;
+    color: #ffffff;
+}
+
+/* Regra de maior especificidade para evitar conflitos com outras folhas */
+.pagination-container .pagination-list .pagination-link.active,
+.pagination-container .pagination-list .pagination-link.pagination-current.active {
+    background: #667eea;
+    border-color: #667eea;
+    color: #ffffff;
+}
+
 .pagination-link.disabled {
     opacity: 0.3;
     cursor: not-allowed;
