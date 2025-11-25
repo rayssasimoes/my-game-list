@@ -16,9 +16,7 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 }
 // Garantir tipo inteiro durante todo o uso
 $currentPageNum = (int) $currentPageNum;
-// Debug temporário: registrar _GET e o número de página calculado
-error_log('[DEBUG|Populares] $_GET: ' . json_encode($_GET));
-error_log('[DEBUG|Populares] currentPageNum (computed): ' . $currentPageNum);
+// (debug removido)
 
 // Estimativa de páginas (teto) — será ajustada dinamicamente quando soubermos que não há próxima página
 $totalPages = 50; // Limitado para performance
