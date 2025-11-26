@@ -109,7 +109,11 @@ include 'includes/header.php';
                 <div class="profile-header-left">
                 <div class="profile-avatar">
                     <?php if (!empty($profileUser['avatar_path'])): ?>
-                        <img src="<?php echo htmlspecialchars($profileUser['avatar_path']); ?>" alt="Avatar de <?php echo htmlspecialchars($firstName); ?>">
+                        <img src="<?php echo htmlspecialchars($profileUser['avatar_path']); ?>" 
+                             alt="Avatar de <?php echo htmlspecialchars($firstName); ?>" 
+                             class="profile-avatar-img" 
+                             style="cursor: pointer;" 
+                             onclick="openProfileModal(this.src)">
                     <?php else: ?>
                         <svg class="default-avatar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
@@ -804,5 +808,111 @@ document.addEventListener('click', (e) => {
     if (e.target.id === 'editGameModal') {
         closeEditGameModal();
     }
+});
+</script>
+
+<!-- Modal: Visualização ampliada da foto de perfil -->
+<div id="profile-pic-modal" class="profile-pic-modal" style="display:none;">
+    <div class="profile-pic-backdrop" id="profilePicBackdrop">
+        <button class="profile-pic-close" id="profilePicClose" aria-label="Fechar">&times;</button>
+        <div class="profile-pic-wrap">
+            <img id="profilePicModalImg" src="" alt="Foto de perfil ampliada">
+        </div>
+    </div>
+</div>
+
+<style>
+/* Modal de visualização da foto de perfil */
+.profile-pic-modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 11000;
+}
+.profile-pic-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.profile-pic-wrap {
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+}
+.profile-pic-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+.profile-pic-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: transparent;
+    color: #fff;
+    border: none;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 11010;
+}
+
+/* Hover/efeito no avatar principal */
+.profile-avatar-img {
+    transition: transform 0.15s ease, filter 0.15s ease;
+}
+.profile-avatar-img:hover {
+    transform: scale(1.03);
+    filter: brightness(1.05);
+}
+
+@media (max-width: 768px) {
+    .profile-pic-wrap { width: 300px; height: 300px; }
+}
+
+@media (max-width: 420px) {
+    .profile-pic-wrap { width: 90vw; height: 90vw; }
+}
+</style>
+
+<script>
+function openProfileModal(src) {
+    const modal = document.getElementById('profile-pic-modal');
+    const img = document.getElementById('profilePicModalImg');
+    img.src = src || '';
+    modal.style.display = 'flex';
+}
+
+function closeProfileModal() {
+    const modal = document.getElementById('profile-pic-modal');
+    const img = document.getElementById('profilePicModalImg');
+    img.src = '';
+    modal.style.display = 'none';
+}
+
+document.addEventListener('click', function (e) {
+    const backdrop = document.getElementById('profilePicBackdrop');
+    const modal = document.getElementById('profile-pic-modal');
+    if (!modal) return;
+    // fechar ao clicar fora da imagem (no backdrop)
+    if (e.target === backdrop) {
+        closeProfileModal();
+    }
+});
+
+document.getElementById('profilePicClose')?.addEventListener('click', function () {
+    closeProfileModal();
 });
 </script>
