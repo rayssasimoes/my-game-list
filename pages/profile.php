@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    console.log('[FAVORITOS] Sistema de pesquisa inicializado');
+    // Sistema de pesquisa inicializado
 
     searchInput.addEventListener('input', function() {
     const query = this.value.trim();
@@ -383,7 +383,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function addGameToFavorites(gameId, gameName, gameCover) {
-    console.log('[FAVORITOS] Adicionando jogo:', gameId, gameName);
     fetch('includes/add-to-favorites.php', {
         method: 'POST',
         headers: {
@@ -410,7 +409,7 @@ function removeFavorite(gameId, gameName) {
         return;
     }
     
-    console.log('[FAVORITOS] Removendo jogo:', gameId);
+    // Removendo favorito: user confirmed
     
     fetch('includes/remove-from-favorites.php', {
         method: 'POST',

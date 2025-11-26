@@ -321,7 +321,7 @@ include 'includes/header.php';
 <script>
 (function() {
     'use strict';
-    console.log('[FILTROS] Iniciando...');
+    // Iniciando sistema de filtros
     
     function init() {
         const genreFilter = document.getElementById('genreFilter');
@@ -334,11 +334,10 @@ include 'includes/header.php';
             return;
         }
         
-        console.log('[FILTROS] Elementos OK!');
+        // Elementos encontrados
         
-        // Aplicar
+            // Aplicar
         applyBtn.onclick = function() {
-            console.log('[FILTROS] Aplicando...');
             let url = 'index.php?page=populares';
             if (genreFilter.value) url += '&genre=' + genreFilter.value;
             if (platformFilter.value) url += '&platform=' + platformFilter.value;
@@ -347,7 +346,6 @@ include 'includes/header.php';
         
         // Limpar
         clearBtn.onclick = function() {
-            console.log('[FILTROS] Limpando...');
             window.location.href = 'index.php?page=populares';
         };
         
@@ -358,7 +356,7 @@ include 'includes/header.php';
         genreFilter.onchange = toggleClear;
         platformFilter.onchange = toggleClear;
         
-        console.log('[FILTROS] Pronto!');
+        // Filtros prontos
     }
     
     if (document.readyState === 'loading') {

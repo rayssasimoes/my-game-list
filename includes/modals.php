@@ -53,6 +53,7 @@
                     <!-- Botões de ação -->
                     <div class="login-actions">
                         <button type="submit" class="btn btn-primary-custom-compact">Entrar</button>
+                        <button type="button" class="btn btn-link-custom" onclick="showForgotPassword()">Esqueci a senha</button>
                     </div>
                 </form>
             </div>
@@ -132,4 +133,49 @@
     </div>
 </div>
  
-<!-- Forgot password UI removed -->
+<!-- Forgot Password Modal -->
+<div class="modal" id="forgotPasswordModal">
+    <div class="modal-dialog">
+        <div class="modal-content modal-dark-theme">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-key"></i> <span id="forgot-password-title">Redefinir Senha</span>
+                </h5>
+                <button type="button" class="btn-close" onclick="closeModal('forgotPasswordModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Mensagem de feedback -->
+                <div id="forgot-password-message" class="alert" style="display: none;">
+                    <i class="bi bi-info-circle"></i> <span id="forgot-password-text"></span>
+                </div>
+                
+                <form id="forgotPasswordForm">
+                    <input type="hidden" name="action" value="request_password_reset">
+                    
+                    <!-- Email com ícone -->
+                    <div class="mb-3">
+                        <label for="forgot_email" class="form-label">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-addon">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+                            <input id="forgot_email" class="form-control" type="email" name="email" placeholder="Digite seu email cadastrado" required autocomplete="email">
+                        </div>
+                        <small class="form-text" style="color: #94a3b8; margin-top: 0.5rem;">
+                            Enviaremos um link de recuperação para este email
+                        </small>
+                    </div>
+                    
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary-custom flex-1" id="forgot-password-submit">
+                            <i class="bi bi-send"></i> Enviar Link
+                        </button>
+                        <button type="button" class="btn btn-secondary-custom" onclick="backToLogin()">
+                            <i class="bi bi-arrow-left"></i> Voltar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -291,8 +291,6 @@ function initLoginForm() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('Login AJAX response:', data);
-            console.log('Submitted redirect:', formData.get('redirect'));
             if (data.success) {
                     // Preferir redirect vindo do servidor (validado). Se não existir, usar o valor submetido
                     let redirect = data.redirect || formData.get('redirect');
@@ -818,7 +816,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (action === 'more') {
                 // Abrir menu de mais opções (implementar depois)
-                console.log('More options for game:', gameId);
                 alert('Menu de opções em desenvolvimento');
                 return;
             }
@@ -839,7 +836,7 @@ function addGameToList(gameId, status, btnElement, gameName, gameCover) {
     
     if (isActive) {
         // Remover jogo da lista
-        console.log('Removendo jogo:', gameId);
+        
         
         fetch('includes/remove-from-list.php', {
             method: 'POST',
@@ -879,7 +876,7 @@ function addGameToList(gameId, status, btnElement, gameName, gameCover) {
         });
     } else {
         // Adicionar jogo à lista
-        console.log('Adicionando jogo:', gameId, 'com status:', status);
+        
         
         fetch('includes/add-to-list.php', {
             method: 'POST',
@@ -1194,4 +1191,89 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Forgot password removed: no client-side form handling
+// ==== FORGOT PASSWORD MODAL ====
+function showForgotPassword() {
+    closeModal('loginModal');
+    setTimeout(() => {
+        openModal('forgotPasswordModal');
+    }, 300);
+}
+
+function backToLogin() {
+    closeModal('forgotPasswordModal');
+    setTimeout(() => {
+        openModal('loginModal');
+    }, 300);
+}
+
+// ==== FORGOT PASSWORD FORM HANDLER ====
+document.addEventListener('DOMContentLoaded', () => {
+    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+    if (!forgotPasswordForm) return;
+    
+    const messageDiv = document.getElementById('forgot-password-message');
+    const messageText = document.getElementById('forgot-password-text');
+    const submitBtn = document.getElementById('forgot-password-submit');
+    
+    forgotPasswordForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Esconder mensagens anteriores
+        if (messageDiv) messageDiv.style.display = 'none';
+        
+        // Desabilitar botão e mostrar loading
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Enviando...';
+        
+        const formData = new FormData(this);
+        
+        fetch('includes/password-reset.php', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Reabilitar botão
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="bi bi-send"></i> Enviar Link';
+            
+            if (data.success) {
+                // Mostrar mensagem de sucesso
+                messageDiv.className = 'alert alert-success';
+                messageText.textContent = data.message || 'Email enviado com sucesso! Verifique sua caixa de entrada.';
+                messageDiv.style.display = 'block';
+                
+                // Limpar formulário
+                forgotPasswordForm.reset();
+                
+                // Fechar modal após 3 segundos
+                setTimeout(() => {
+                    closeModal('forgotPasswordModal');
+                    // Limpar mensagem após fechar
+                    setTimeout(() => {
+                        messageDiv.style.display = 'none';
+                    }, 300);
+                }, 3000);
+            } else {
+                // Mostrar mensagem de erro
+                messageDiv.className = 'alert alert-error';
+                messageText.textContent = data.message || 'Erro ao processar solicitação. Tente novamente.';
+                messageDiv.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="bi bi-send"></i> Enviar Link';
+            
+            if (messageDiv && messageText) {
+                messageDiv.className = 'alert alert-error';
+                messageText.textContent = 'Erro ao enviar email. Tente novamente.';
+                messageDiv.style.display = 'block';
+            }
+        });
+    });
+});

@@ -113,6 +113,39 @@
     color: #E93D82;
 }
 
+/* Botão secundário */
+.btn-secondary-custom {
+    background-color: #475569;
+    border: 1px solid #475569;
+    color: #fff;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    display: block;
+    width: 100%;
+}
+
+.btn-secondary-custom:hover {
+    background-color: #334155;
+    border-color: #334155;
+}
+
+/* Utilitário flex */
+.d-flex {
+    display: flex;
+}
+
+.gap-2 {
+    gap: 0.5rem;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
 /* Container de ações do login (botão esquerda + botão direita) */
 .login-actions {
     display: flex;
