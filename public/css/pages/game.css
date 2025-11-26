@@ -257,6 +257,20 @@
     margin: 0;
 }
 
+/* Trailer embed (responsive 16:9) */
+.game-trailer .video-embed {
+    position: relative;
+    width: 100%;
+    max-width: 900px; /* limite confortável em desktop */
+    padding-top: 56.25%; /* 16:9 */
+    margin: 0.5rem auto 0;
+}
+
+.game-trailer .video-embed iframe {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%; border: 0;
+}
+
 /* Screenshots */
 .game-screenshots-section {
     margin-top: 0.5rem;

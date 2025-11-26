@@ -331,7 +331,8 @@ function getGameDetails($gameId) {
         fields name, cover.url, summary, genres.name, platforms.name, 
                release_dates.date, release_dates.human, 
                involved_companies.company.name, involved_companies.developer,
-               involved_companies.publisher, screenshots.url, hypes;
+               involved_companies.publisher, screenshots.url, hypes,
+               videos.video_id, videos.name;
         where id = {$gameId};
     ";
     
@@ -383,6 +384,19 @@ function getGameDetails($gameId) {
         }
     }
 
+    // Processar vídeos (YouTube) se existirem
+    $videos = [];
+    if (!empty($game['videos']) && is_array($game['videos'])) {
+        foreach ($game['videos'] as $v) {
+            if (isset($v['video_id'])) {
+                $videos[] = [
+                    'id' => $v['video_id'],
+                    'name' => $v['name'] ?? ''
+                ];
+            }
+        }
+    }
+
     return [
         'id' => $game['id'],
         'name' => $game['name'],
@@ -397,6 +411,8 @@ function getGameDetails($gameId) {
         'screenshots' => array_map(function($s) {
             return 'https:' . str_replace('t_thumb', 't_1080p', $s['url']);
         }, $game['screenshots'] ?? [])
+        ,
+        'videos' => $videos
     ];
 }
 

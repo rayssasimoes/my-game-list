@@ -218,6 +218,19 @@ include 'includes/header.php';
                     <?php endif; ?>
                 </div>
 
+                <!-- Trailer (se houver) - iframe nativo do YouTube -->
+                <?php if (!empty($game['videos']) && is_array($game['videos'])):
+                    $firstVideo = $game['videos'][0];
+                    $ytId = $firstVideo['id'];
+                ?>
+                    <div class="game-trailer">
+                        <h2 class="section-title">Trailer</h2>
+                        <div class="video-embed" style="max-width:900px; margin:0.5rem auto 0;">
+                            <iframe src="https://www.youtube.com/embed/<?php echo htmlspecialchars($ytId); ?>?rel=0&modestbranding=1" title="Trailer - <?php echo htmlspecialchars($game['name']); ?>" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
                 <!-- Sinopse -->
                 <div class="game-summary-section">
                     <h2 class="section-title">Sobre o Jogo</h2>
