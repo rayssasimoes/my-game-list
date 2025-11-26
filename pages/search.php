@@ -83,7 +83,7 @@ include 'includes/header.php';
                     <div class="search-results-list">
                         <?php foreach ($games as $game): ?>
                             <div class="search-result-card">
-                                <a href="index.php?page=game&id=<?php echo $game['id']; ?>" class="search-card-info">
+                                <a href="index.php?page=game&id=<?php echo (isset($game['igdb_id']) && $game['igdb_id']) ? $game['igdb_id'] : $game['id']; ?>" class="search-card-info">
                                     <img src="<?php echo htmlspecialchars($game['cover']); ?>" 
                                          alt="<?php echo htmlspecialchars($game['name']); ?>" 
                                          class="search-card-cover">

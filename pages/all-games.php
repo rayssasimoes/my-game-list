@@ -8,8 +8,8 @@ $currentPage = isset($_GET['pageNum']) && is_numeric($_GET['pageNum']) && $_GET[
     : 1;
 $offset = ($currentPage - 1) * $gamesPerPage;
 
-// Buscar jogos populares da API IGDB
-$games = getPopularGames($gamesPerPage, $offset);
+// Buscar jogos populares da API IGDB (paginado)
+$games = getPopularGamesFiltered($gamesPerPage, $currentPage);
 
 // Total estimado de jogos na API IGDB
 $totalGamesCount = 377915; // Este número pode ser atualizado periodicamente
@@ -66,7 +66,7 @@ include 'includes/header.php';
             <!-- Grid de Jogos Compactos (apenas covers) -->
             <div class="games-browse-grid">
                 <?php foreach ($games as $game): ?>
-                    <a href="index.php?page=game&id=<?php echo $game['id']; ?>" class="game-cover-item">
+                    <a href="index.php?page=game&id=<?php echo (isset($game['igdb_id']) && $game['igdb_id']) ? $game['igdb_id'] : $game['id']; ?>" class="game-cover-item">
                         <img src="<?php echo htmlspecialchars($game['cover']); ?>" 
                              alt="<?php echo htmlspecialchars($game['name']); ?>"
                              title="<?php echo htmlspecialchars($game['name']); ?>">

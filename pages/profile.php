@@ -201,11 +201,13 @@ include 'includes/header.php';
                             <?php if (isset($favoriteGames[$i])): ?>
                                 <?php $game = $favoriteGames[$i]; ?>
                                 <div class="favorite-game-card">
-                                    <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
-                                         alt="<?php echo htmlspecialchars($game['name']); ?>"
-                                         class="favorite-game-cover">
+                                    <a href="index.php?page=game&id=<?php echo (isset($game['igdb_id']) && $game['igdb_id']) ? $game['igdb_id'] : $game['id']; ?>" class="favorite-game-link">
+                                        <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
+                                             alt="<?php echo htmlspecialchars($game['name']); ?>"
+                                             class="favorite-game-cover">
+                                    </a>
                                     <div class="favorite-game-overlay">
-                                        <button class="btn-remove-favorite" onclick="removeFavorite(<?php echo $game['id']; ?>, '<?php echo htmlspecialchars($game['name']); ?>')" title="Remover dos favoritos">
+                                        <button class="btn-remove-favorite" onclick="event.preventDefault(); event.stopPropagation(); removeFavorite(<?php echo $game['id']; ?>, '<?php echo htmlspecialchars($game['name']); ?>')" title="Remover dos favoritos">
                                             <i class="bi bi-x-lg"></i>
                                         </button>
                                     </div>
@@ -256,22 +258,35 @@ include 'includes/header.php';
                             <p class="empty-message">Nenhum jogo nesta categoria</p>
                         <?php else: ?>
                             <div class="games-list-grid">
+                                
                                 <?php foreach ($gamesByStatus['playing'] as $game): ?>
-                                            <div class="game-list-card">
-                                                <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
-                                                     alt="<?php echo htmlspecialchars($game['name']); ?>"
-                                                     class="game-list-cover">
-                                                <div class="game-card-overlay">
-                                                    <?php if (!empty($isOwner) && $isOwner): ?>
-                                                        <button class="game-action-btn" onclick="editGame(<?php echo $game['id']; ?>)" title="Editar">
-                                                            <i class="bi bi-pencil"></i>
-                                                        </button>
-                                                        <button class="game-action-btn btn-danger" onclick="removeGame(<?php echo $game['id']; ?>)" title="Remover">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                    <?php endif; ?>
+                                    <div class="game-card">
+                                        <a href="index.php?page=game&id=<?php echo (isset($game['igdb_id']) && $game['igdb_id']) ? $game['igdb_id'] : $game['id']; ?>" class="game-card-link">
+                                            <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
+                                                 alt="<?php echo htmlspecialchars($game['name']); ?>"
+                                                 class="game-card-image">
+                                        </a>
+
+                                        <div class="game-card-hover-content">
+                                            <h3 class="game-card-hover-title"><?php echo htmlspecialchars($game['name']); ?></h3>
+                                            <?php if (!empty($isOwner) && $isOwner): ?>
+                                                <div class="quick-actions">
+                                                    <button class="quick-action-btn" title="Editar" onclick="event.preventDefault(); event.stopPropagation(); editGame(<?php echo $game['id']; ?>)">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </button>
+                                                    <button class="quick-action-btn btn-danger" title="Remover" onclick="event.preventDefault(); event.stopPropagation(); removeGame(<?php echo $game['id']; ?>)">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
                                                 </div>
-                                            </div>
+                                            <?php elseif (isLoggedIn()): ?>
+                                                <div class="quick-actions">
+                                                    <button class="quick-action-btn" title="Adicionar à Lista" onclick="event.preventDefault(); event.stopPropagation(); openAddToListModal(<?php echo $game['id']; ?>)">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
                                 <?php endforeach; ?>
                             </div>
                         <?php endif; ?>
@@ -284,18 +299,30 @@ include 'includes/header.php';
                         <?php else: ?>
                             <div class="games-list-grid">
                                 <?php foreach ($gamesByStatus['completed'] as $game): ?>
-                                    <div class="game-list-card">
-                                        <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
-                                             alt="<?php echo htmlspecialchars($game['name']); ?>"
-                                             class="game-list-cover">
-                                        <div class="game-card-overlay">
+                                    <div class="game-card">
+                                        <a href="index.php?page=game&id=<?php echo (isset($game['igdb_id']) && $game['igdb_id']) ? $game['igdb_id'] : $game['id']; ?>" class="game-card-link">
+                                            <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
+                                                 alt="<?php echo htmlspecialchars($game['name']); ?>"
+                                                 class="game-card-image">
+                                        </a>
+
+                                        <div class="game-card-hover-content">
+                                            <h3 class="game-card-hover-title"><?php echo htmlspecialchars($game['name']); ?></h3>
                                             <?php if (!empty($isOwner) && $isOwner): ?>
-                                                <button class="game-action-btn" onclick="editGame(<?php echo $game['id']; ?>)" title="Editar">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                                <button class="game-action-btn btn-danger" onclick="removeGame(<?php echo $game['id']; ?>)" title="Remover">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
+                                                <div class="quick-actions">
+                                                    <button class="quick-action-btn" title="Editar" onclick="event.preventDefault(); event.stopPropagation(); editGame(<?php echo $game['id']; ?>)">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </button>
+                                                    <button class="quick-action-btn btn-danger" title="Remover" onclick="event.preventDefault(); event.stopPropagation(); removeGame(<?php echo $game['id']; ?>)">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            <?php elseif (isLoggedIn()): ?>
+                                                <div class="quick-actions">
+                                                    <button class="quick-action-btn" title="Adicionar à Lista" onclick="event.preventDefault(); event.stopPropagation(); openAddToListModal(<?php echo $game['id']; ?>)">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </div>
                                             <?php endif; ?>
                                         </div>
                                     </div>
@@ -311,18 +338,30 @@ include 'includes/header.php';
                         <?php else: ?>
                             <div class="games-list-grid">
                                 <?php foreach ($gamesByStatus['dropped'] as $game): ?>
-                                    <div class="game-list-card">
-                                        <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
-                                             alt="<?php echo htmlspecialchars($game['name']); ?>"
-                                             class="game-list-cover">
-                                        <div class="game-card-overlay">
+                                    <div class="game-card">
+                                        <a href="index.php?page=game&id=<?php echo (isset($game['igdb_id']) && $game['igdb_id']) ? $game['igdb_id'] : $game['id']; ?>" class="game-card-link">
+                                            <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
+                                                 alt="<?php echo htmlspecialchars($game['name']); ?>"
+                                                 class="game-card-image">
+                                        </a>
+
+                                        <div class="game-card-hover-content">
+                                            <h3 class="game-card-hover-title"><?php echo htmlspecialchars($game['name']); ?></h3>
                                             <?php if (!empty($isOwner) && $isOwner): ?>
-                                                <button class="game-action-btn" onclick="editGame(<?php echo $game['id']; ?>)" title="Editar">
-                                                    <i class="bi bi-pencil"></i>
-                                                </button>
-                                                <button class="game-action-btn btn-danger" onclick="removeGame(<?php echo $game['id']; ?>)" title="Remover">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
+                                                <div class="quick-actions">
+                                                    <button class="quick-action-btn" title="Editar" onclick="event.preventDefault(); event.stopPropagation(); editGame(<?php echo $game['id']; ?>)">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </button>
+                                                    <button class="quick-action-btn btn-danger" title="Remover" onclick="event.preventDefault(); event.stopPropagation(); removeGame(<?php echo $game['id']; ?>)">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            <?php elseif (isLoggedIn()): ?>
+                                                <div class="quick-actions">
+                                                    <button class="quick-action-btn" title="Adicionar à Lista" onclick="event.preventDefault(); event.stopPropagation(); openAddToListModal(<?php echo $game['id']; ?>)">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </div>
                                             <?php endif; ?>
                                         </div>
                                     </div>
@@ -338,10 +377,32 @@ include 'includes/header.php';
                         <?php else: ?>
                             <div class="games-list-grid">
                                 <?php foreach ($allFavorites as $game): ?>
-                                    <div class="game-list-card">
-                                        <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
-                                             alt="<?php echo htmlspecialchars($game['name']); ?>"
-                                             class="game-list-cover">
+                                    <div class="game-card">
+                                        <a href="index.php?page=game&id=<?php echo (isset($game['igdb_id']) && $game['igdb_id']) ? $game['igdb_id'] : $game['id']; ?>" class="game-card-link">
+                                            <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
+                                                 alt="<?php echo htmlspecialchars($game['name']); ?>"
+                                                 class="game-card-image">
+                                        </a>
+
+                                        <div class="game-card-hover-content">
+                                            <h3 class="game-card-hover-title"><?php echo htmlspecialchars($game['name']); ?></h3>
+                                            <?php if (!empty($isOwner) && $isOwner): ?>
+                                                <div class="quick-actions">
+                                                    <button class="quick-action-btn" title="Editar" onclick="event.preventDefault(); event.stopPropagation(); editGame(<?php echo $game['id']; ?>)">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </button>
+                                                    <button class="quick-action-btn btn-danger" title="Remover" onclick="event.preventDefault(); event.stopPropagation(); removeFavorite(<?php echo $game['id']; ?>, '<?php echo htmlspecialchars($game['name']); ?>')">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </div>
+                                            <?php elseif (isLoggedIn()): ?>
+                                                <div class="quick-actions">
+                                                    <button class="quick-action-btn" title="Adicionar à Lista" onclick="event.preventDefault(); event.stopPropagation(); openAddToListModal(<?php echo $game['id']; ?>)">
+                                                        <i class="bi bi-plus-lg"></i>
+                                                    </button>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -442,13 +503,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     let html = '<div class="favorite-search-grid">';
                     games.forEach(game => {
                         html += `
-                            <div class="favorite-search-item" onclick="addGameToFavorites(${game.id}, '${game.name.replace(/'/g, "\\'")}'  , '${game.cover}')">
-                                <img src="${game.cover}" alt="${game.name}" class="favorite-search-cover">
+                            <div class="favorite-search-item">
+                                <a href="index.php?page=game&id=${game.id}" class="favorite-search-link">
+                                    <img src="${game.cover}" alt="${game.name}" class="favorite-search-cover">
+                                </a>
                                 <div class="favorite-search-info">
                                     <div class="favorite-search-name">${game.name}</div>
                                     <div class="favorite-search-year">${game.year || 'Ano desconhecido'}</div>
                                 </div>
-                                <button class="btn-add-to-favorites">
+                                <button class="btn-add-to-favorites" onclick="event.preventDefault(); event.stopPropagation(); addGameToFavorites(${game.id}, '${game.name.replace(/'/g, "\\'")}', '${game.cover}')">
                                     <i class="bi bi-star"></i> Adicionar
                                 </button>
                             </div>

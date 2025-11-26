@@ -858,7 +858,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ==== HOME PAGE - QUICK ACTIONS ====
 document.addEventListener('DOMContentLoaded', () => {
-    const quickActionBtns = document.querySelectorAll('.quick-action-btn');
+    const quickActionBtns = document.querySelectorAll('.quick-action-btn[data-action]');
     
     // Suporte para touch em mobile
     const gameCards = document.querySelectorAll('.game-card');
@@ -896,6 +896,9 @@ document.addEventListener('DOMContentLoaded', () => {
             e.stopPropagation(); // Prevenir outros eventos
             
             const action = btn.getAttribute('data-action');
+            // Se a ação não for reconhecida, ignorar silenciosamente
+            const validActions = ['completed', 'playing', 'want_to_play', 'dropped'];
+            if (!action || validActions.indexOf(action) === -1) return;
             const gameId = btn.getAttribute('data-game-id');
             const gameName = btn.getAttribute('data-game-name');
             const gameCover = btn.getAttribute('data-game-cover');
@@ -913,6 +916,15 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function addGameToList(gameId, status, btnElement, gameName, gameCover) {
+    // Validação básica do status antes de continuar
+    const validStatuses = ['playing', 'completed', 'want_to_play', 'dropped'];
+    if (!status || validStatuses.indexOf(status) === -1) {
+        console.error('Status inválido no cliente:', status);
+        btnElement.style.opacity = '1';
+        btnElement.disabled = false;
+        showNotification('Status inválido enviado. Ação cancelada.', 'error');
+        return;
+    }
     // Verificar se o botão já está ativo (remover do jogo da lista)
     const isActive = btnElement.classList.contains('active');
     

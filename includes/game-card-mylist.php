@@ -1,7 +1,9 @@
 <div class="mylist-game-card" data-game-id="<?php echo $game['id']; ?>">
     <div class="mylist-card-cover">
-        <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
-             alt="<?php echo htmlspecialchars($game['name']); ?>">
+        <a href="index.php?page=game&id=<?php echo (isset($game['igdb_id']) && $game['igdb_id']) ? $game['igdb_id'] : $game['id']; ?>" class="mylist-cover-link">
+            <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
+                 alt="<?php echo htmlspecialchars($game['name']); ?>">
+        </a>
         
         <!-- Badge de Status -->
         <div class="status-badge status-badge-<?php echo $game['status']; ?>">
