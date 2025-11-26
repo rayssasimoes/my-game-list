@@ -74,7 +74,51 @@ body.modal-open {
     text-decoration: underline;
 }
 
-/* Forgot password modal removed - related styles cleaned up */
+/* Botão "Voltar" estilo texto no canto superior esquerdo (forgot password modal) */
+.forgot-password-header {
+    position: relative;
+}
+
+.back-link-btn {
+    position: absolute;
+    left: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    cursor: pointer;
+    padding: 0;
+    transition: color 0.2s ease;
+}
+
+.back-link-btn:hover {
+    color: #E93D82;
+}
+
+.back-link-btn i {
+    font-size: 1rem;
+}
+
+/* Responsividade para telas pequenas */
+@media (max-width: 576px) {
+    .back-link-btn {
+        left: 1rem;
+        font-size: 0.85rem;
+        min-width: 44px; /* Garante área de toque adequada */
+        min-height: 44px;
+        display: inline-flex;
+    }
+    
+    .forgot-password-header .modal-title {
+        font-size: 1.1rem;
+        padding: 0 2.5rem; /* Espaço para o botão voltar e fechar */
+    }
+}
 
 .btn-close {
     background: transparent;

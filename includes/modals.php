@@ -137,7 +137,12 @@
 <div class="modal" id="forgotPasswordModal">
     <div class="modal-dialog">
         <div class="modal-content modal-dark-theme">
-            <div class="modal-header">
+            <div class="modal-header forgot-password-header">
+                <!-- Botão voltar no canto superior esquerdo -->
+                <button type="button" class="back-link-btn" onclick="backToLogin()">
+                    <i class="bi bi-arrow-left"></i> Voltar
+                </button>
+                
                 <h5 class="modal-title">
                     <i class="bi bi-key"></i> <span id="forgot-password-title">Redefinir Senha</span>
                 </h5>
@@ -166,14 +171,10 @@
                         </small>
                     </div>
                     
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-primary-custom flex-1" id="forgot-password-submit">
-                            <i class="bi bi-send"></i> Enviar Link
-                        </button>
-                        <button type="button" class="btn btn-secondary-custom" onclick="backToLogin()">
-                            <i class="bi bi-arrow-left"></i> Voltar
-                        </button>
-                    </div>
+                    <!-- Botão centralizado -->
+                    <button type="submit" class="btn btn-primary-custom w-100" id="forgot-password-submit">
+                        <i class="bi bi-send"></i> Enviar Link
+                    </button>
                 </form>
             </div>
         </div>
