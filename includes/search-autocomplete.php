@@ -63,11 +63,21 @@ foreach ($games as $game) {
 
 // Adicionar usuários
 foreach ($users as $u) {
+    // Enviar apenas o primeiro nome para manter o dropdown compacto
+    $fullName = trim($u['name'] ?? '');
+    if ($fullName === '') {
+        $shortName = '';
+    } else {
+        // dividir por espaços em branco e pegar o primeiro pedaço
+        $parts = preg_split('/\s+/', $fullName);
+        $shortName = $parts[0] ?? $fullName;
+    }
+
     $results[] = [
         'type' => 'user',
         'id' => $u['id'],
         'username' => $u['username'],
-        'name' => $u['name'],
+        'name' => $shortName,
         'avatar' => $u['avatar_path']
     ];
 }
