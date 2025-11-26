@@ -12,10 +12,9 @@ body.reset-password-page {
 
 /* Container principal */
 .reset-container {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+    background: var(--card-bg);
     border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
     max-width: 500px;
     width: 100%;
     padding: 40px;
@@ -41,7 +40,7 @@ body.reset-password-page {
 
 .reset-header .icon {
     font-size: 4rem;
-    color: #667eea;
+    color: var(--accent);
     margin-bottom: 15px;
 }
 
@@ -50,13 +49,13 @@ body.reset-password-page {
 }
 
 .reset-header h1 {
-    color: #1e293b;
+    color: var(--text-main);
     font-size: 2rem;
     margin-bottom: 10px;
 }
 
 .reset-header p {
-    color: #64748b;
+    color: var(--text-soft);
     font-size: 0.95rem;
     margin: 0;
 }
@@ -84,15 +83,15 @@ body.reset-password-page {
 }
 
 .alert-error {
-    background: #fee;
-    color: #c33;
-    border: 1px solid #fcc;
+    background: rgba(var(--error-r, 239),68,68,0.08);
+    color: #fecaca;
+    border: 1px solid rgba(239,68,68,0.12);
 }
 
 .alert-success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+    background: rgba(34,197,94,0.08);
+    color: #c7f0d6;
+    border: 1px solid rgba(34,197,94,0.12);
 }
 
 .alert i {
@@ -106,7 +105,7 @@ body.reset-password-page {
 
 .form-label {
     display: block;
-    color: #1e293b;
+    color: var(--text-main);
     font-weight: 600;
     margin-bottom: 8px;
     font-size: 0.95rem;
@@ -120,28 +119,33 @@ body.reset-password-page {
 
 .input-group-addon {
     position: absolute;
-    left: 15px;
-    color: #94a3b8;
-    font-size: 1.2rem;
-    z-index: 1;
+    left: 12px;
+    color: var(--muted);
+    font-size: 1.1rem;
+    z-index: 2;
     pointer-events: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
 }
 
 .form-control {
     width: 100%;
-    padding: 12px 15px 12px 45px;
-    border: 2px solid #e2e8f0;
+    padding: 12px 15px 12px 50px; /* espaço maior para o ícone */
+    border: 1px solid var(--input-border);
     border-radius: 10px;
     font-size: 1rem;
     transition: all 0.3s ease;
-    background: white;
-    color: #1e293b;
+    background: var(--input-bg);
+    color: var(--text-main);
 }
 
 .form-control:focus {
     outline: none;
-    border-color: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(233,61,130,0.08);
+    background: rgba(255,255,255,0.04);
 }
 
 .form-control.password-invalid {
@@ -156,7 +160,7 @@ body.reset-password-page {
     display: block;
     margin-top: 5px;
     font-size: 0.85rem;
-    color: #64748b;
+    color: var(--text-soft);
 }
 
 .form-text.invalid {
@@ -174,14 +178,14 @@ body.reset-password-page {
 
 .password-toggle-icon {
     position: absolute;
-    right: 15px;
+    right: 12px;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
-    color: #94a3b8;
-    font-size: 1.2rem;
+    color: var(--muted);
+    font-size: 1.1rem;
     transition: all 0.3s ease;
-    z-index: 2;
+    z-index: 3;
 }
 
 .password-toggle-icon:hover {
@@ -211,20 +215,38 @@ body.reset-password-page {
 }
 
 .success-message h2 {
-    color: #1e293b;
+    color: var(--text-main);
     margin-bottom: 15px;
 }
 
 .success-message p {
-    color: #64748b;
+    color: var(--text-soft);
     margin-bottom: 25px;
 }
 
 /* Texto informativo */
 .reset-info-text {
     text-align: center;
-    color: #64748b;
+    color: var(--text-soft);
     margin-bottom: 20px;
+}
+
+/* Espaçamento entre botões no formulário */
+.reset-container form .btn {
+    margin-top: 12px;
+}
+
+/* Forçar padding-left suficiente para evitar sobreposição com o ícone do input */
+.reset-container .input-group .form-control {
+    /* padding: top right bottom left */
+    padding: 12px 15px 12px 50px;
+}
+
+/* Ajustes responsivos para mobile (preserva legibilidade) */
+@media (max-width: 600px) {
+    .reset-container {
+        padding: 24px 18px;
+    }
 }
 
 /* Responsivo */

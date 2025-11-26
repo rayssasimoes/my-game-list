@@ -17,6 +17,21 @@ html {
     font-size: 16px;
 }
 
+/* Variáveis CSS do tema (cores reutilizáveis) */
+:root {
+    --bg-dark: #16181C; /* fundo principal da página */
+    --card-bg: #1a1a1a; /* fundo dos cards/modais */
+    --accent: #E93D82; /* cor de destaque / rosa */
+    --text-main: #e5e5e5; /* cor principal do texto */
+    --text-soft: rgba(255,255,255,0.75); /* texto secundário */
+    --muted: rgba(255,255,255,0.6); /* texto menos importante */
+    --input-bg: rgba(255,255,255,0.03); /* fundo dos inputs */
+    --input-border: rgba(255,255,255,0.06); /* borda sutil dos inputs */
+    --error: #ef4444;
+    --success: #22c55e;
+}
+
+
 body {
     display: flex;
     flex-direction: column;

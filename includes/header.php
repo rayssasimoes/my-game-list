@@ -67,7 +67,7 @@
                 <div class="navbar-right">
                     <?php if (!isLoggedIn()): ?>
                         <!-- Visitante: Botões de Autenticação -->
-                        <button class="btn-login" onclick="openModal('loginModal')">Entrar</button>
+                        <button class="btn-login" onclick="openModal('authModal', 'login')">Entrar</button>
                         <button class="btn-register" onclick="openModal('registerModal')">Cadastrar</button>
                         <!-- Menu Hambúrguer Mobile -->
                         <button class="btn-hamburger" id="hamburgerBtn">
@@ -207,7 +207,7 @@
                 <?php else: ?>
                     <!-- Menu para visitantes -->
                     <div class="mobile-menu-divider"></div>
-                    <a class="mobile-menu-item" href="#" onclick="openModal('loginModal'); return false;">
+                    <a class="mobile-menu-item" href="#" onclick="openModal('authModal', 'login'); return false;">
                         <i class="bi bi-box-arrow-in-right"></i> Entrar
                     </a>
                     <a class="mobile-menu-item mobile-menu-highlight" href="#" onclick="openModal('registerModal'); return false;">

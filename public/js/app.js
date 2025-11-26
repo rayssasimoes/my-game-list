@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==== MODAL ====
-function openModal(modalId) {
+function openModal(modalId, view) {
     const modal = document.getElementById(modalId);
     if (modal) {
         // Preencher campo de redirect (se existir) com a URL atual
@@ -155,6 +155,16 @@ function openModal(modalId) {
 
         document.body.classList.add('modal-open');
         modal.classList.add('show');
+
+        // Se for o modal de autenticação, garantir que a view padrão seja 'login'
+        try {
+            if (modalId === 'authModal') {
+                // se view fornecida, usa; senão força para 'login'
+                toggleAuthView(view || 'login');
+            }
+        } catch (err) {
+            // não bloquear abertura do modal se toggleAuthView não existir
+        }
     }
 }
 
@@ -215,6 +225,20 @@ function closeModal(modalId) {
     }
 }
 
+// Alternar entre as visualizações de login e redefinição de senha
+function toggleAuthView(view) {
+    const loginView = document.getElementById('login-view');
+    const forgotPasswordView = document.getElementById('forgot-password-view');
+
+    if (view === 'login') {
+        loginView.style.display = 'block';
+        forgotPasswordView.style.display = 'none';
+    } else if (view === 'forgot') {
+        loginView.style.display = 'none';
+        forgotPasswordView.style.display = 'block';
+    }
+}
+
 // Fechar modal ao clicar fora dele
 document.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal')) {
@@ -250,6 +274,27 @@ document.addEventListener('DOMContentLoaded', () => {
     initPasswordValidation();
     initAvailabilityCheck();
     initLoginForm();
+    // Garantia: se o botão "Esqueci a senha" estiver presente, garante que abrirá a view de redefinição
+    try {
+        const forgotLinks = document.querySelectorAll('.login-actions .btn-link-custom');
+        forgotLinks.forEach(btn => {
+            // Se já houver onclick inline, não duplicar
+            if (!btn.onclick) {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    try {
+                        toggleAuthView('forgot');
+                    } catch (err) {
+                        // fallback para casos onde as views são modais separados
+                        try { showForgotPassword(); } catch (e) { /* ignore */ }
+                    }
+                });
+            }
+        });
+    } catch (err) {
+        // não bloquear inicialização se falhar
+        console.error('Erro ao inicializar fallback do link Esqueci a senha:', err);
+    }
 });
 
 // ==== LOGIN FORM VIA AJAX ====
@@ -1206,27 +1251,29 @@ function backToLogin() {
     }, 300);
 }
 
-// ==== FORGOT PASSWORD FORM HANDLER ====
-document.addEventListener('DOMContentLoaded', () => {
-    const forgotPasswordForm = document.getElementById('forgotPasswordForm');
-    if (!forgotPasswordForm) return;
-    
-    const messageDiv = document.getElementById('forgot-password-message');
-    const messageText = document.getElementById('forgot-password-text');
-    const submitBtn = document.getElementById('forgot-password-submit');
-    
-    forgotPasswordForm.addEventListener('submit', function(e) {
+// ==== FORGOT PASSWORD FORM HANDLER (aplica a formulários múltiplos) ====
+function attachForgotFormHandler(formEl) {
+    if (!formEl) return;
+
+    const modalContainer = formEl.closest('.modal');
+    // localizar elementos de mensagem dentro do mesmo modal (usa classes, IDs únicos opcionais)
+    const messageDiv = modalContainer ? (modalContainer.querySelector('.forgot-password-message') || modalContainer.querySelector('#auth-recover-msg') || modalContainer.querySelector('#standalone-recover-msg')) : null;
+    const messageText = modalContainer ? (modalContainer.querySelector('.forgot-password-text') || modalContainer.querySelector('#auth-recover-text') || modalContainer.querySelector('#standalone-recover-text')) : null;
+    const submitBtn = formEl.querySelector('button[type="submit"]');
+
+    formEl.addEventListener('submit', function(e) {
         e.preventDefault();
-        
-        // Esconder mensagens anteriores
+
         if (messageDiv) messageDiv.style.display = 'none';
-        
-        // Desabilitar botão e mostrar loading
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Enviando...';
-        
+
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.dataset.origHtml = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Enviando...';
+        }
+
         const formData = new FormData(this);
-        
+
         fetch('includes/password-reset.php', {
             method: 'POST',
             headers: {
@@ -1236,39 +1283,39 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => response.json())
         .then(data => {
-            // Reabilitar botão
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="bi bi-send"></i> Enviar Link';
-            
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = submitBtn.dataset.origHtml || '<i class="bi bi-send"></i> Enviar Link';
+            }
+
             if (data.success) {
-                // Mostrar mensagem de sucesso
-                messageDiv.className = 'alert alert-success';
-                messageText.textContent = data.message || 'Email enviado com sucesso! Verifique sua caixa de entrada.';
-                messageDiv.style.display = 'block';
-                
-                // Limpar formulário
-                forgotPasswordForm.reset();
-                
-                // Fechar modal após 3 segundos
+                if (messageDiv) {
+                    messageDiv.className = 'alert alert-success';
+                    if (messageText) messageText.textContent = data.message || 'Email enviado com sucesso! Verifique sua caixa de entrada.';
+                    messageDiv.style.display = 'block';
+                }
+
+                formEl.reset();
+
                 setTimeout(() => {
-                    closeModal('forgotPasswordModal');
-                    // Limpar mensagem após fechar
-                    setTimeout(() => {
-                        messageDiv.style.display = 'none';
-                    }, 300);
+                    const relatedModal = formEl.closest('.modal');
+                    if (relatedModal) closeModal(relatedModal.id);
+                    if (messageDiv) setTimeout(() => { messageDiv.style.display = 'none'; }, 300);
                 }, 3000);
             } else {
-                // Mostrar mensagem de erro
-                messageDiv.className = 'alert alert-error';
-                messageText.textContent = data.message || 'Erro ao processar solicitação. Tente novamente.';
-                messageDiv.style.display = 'block';
+                if (messageDiv) {
+                    messageDiv.className = 'alert alert-error';
+                    if (messageText) messageText.textContent = data.message || 'Erro ao processar solicitação. Tente novamente.';
+                    messageDiv.style.display = 'block';
+                }
             }
         })
         .catch(error => {
             console.error('Erro:', error);
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="bi bi-send"></i> Enviar Link';
-            
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = submitBtn.dataset.origHtml || '<i class="bi bi-send"></i> Enviar Link';
+            }
             if (messageDiv && messageText) {
                 messageDiv.className = 'alert alert-error';
                 messageText.textContent = 'Erro ao enviar email. Tente novamente.';
@@ -1276,4 +1323,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+}
+
+// Anexar handlers para ambos os formulários (auth modal e standalone modal)
+document.addEventListener('DOMContentLoaded', () => {
+    const authForm = document.getElementById('authRecoverForm');
+    const standaloneForm = document.getElementById('forgotPasswordForm');
+
+    if (authForm) attachForgotFormHandler(authForm);
+    if (standaloneForm) attachForgotFormHandler(standaloneForm);
 });

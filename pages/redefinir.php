@@ -117,13 +117,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $tokenValid) {
     
     <!-- CSS Global -->
     <link rel="stylesheet" href="../public/css/global.css">
-    
-    <!-- CSS da página de redefinição -->
-    <link rel="stylesheet" href="../public/css/pages/redefinir.css">
-    
     <!-- CSS de componentes -->
     <link rel="stylesheet" href="../public/css/components/buttons.css">
     <link rel="stylesheet" href="../public/css/components/forms.css">
+    
+    <!-- CSS da página de redefinição (carregado por último para sobrescrever regras gerais) -->
+    <link rel="stylesheet" href="../public/css/pages/redefinir.css">
 </head>
 <body class="reset-password-page">
     <div class="reset-container">
