@@ -9,12 +9,12 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     // Se for o mesmo ID da sessão, tratar como dono (requer login)
     if (isLoggedIn() && isset($_SESSION['user_id']) && $_SESSION['user_id'] == $profileId) {
         requireLogin();
-        $user = getUser();
+        $profileUser = getUser();
         $isOwner = true;
     } else {
         // Perfil público — não requer login
-        $user = getUserById($profileId);
-        if (!$user) {
+        $profileUser = getUserById($profileId);
+        if (!$profileUser) {
             $_SESSION['error'] = 'Usuário não encontrado.';
             header('Location: index.php');
             exit;
@@ -25,8 +25,8 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 } else {
     // Cenário B: sem id na URL -> meu perfil (requer estar logado)
     requireLogin();
-    $user = getUser();
-    if (!$user) {
+    $profileUser = getUser();
+    if (!$profileUser) {
         $_SESSION['error'] = 'Usuário não encontrado.';
         header('Location: index.php');
         exit;
@@ -35,14 +35,14 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 }
 
 // Pegar primeiro nome (usar safe fallback)
-$firstName = !empty($user['name']) ? explode(' ', $user['name'])[0] : '';
+$firstName = !empty($profileUser['name']) ? explode(' ', $profileUser['name'])[0] : '';
 
 // Buscar estatísticas do usuário
 $db = getDB();
 
 // Total de jogos completados
 $stmt = $db->prepare("SELECT COUNT(*) as total FROM game_user WHERE user_id = ? AND status = 'completed'");
-$stmt->execute([$user['id']]);
+$stmt->execute([$profileUser['id']]);
 $completedTotal = $stmt->fetch()['total'];
 
 // Jogos completados este ano
@@ -53,7 +53,7 @@ $stmt = $db->prepare("
     AND status = 'completed' 
     AND YEAR(updated_at) = YEAR(CURRENT_DATE)
 ");
-$stmt->execute([$user['id']]);
+$stmt->execute([$profileUser['id']]);
 $completedThisYear = $stmt->fetch()['total'];
 
 // Buscar jogos favoritos (máximo 5 para a seção de destaque)
@@ -65,7 +65,7 @@ $stmt = $db->prepare("
     ORDER BY gu.updated_at DESC
     LIMIT 5
 ");
-$stmt->execute([$user['id']]);
+$stmt->execute([$profileUser['id']]);
 $favoriteGames = $stmt->fetchAll();
 
 // Buscar todos os jogos favoritos para a lista completa
@@ -76,7 +76,7 @@ $stmt = $db->prepare("
     WHERE gu.user_id = ? AND gu.rating >= 9
     ORDER BY gu.updated_at DESC
 ");
-$stmt->execute([$user['id']]);
+$stmt->execute([$profileUser['id']]);
 $allFavorites = $stmt->fetchAll();
 
 // Buscar jogos por status
@@ -94,7 +94,7 @@ foreach (['playing', 'completed', 'dropped'] as $status) {
         WHERE gu.user_id = ? AND gu.status = ?
         ORDER BY gu.updated_at DESC
     ");
-    $stmt->execute([$user['id'], $status]);
+    $stmt->execute([$profileUser['id'], $status]);
     $gamesByStatus[$status] = $stmt->fetchAll();
 }
 
@@ -106,10 +106,10 @@ include 'includes/header.php';
         
         <!-- Cabeçalho do Perfil -->
         <div class="profile-header">
-            <div class="profile-header-left">
+                <div class="profile-header-left">
                 <div class="profile-avatar">
-                    <?php if (!empty($user['avatar_path'])): ?>
-                        <img src="<?php echo htmlspecialchars($user['avatar_path']); ?>" alt="Avatar de <?php echo htmlspecialchars($firstName); ?>">
+                    <?php if (!empty($profileUser['avatar_path'])): ?>
+                        <img src="<?php echo htmlspecialchars($profileUser['avatar_path']); ?>" alt="Avatar de <?php echo htmlspecialchars($firstName); ?>">
                     <?php else: ?>
                         <svg class="default-avatar-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
@@ -141,9 +141,9 @@ include 'includes/header.php';
         </div>
 
         <!-- Bio (se existir) -->
-        <?php if (!empty($user['bio'])): ?>
+        <?php if (!empty($profileUser['bio'])): ?>
             <div class="profile-bio">
-                <p class="bio-text"><?php echo htmlspecialchars($user['bio']); ?></p>
+                <p class="bio-text"><?php echo htmlspecialchars($profileUser['bio']); ?></p>
             </div>
         <?php endif; ?>
 

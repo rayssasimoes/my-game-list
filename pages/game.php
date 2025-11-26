@@ -138,7 +138,7 @@ include 'includes/header.php';
                         <p class="cta-description">Crie uma conta ou inicie sessão para adicionar este jogo à sua Lista e registar o seu progresso.</p>
                         <div class="cta-buttons">
                             <button class="btn-cta-primary" onclick="openModal('registerModal')">Criar Conta</button>
-                            <button class="btn-cta-secondary" onclick="openModal('loginModal')">Iniciar Sessão</button>
+                            <button class="btn-cta-secondary" onclick="openModal('authModal','login')">Iniciar Sessão</button>
                         </div>
                     </div>
                 <?php endif; ?>

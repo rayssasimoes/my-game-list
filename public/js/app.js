@@ -1279,17 +1279,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ==== FORGOT PASSWORD MODAL ====
 function showForgotPassword() {
-    closeModal('loginModal');
-    setTimeout(() => {
-        openModal('forgotPasswordModal');
-    }, 300);
+    // Abrir o modal unificado de autenticação na view 'forgot'
+    try {
+        // Garantir que o authModal esteja aberto e então mostrar a view de redefinição
+        openModal('authModal', 'forgot');
+    } catch (err) {
+        // fallback para compatibilidade
+        try { closeModal('loginModal'); openModal('forgotPasswordModal'); } catch (e) { /* ignore */ }
+    }
 }
 
 function backToLogin() {
-    closeModal('forgotPasswordModal');
-    setTimeout(() => {
-        openModal('loginModal');
-    }, 300);
+    // Alterna para a view de login dentro do modal unificado
+    try {
+        // Se o modal estiver aberto, apenas trocar a view
+        toggleAuthView('login');
+    } catch (err) {
+        // fallback para compatibilidade com implementação antiga
+        try { closeModal('forgotPasswordModal'); openModal('loginModal'); } catch (e) { /* ignore */ }
+    }
 }
 
 // ==== FORGOT PASSWORD FORM HANDLER (aplica a formulários múltiplos) ====

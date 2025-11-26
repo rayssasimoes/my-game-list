@@ -159,7 +159,7 @@ include 'includes/header.php';
                                                 para adicionar jogos à sua lista
                                             </p>
                                             <p class="login-prompt-text">
-                                                ou <button class="btn-login-link" onclick="openModal('loginModal')">iniciar sessão</button> se já tem uma conta.
+                                                ou <button class="btn-login-link" onclick="openModal('authModal','login')">iniciar sessão</button> se já tem uma conta.
                                             </p>
                                         </div>
                                     </div>
@@ -175,19 +175,15 @@ include 'includes/header.php';
             <section id="tab-users" class="search-section users-section" aria-hidden="true">
                 <h2>Comunidade</h2>
                 <div class="user-results-list">
-                    <?php foreach ($users as $u): ?>
-                        <a href="index.php?page=profile&id=<?php echo $u['id']; ?>" class="user-result-card">
-                            <div class="user-avatar">
-                                <?php if (!empty($u['avatar_path'])): ?>
-                                    <img src="<?php echo htmlspecialchars($u['avatar_path']); ?>" alt="<?php echo htmlspecialchars($u['username']); ?>">
-                                    <small style="color:crimson; display:block; font-size:0.8rem;">URL: <?php echo htmlspecialchars($u['avatar_path']); ?></small>
-                                <?php else: ?>
-                                    <div class="user-avatar-fallback"><?php echo strtoupper(substr($u['username'],0,1)); ?></div>
-                                <?php endif; ?>
+                    <?php foreach ($users as $result_member): ?>
+                        <a href="index.php?page=profile&id=<?php echo $result_member['id']; ?>" class="user-result-card">
+                            <div class="search-result-avatar">
+                                <?php // Usar avatar do usuário do resultado quando disponível; caso contrário usar imagem padrão estática ?>
+                                <img src="<?php echo htmlspecialchars(!empty($result_member['avatar_path']) ? $result_member['avatar_path'] : 'assets/images/default_avatar.png'); ?>" alt="<?php echo htmlspecialchars($result_member['username']); ?>">
                             </div>
                             <div class="user-details">
-                                <div class="user-username">@<?php echo htmlspecialchars($u['username']); ?></div>
-                                <div class="user-name"><?php echo htmlspecialchars($u['name']); ?></div>
+                                <div class="user-username">@<?php echo htmlspecialchars($result_member['username']); ?></div>
+                                <div class="user-name"><?php echo htmlspecialchars($result_member['name']); ?></div>
                             </div>
                         </a>
                     <?php endforeach; ?>
@@ -411,80 +407,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <?php include 'includes/footer.php'; ?>
 
-<style>
-/* User result card styling */
-.user-results-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1rem;
-}
-.user-result-card {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    background: var(--card-bg);
-    border: 1px solid rgba(255,255,255,0.04);
-    border-radius: 8px;
-    text-decoration: none;
-    color: inherit;
-}
-.user-avatar img, .user-avatar-fallback {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    object-fit: cover;
-    background: #2a2a2a;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-}
-.user-details .user-username {
-    font-weight: 700;
-    color: var(--text-main);
-}
-.user-details .user-name {
-    font-size: 0.9rem;
-    color: var(--text-soft);
-}
-.search-refine-form .search-refine-input {
-    padding: 0.6rem 0.8rem;
-    border-radius: 6px;
-    border: 1px solid var(--input-border);
-    background: var(--input-bg);
-    color: var(--text-main);
-}
-.search-refine-select {
-    padding: 0.55rem 0.6rem;
-    border-radius: 6px;
-    border: 1px solid var(--input-border);
-    background: var(--card-bg);
-    color: var(--text-main);
-}
-
-/* Tabs styling for search results */
-.search-tabs {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-}
-.tab-btn {
-    background: transparent;
-    border: none;
-    padding: 0.6rem 0.9rem;
-    font-weight: 600;
-    color: var(--text-soft, #6b7280);
-    border-bottom: 3px solid transparent;
-    cursor: pointer;
-}
-.tab-btn.active {
-    color: var(--text-main, #111827);
-    border-bottom-color: var(--accent, #ff2d6f);
-}
-.tab-btn:focus { outline: none; }
-.search-section { margin-top: 1rem; }
-.search-section h2 { margin: 0 0 0.75rem 0; font-size: 1.1rem; }
-.section-empty.muted { color: var(--text-soft); padding: 1rem 0; }
-</style>

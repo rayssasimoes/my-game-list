@@ -66,6 +66,25 @@
     font-size: 1rem;
 }
 
+/* Restaurando estilo histórico das abas usadas no markup (.tab-btn) */
+.tab-btn {
+    background: transparent;
+    border: none;
+    padding: 0.6rem 0.9rem;
+    font-weight: 600;
+    color: var(--text-soft, #6b7280);
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+}
+
+.tab-btn.active {
+    color: var(--text-main, #111827);
+    border-bottom-color: var(--accent, #ff2d6f);
+}
+
+.tab-btn:focus { outline: none; }
+
+
 /* Conteúdo das abas */
 .search-content {
     margin-top: 2rem;
@@ -413,5 +432,85 @@
     .search-action-btn {
         padding: 0.5rem 0.75rem;
         font-size: 0.8rem;
+    }
+}
+
+/* ===== USER RESULT CARD (Comunidade) =====
+   Estilização específica para os cards de usuário na aba 'Comunidade'.
+   Mantém o layout dos resultados de jogos intacto. */
+.user-result-card {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* espaço entre avatar e informações */
+    background-color: #1e1e1e; /* fundo escuro e elegante */
+    padding: 12px 14px;
+    border-radius: 10px;
+    text-decoration: none; /* remove sublinhado do link */
+    color: inherit;
+}
+
+.user-result-card .search-result-avatar {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0; /* não deixar o avatar encolher */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-image: none !important;
+    background-color: #333;
+}
+
+.user-result-card .search-result-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* corta a imagem sem distorcer */
+    display: block;
+    border-radius: 50%;
+}
+
+.user-result-card .user-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0; /* permite truncar corretamente em flex containers */
+}
+
+.user-result-card .user-username {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1rem; /* ligeiro aumento */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-result-card .user-name {
+    color: #b3b3b3; /* cor cinza/muted */
+    font-weight: 400;
+    font-size: 0.95rem;
+    word-wrap: break-word; /* permitir quebra de nomes muito longos */
+}
+
+@media (max-width: 768px) {
+    .user-result-card {
+        gap: 12px;
+        padding: 10px 12px;
+    }
+    .user-result-card .search-result-avatar {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+@media (max-width: 480px) {
+    .user-result-card {
+        gap: 10px;
+        padding: 8px 10px;
+    }
+    .user-result-card .search-result-avatar {
+        width: 44px;
+        height: 44px;
     }
 }
