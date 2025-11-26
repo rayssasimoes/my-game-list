@@ -1,22 +1,12 @@
 <?php
-// Habilitar exibição de erros para debug
-error_reporting(E_ALL);
-ini_set('display_errors', 0); // Não mostrar na tela
-ini_set('log_errors', 1);
-
 session_start();
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/auth.php';
 
 header('Content-Type: application/json');
 
-// Log de debug
-error_log("add-to-list.php chamado");
-error_log("POST data: " . print_r($_POST, true));
-
 // Verificar se está logado
 if (!isLoggedIn()) {
-    error_log("Usuário não está logado");
     echo json_encode([
         'success' => false,
         'message' => 'Você precisa estar logado para adicionar jogos'
@@ -39,7 +29,6 @@ $gameName = $_POST['game_name'] ?? null;
 $gameCover = $_POST['game_cover'] ?? null;
 $userId = getUser()['id'];
 
-error_log("Game ID: $gameId, Status: $status, Name: $gameName");
 
 // Validar status
 $validStatuses = ['playing', 'completed', 'want_to_play', 'dropped'];

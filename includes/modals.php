@@ -20,6 +20,7 @@
                 
                 <form method="POST" action="index.php" id="loginForm">
                     <input type="hidden" name="action" value="login">
+                    <input type="hidden" name="redirect" id="login_redirect" value="">
                     
                     <!-- Email ou Username com ícone -->
                     <div class="mb-3">
@@ -72,6 +73,7 @@
             <div class="modal-body">
                 <form method="POST" action="index.php" id="registerForm">
                     <input type="hidden" name="action" value="register">
+                    <input type="hidden" name="redirect" id="register_redirect" value="">
                     
                     <!-- Nome com ícone -->
                     <div class="mb-3">

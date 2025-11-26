@@ -137,6 +137,22 @@ document.addEventListener('DOMContentLoaded', () => {
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
+        // Preencher campo de redirect (se existir) com a URL atual
+        try {
+            // Usar apenas path + query para evitar problemas de host/origin
+            const currentUrl = window.location.pathname + window.location.search;
+            // Se o modal contém um input name="redirect", preencher
+            const redirectInput = modal.querySelector('input[name="redirect"]');
+            if (redirectInput) redirectInput.value = currentUrl;
+            // Também preencher inputs globais caso estejam fora do modal (fallback)
+            const globalLogin = document.getElementById('login_redirect');
+            if (globalLogin && !globalLogin.value) globalLogin.value = currentUrl;
+            const globalRegister = document.getElementById('register_redirect');
+            if (globalRegister && !globalRegister.value) globalRegister.value = currentUrl;
+        } catch (e) {
+            // não bloqueia abertura do modal
+        }
+
         document.body.classList.add('modal-open');
         modal.classList.add('show');
     }
@@ -248,6 +264,15 @@ function initLoginForm() {
     
     loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
+        // Garantir fallback: se o input hidden redirect estiver vazio, preencher com path+query
+        try {
+            const redirectInput = this.querySelector('input[name="redirect"]') || document.getElementById('login_redirect');
+            if (redirectInput && !redirectInput.value) {
+                redirectInput.value = window.location.pathname + window.location.search;
+            }
+        } catch (err) {
+            // ignore
+        }
         
         // Esconder mensagens de erro anteriores
         if (errorMessage) errorMessage.style.display = 'none';
@@ -261,13 +286,44 @@ function initLoginForm() {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
             },
+            credentials: 'same-origin',
             body: formData
         })
         .then(response => response.json())
         .then(data => {
+            console.log('Login AJAX response:', data);
+            console.log('Submitted redirect:', formData.get('redirect'));
             if (data.success) {
-                // sucesso -> recarrega
-                window.location.href = 'index.php';
+                    // Preferir redirect vindo do servidor (validado). Se não existir, usar o valor submetido
+                    let redirect = data.redirect || formData.get('redirect');
+                    if (redirect) {
+                        // Se for um caminho absoluto (começa com /), navegar diretamente
+                        if (redirect.startsWith('/')) {
+                            window.location.href = redirect;
+                            return;
+                        }
+
+                        // Se for um caminho relativo (ex: index.php?page=...), navegar relativo
+                        if (redirect.startsWith('index.php') || redirect.indexOf('page=') !== -1) {
+                            // construir URL relativa
+                            const base = window.location.origin + (window.location.pathname === '/' ? '' : '');
+                            window.location.href = base + '/' + redirect.replace(/^\/+/, '');
+                            return;
+                        }
+
+                        // último recurso: tentar construir URL e validar origem
+                        try {
+                            const url = new URL(redirect, window.location.origin);
+                            if (url.origin === window.location.origin) {
+                                window.location.href = url.href;
+                                return;
+                            }
+                        } catch (err) {
+                            // ignora
+                        }
+                    }
+
+                    window.location.href = 'index.php';
             } else {
                 // mostra erro no modal sem fechar
                 if (passwordField) {
@@ -287,6 +343,23 @@ function initLoginForm() {
         });
     });
 }
+
+// Fallback para register: garantir que redirect esteja preenchido antes do submit (formulário sem AJAX)
+document.addEventListener('DOMContentLoaded', () => {
+    const registerForm = document.getElementById('registerForm');
+    if (!registerForm) return;
+    registerForm.addEventListener('submit', function(e) {
+        try {
+            const redirectInput = this.querySelector('input[name="redirect"]') || document.getElementById('register_redirect');
+            if (redirectInput && !redirectInput.value) {
+                redirectInput.value = window.location.pathname + window.location.search;
+            }
+        } catch (err) {
+            // ignore
+        }
+        // allow normal submit
+    });
+});
 
 // ==== PASSWORD TOGGLE ====
 function initPasswordToggle() {

@@ -38,7 +38,7 @@ function login($identifier, $password) {
     if ($user && password_verify($password, $user['password'])) {
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_name'] = $user['name'];
-        return true;
+            return true;
     }
     
     return false;
@@ -91,15 +91,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     if ($_POST['action'] === 'login') {
         $identifier = $_POST['identifier'] ?? ''; // email OU username
         $password = $_POST['password'] ?? '';
+        $postedRedirect = $_POST['redirect'] ?? '';
         
         if (login($identifier, $password)) {
             // Se for requisição AJAX, retorna JSON
+            // Preparar redirect seguro (pode ser caminho relativo ou host igual)
+            $postedRedirect = $_POST['redirect'] ?? '';
+            $safeRedirect = null;
+            $parsed = @parse_url($postedRedirect);
+            if ($parsed !== false && $parsed !== null) {
+                if (isset($parsed['host'])) {
+                    if ($parsed['host'] === ($_SERVER['HTTP_HOST'] ?? '')) {
+                        $safeRedirect = $postedRedirect;
+                    }
+                } else {
+                    $safeRedirect = $postedRedirect;
+                }
+            }
+            
+            // debug log removed
+
+            // Se for requisição AJAX, retorna JSON (inclui redirect quando válido)
+            $isAjax = false;
             if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                $isAjax = true;
+            } elseif (!empty($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+                $isAjax = true;
+            }
+
+            if ($isAjax) {
                 header('Content-Type: application/json');
-                echo json_encode(['success' => true]);
+                echo json_encode(['success' => true, 'redirect' => $safeRedirect]);
                 exit;
             }
             $_SESSION['success'] = 'Login realizado com sucesso!';
+            // Se houver parâmetro de redirect, validar e redirecionar com segurança
+            $redirect = $_POST['redirect'] ?? '';
+            if (!empty($redirect)) {
+                // Validar URL: permitir apenas caminhos relativos ou URLs com o mesmo host
+                $safe = null;
+                $parsed = @parse_url($redirect);
+                if ($parsed !== false && $parsed !== null) {
+                    if (isset($parsed['host'])) {
+                        // URL absoluta -> comparar host
+                        if ($parsed['host'] === ($_SERVER['HTTP_HOST'] ?? '')) {
+                            $safe = $redirect;
+                        }
+                    } else {
+                        // caminho relativo (ex: index.php?page=game&id=1) - permitir
+                        $safe = $redirect;
+                    }
+                }
+
+                if ($safe) {
+                    header('Location: ' . $safe);
+                    exit;
+                }
+            }
+
             header('Location: index.php');
             exit;
         } else {
@@ -118,6 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $username = $_POST['username'] ?? '';
         $email = $_POST['email'] ?? '';
         $password = $_POST['password'] ?? '';
+        $postedRedirect = $_POST['redirect'] ?? '';
         
         if (strlen($password) < 6) {
             $_SESSION['error'] = 'A senha deve ter no mínimo 6 caracteres.';
@@ -126,6 +176,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             
             if ($result['success']) {
                 $_SESSION['success'] = 'Conta criada com sucesso! Faça login.';
+                // Preparar redirect seguro (pode ser caminho relativo ou host igual)
+                $postedRedirect = $_POST['redirect'] ?? '';
+                $safeRedirect = null;
+                $parsed = @parse_url($postedRedirect);
+                if ($parsed !== false && $parsed !== null) {
+                    if (isset($parsed['host'])) {
+                        if ($parsed['host'] === ($_SERVER['HTTP_HOST'] ?? '')) {
+                            $safeRedirect = $postedRedirect;
+                        }
+                    } else {
+                        $safeRedirect = $postedRedirect;
+                    }
+                }
+
+                // Se for requisição AJAX, retornar JSON com redirect quando válido
+                $isAjax = false;
+                if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+                    $isAjax = true;
+                } elseif (!empty($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
+                    $isAjax = true;
+                }
+
+                if ($isAjax) {
+                    header('Content-Type: application/json');
+                    echo json_encode(['success' => true, 'redirect' => $safeRedirect]);
+                    exit;
+                }
+
+                if (!empty($safeRedirect)) {
+                    header('Location: ' . $safeRedirect);
+                    exit;
+                }
+
                 header('Location: index.php');
                 exit;
             } else {
@@ -133,6 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             }
         }
     }
+
     
     if ($_POST['action'] === 'logout') {
         logout();
