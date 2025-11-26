@@ -1,0 +1,239 @@
+/* ===== RESET PASSWORD PAGE ===== */
+
+/* Layout principal */
+body.reset-password-page {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Container principal */
+.reset-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    width: 100%;
+    padding: 40px;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header */
+.reset-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.reset-header .icon {
+    font-size: 4rem;
+    color: #667eea;
+    margin-bottom: 15px;
+}
+
+.reset-header .icon.error-icon {
+    color: #ef4444;
+}
+
+.reset-header h1 {
+    color: #1e293b;
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.reset-header p {
+    color: #64748b;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+/* Alertas */
+.alert {
+    padding: 15px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.alert-error {
+    background: #fee;
+    color: #c33;
+    border: 1px solid #fcc;
+}
+
+.alert-success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert i {
+    font-size: 1.5rem;
+}
+
+/* Formulário */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    color: #1e293b;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-group-addon {
+    position: absolute;
+    left: 15px;
+    color: #94a3b8;
+    font-size: 1.2rem;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px 12px 45px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: white;
+    color: #1e293b;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-control.password-invalid {
+    border-color: #ef4444;
+}
+
+.form-control.password-valid {
+    border-color: #22c55e;
+}
+
+.form-text {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85rem;
+    color: #64748b;
+}
+
+.form-text.invalid {
+    color: #ef4444;
+}
+
+.form-text.valid {
+    color: #22c55e;
+}
+
+/* Password container */
+.password-container {
+    position: relative;
+}
+
+.password-toggle-icon {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #94a3b8;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+.password-toggle-icon:hover {
+    color: #667eea;
+}
+
+.password-toggle-icon.password-icon-inactive {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.password-toggle-icon.password-icon-active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Mensagem de sucesso */
+.success-message {
+    text-align: center;
+    padding: 20px;
+}
+
+.success-message .icon {
+    font-size: 5rem;
+    color: #22c55e;
+    margin-bottom: 20px;
+}
+
+.success-message h2 {
+    color: #1e293b;
+    margin-bottom: 15px;
+}
+
+.success-message p {
+    color: #64748b;
+    margin-bottom: 25px;
+}
+
+/* Texto informativo */
+.reset-info-text {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 20px;
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+    .reset-container {
+        padding: 30px 20px;
+    }
+    
+    .reset-header h1 {
+        font-size: 1.5rem;
+    }
+}
