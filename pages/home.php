@@ -133,10 +133,12 @@ include 'includes/header.php';
         <div class="discovery-grid">
             <!-- Coluna 1: Em Breve -->
             <div class="discovery-column">
-                <div class="discovery-header">
-                    <h3 class="discovery-title">Em Breve</h3>
-                    <a href="#" class="discovery-see-more">›</a>
-                </div>
+                <a href="index.php?page=populares&tipo=em_breve" class="section-header-link">
+                    <div class="section-header-with-arrow">
+                        <h3 class="discovery-title">Em Breve</h3>
+                        <span class="scroll-indicator">›</span>
+                    </div>
+                </a>
                 <div class="discovery-list">
                     <?php 
                     $upcomingGames = getUpcomingGames(5);
@@ -160,10 +162,12 @@ include 'includes/header.php';
 
             <!-- Coluna 2: Recentemente Antecipados -->
             <div class="discovery-column">
-                <div class="discovery-header">
-                    <h3 class="discovery-title">Recentemente Antecipados</h3>
-                    <a href="#" class="discovery-see-more">›</a>
-                </div>
+                <a href="index.php?page=populares&tipo=hyped" class="section-header-link">
+                    <div class="section-header-with-arrow">
+                        <h3 class="discovery-title">Recentemente Antecipados</h3>
+                        <span class="scroll-indicator">›</span>
+                    </div>
+                </a>
                 <div class="discovery-list">
                     <?php 
                     $hypedGames = getHypedGames(5);
@@ -187,10 +191,12 @@ include 'includes/header.php';
 
             <!-- Coluna 3: Sucessos Inesperados -->
             <div class="discovery-column">
-                <div class="discovery-header">
-                    <h3 class="discovery-title">Sucessos Inesperados</h3>
-                    <a href="#" class="discovery-see-more">›</a>
-                </div>
+                <a href="index.php?page=populares&tipo=hidden_gems" class="section-header-link">
+                    <div class="section-header-with-arrow">
+                        <h3 class="discovery-title">Sucessos Inesperados</h3>
+                        <span class="scroll-indicator">›</span>
+                    </div>
+                </a>
                 <div class="discovery-list">
                     <?php 
                     $hiddenGems = getHiddenGems(5);

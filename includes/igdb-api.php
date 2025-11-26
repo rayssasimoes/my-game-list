@@ -155,6 +155,228 @@ function getPopularGames($limit = 12) {
     return $formatted;
 }
 
+// --- Versões paginadas e contagem para as diferentes listagens (Em Breve, Hyped, Hidden Gems)
+function getUpcomingGamesFiltered($limit = 48, $page = 1, $genreId = '', $platformId = '') {
+    if (empty(IGDB_CLIENT_ID) || empty(IGDB_CLIENT_SECRET)) {
+        error_log("ERRO: Credenciais IGDB não configuradas!");
+        return [];
+    }
+
+    $offset = ($page - 1) * $limit;
+    $cacheKey = "upcoming_games_filtered_{$limit}_{$page}_{$genreId}_{$platformId}";
+    if (isset($_SESSION[$cacheKey]) && isset($_SESSION[$cacheKey . '_time']) && (time() - $_SESSION[$cacheKey . '_time']) < 1800) {
+        return $_SESSION[$cacheKey];
+    }
+
+    $today = time();
+    $thirtyDaysFromNow = $today + (30 * 24 * 60 * 60);
+
+    $whereConditions = ["first_release_date > {$today}", "first_release_date < {$thirtyDaysFromNow}", 'cover != null'];
+
+    if (!empty($genreId)) {
+        $genreIds = array_filter(array_map('intval', explode(',', $genreId)));
+        if (!empty($genreIds)) $whereConditions[] = 'genres = (' . implode(',', $genreIds) . ')';
+    }
+    if (!empty($platformId)) {
+        $platformIds = array_filter(array_map('intval', explode(',', $platformId)));
+        if (!empty($platformIds)) $whereConditions[] = 'platforms = (' . implode(',', $platformIds) . ')';
+    }
+
+    $whereClause = implode(' & ', $whereConditions);
+
+    $query = "
+        fields name, cover.url, first_release_date;
+        where {$whereClause};
+        sort first_release_date asc;
+        limit {$limit};
+        offset {$offset};
+    ";
+
+    $games = igdbRequest('games', $query);
+
+    $formatted = [];
+    foreach ($games as $game) {
+        $coverUrl = isset($game['cover']['url']) ? str_replace('t_thumb', 't_cover_big', 'https:' . $game['cover']['url']) : 'https://via.placeholder.com/264x352?text=No+Image';
+        $formatted[] = [
+            'id' => $game['id'],
+            'name' => $game['name'],
+            'cover' => $coverUrl,
+            'release_date' => isset($game['first_release_date']) ? date('j M Y', $game['first_release_date']) : 'TBA'
+        ];
+    }
+
+    $_SESSION[$cacheKey] = $formatted;
+    $_SESSION[$cacheKey . '_time'] = time();
+    return $formatted;
+}
+
+function getUpcomingGamesCount($genreId = '', $platformId = '') {
+    if (empty(IGDB_CLIENT_ID) || empty(IGDB_CLIENT_SECRET)) {
+        return 0;
+    }
+    $today = time();
+    $thirtyDaysFromNow = $today + (30 * 24 * 60 * 60);
+    $whereConditions = ["first_release_date > {$today}", "first_release_date < {$thirtyDaysFromNow}", 'cover != null'];
+    if (!empty($genreId)) {
+        $genreIds = array_filter(array_map('intval', explode(',', $genreId)));
+        if (!empty($genreIds)) $whereConditions[] = 'genres = (' . implode(',', $genreIds) . ')';
+    }
+    if (!empty($platformId)) {
+        $platformIds = array_filter(array_map('intval', explode(',', $platformId)));
+        if (!empty($platformIds)) $whereConditions[] = 'platforms = (' . implode(',', $platformIds) . ')';
+    }
+    $whereClause = implode(' & ', $whereConditions);
+    $query = "where {$whereClause}; count;";
+    $res = igdbRequest('games', $query);
+    if (is_int($res)) return $res;
+    if (is_array($res) && count($res) > 0) {
+        $first = reset($res);
+        if (is_int($first)) return $first;
+        if (is_array($first) && isset($first['count'])) return (int)$first['count'];
+    }
+    return 0;
+}
+
+function getHypedGamesFiltered($limit = 48, $page = 1, $genreId = '', $platformId = '') {
+    if (empty(IGDB_CLIENT_ID) || empty(IGDB_CLIENT_SECRET)) {
+        return [];
+    }
+    $offset = ($page - 1) * $limit;
+    $cacheKey = "hyped_games_filtered_{$limit}_{$page}_{$genreId}_{$platformId}";
+    if (isset($_SESSION[$cacheKey]) && isset($_SESSION[$cacheKey . '_time']) && (time() - $_SESSION[$cacheKey . '_time']) < 1800) {
+        return $_SESSION[$cacheKey];
+    }
+
+    $sixMonthsFromNow = time() + (180 * 24 * 60 * 60);
+    $whereConditions = ["first_release_date > {$sixMonthsFromNow}", 'hypes > 50', 'cover != null'];
+    if (!empty($genreId)) {
+        $genreIds = array_filter(array_map('intval', explode(',', $genreId)));
+        if (!empty($genreIds)) $whereConditions[] = 'genres = (' . implode(',', $genreIds) . ')';
+    }
+    if (!empty($platformId)) {
+        $platformIds = array_filter(array_map('intval', explode(',', $platformId)));
+        if (!empty($platformIds)) $whereConditions[] = 'platforms = (' . implode(',', $platformIds) . ')';
+    }
+
+    $whereClause = implode(' & ', $whereConditions);
+    $query = "
+        fields name, cover.url, first_release_date, hypes;
+        where {$whereClause};
+        sort hypes desc;
+        limit {$limit};
+        offset {$offset};
+    ";
+
+    $games = igdbRequest('games', $query);
+    $formatted = [];
+    foreach ($games as $game) {
+        $coverUrl = isset($game['cover']['url']) ? str_replace('t_thumb', 't_cover_big', 'https:' . $game['cover']['url']) : 'https://via.placeholder.com/264x352?text=No+Image';
+        $formatted[] = [
+            'id' => $game['id'],
+            'name' => $game['name'],
+            'cover' => $coverUrl,
+            'release_date' => isset($game['first_release_date']) ? date('j M Y', $game['first_release_date']) : 'TBA',
+            'hypes' => $game['hypes'] ?? 0
+        ];
+    }
+
+    $_SESSION[$cacheKey] = $formatted;
+    $_SESSION[$cacheKey . '_time'] = time();
+    return $formatted;
+}
+
+function getHypedGamesCount($genreId = '', $platformId = '') {
+    if (empty(IGDB_CLIENT_ID) || empty(IGDB_CLIENT_SECRET)) return 0;
+    $sixMonthsFromNow = time() + (180 * 24 * 60 * 60);
+    $whereConditions = ["first_release_date > {$sixMonthsFromNow}", 'hypes > 50', 'cover != null'];
+    if (!empty($genreId)) {
+        $genreIds = array_filter(array_map('intval', explode(',', $genreId)));
+        if (!empty($genreIds)) $whereConditions[] = 'genres = (' . implode(',', $genreIds) . ')';
+    }
+    if (!empty($platformId)) {
+        $platformIds = array_filter(array_map('intval', explode(',', $platformId)));
+        if (!empty($platformIds)) $whereConditions[] = 'platforms = (' . implode(',', $platformIds) . ')';
+    }
+    $whereClause = implode(' & ', $whereConditions);
+    $query = "where {$whereClause}; count;";
+    $res = igdbRequest('games', $query);
+    if (is_int($res)) return $res;
+    if (is_array($res) && count($res) > 0) {
+        $first = reset($res);
+        if (is_int($first)) return $first;
+        if (is_array($first) && isset($first['count'])) return (int)$first['count'];
+    }
+    return 0;
+}
+
+function getHiddenGemsFiltered($limit = 48, $page = 1, $genreId = '', $platformId = '') {
+    if (empty(IGDB_CLIENT_ID) || empty(IGDB_CLIENT_SECRET)) return [];
+    $offset = ($page - 1) * $limit;
+    $cacheKey = "hidden_gems_filtered_{$limit}_{$page}_{$genreId}_{$platformId}";
+    if (isset($_SESSION[$cacheKey]) && isset($_SESSION[$cacheKey . '_time']) && (time() - $_SESSION[$cacheKey . '_time']) < 1800) {
+        return $_SESSION[$cacheKey];
+    }
+
+    $whereConditions = ['total_rating > 80', 'total_rating_count > 50', 'total_rating_count < 1000', 'cover != null'];
+    if (!empty($genreId)) {
+        $genreIds = array_filter(array_map('intval', explode(',', $genreId)));
+        if (!empty($genreIds)) $whereConditions[] = 'genres = (' . implode(',', $genreIds) . ')';
+    }
+    if (!empty($platformId)) {
+        $platformIds = array_filter(array_map('intval', explode(',', $platformId)));
+        if (!empty($platformIds)) $whereConditions[] = 'platforms = (' . implode(',', $platformIds) . ')';
+    }
+
+    $whereClause = implode(' & ', $whereConditions);
+    $query = "
+        fields name, cover.url, total_rating, total_rating_count;
+        where {$whereClause};
+        sort total_rating desc;
+        limit {$limit};
+        offset {$offset};
+    ";
+
+    $games = igdbRequest('games', $query);
+    $formatted = [];
+    foreach ($games as $game) {
+        $coverUrl = isset($game['cover']['url']) ? str_replace('t_thumb', 't_cover_big', 'https:' . $game['cover']['url']) : 'https://via.placeholder.com/264x352?text=No+Image';
+        $rating = isset($game['total_rating']) ? number_format($game['total_rating'] / 20, 1) : 0;
+        $formatted[] = [
+            'id' => $game['id'],
+            'name' => $game['name'],
+            'cover' => $coverUrl,
+            'rating' => $rating
+        ];
+    }
+
+    $_SESSION[$cacheKey] = $formatted;
+    $_SESSION[$cacheKey . '_time'] = time();
+    return $formatted;
+}
+
+function getHiddenGemsCount($genreId = '', $platformId = '') {
+    if (empty(IGDB_CLIENT_ID) || empty(IGDB_CLIENT_SECRET)) return 0;
+    $whereConditions = ['total_rating > 80', 'total_rating_count > 50', 'total_rating_count < 1000', 'cover != null'];
+    if (!empty($genreId)) {
+        $genreIds = array_filter(array_map('intval', explode(',', $genreId)));
+        if (!empty($genreIds)) $whereConditions[] = 'genres = (' . implode(',', $genreIds) . ')';
+    }
+    if (!empty($platformId)) {
+        $platformIds = array_filter(array_map('intval', explode(',', $platformId)));
+        if (!empty($platformIds)) $whereConditions[] = 'platforms = (' . implode(',', $platformIds) . ')';
+    }
+    $whereClause = implode(' & ', $whereConditions);
+    $query = "where {$whereClause}; count;";
+    $res = igdbRequest('games', $query);
+    if (is_int($res)) return $res;
+    if (is_array($res) && count($res) > 0) {
+        $first = reset($res);
+        if (is_int($first)) return $first;
+        if (is_array($first) && isset($first['count'])) return (int)$first['count'];
+    }
+    return 0;
+}
+
 // Buscar jogos populares com filtros (para página populares.php)
 function getPopularGamesFiltered($limit = 48, $page = 1, $genreId = '', $platformId = '') {
     // Validar credenciais

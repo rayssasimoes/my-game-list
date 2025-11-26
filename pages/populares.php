@@ -1,5 +1,15 @@
 <?php
-$pageTitle = 'Jogos Populares - MyGameList';
+// Determinar qual tipo de listagem (populares, em_breve, hyped, hidden_gems)
+$tipo = isset($_GET['tipo']) ? trim($_GET['tipo']) : 'populares';
+
+$pageTitleMap = [
+    'populares' => 'Jogos Populares - MyGameList',
+    'em_breve' => 'Em Breve - MyGameList',
+    'hyped' => 'Recentemente Antecipados - MyGameList',
+    'hidden_gems' => 'Sucessos Inesperados - MyGameList'
+];
+
+$pageTitle = $pageTitleMap[$tipo] ?? $pageTitleMap['populares'];
 
 // Parâmetros de paginação
 // Usar 54 itens por página (divisível por 6 para manter o grid sem buracos)
@@ -34,14 +44,29 @@ if (isset($_GET['clearcache'])) {
     exit;
 }
 
-// Buscar jogos: solicitar exatamente $gamesPerPage itens (limit = 54 conforme solicitado)
-$games = getPopularGamesFiltered($gamesPerPage, $currentPageNum, $selectedGenre, $selectedPlatform);
+// Buscar jogos de acordo com o tipo selecionado
+switch ($tipo) {
+    case 'em_breve':
+        $games = getUpcomingGamesFiltered($gamesPerPage, $currentPageNum, $selectedGenre, $selectedPlatform);
+        $hasNextPage = count($games) === $gamesPerPage;
+        break;
 
-// Verificar existência provável de próxima página: se retornou exatamente $gamesPerPage, pode haver próxima.
-// Obs: para detectar com certeza é preciso solicitar +1 item ao IGDB (método alternativo),
-// mas aqui obedecemos ao requisito de enviar limit=54.
-$hasNextPage = count($games) === $gamesPerPage;
-error_log("[Populares] Jogos retornados (exibindo): " . count($games) . ", hasNext (provável): " . ($hasNextPage ? '1' : '0'));
+    case 'hyped':
+        $games = getHypedGamesFiltered($gamesPerPage, $currentPageNum, $selectedGenre, $selectedPlatform);
+        $hasNextPage = count($games) === $gamesPerPage;
+        break;
+
+    case 'hidden_gems':
+        $games = getHiddenGemsFiltered($gamesPerPage, $currentPageNum, $selectedGenre, $selectedPlatform);
+        $hasNextPage = count($games) === $gamesPerPage;
+        break;
+
+    case 'populares':
+    default:
+        $games = getPopularGamesFiltered($gamesPerPage, $currentPageNum, $selectedGenre, $selectedPlatform);
+        $hasNextPage = count($games) === $gamesPerPage;
+        break;
+}
 
 // Jogos do usuário
 $userGames = [];
@@ -65,8 +90,8 @@ include 'includes/header.php';
 <div class="populares-page">
     <div class="populares-hero">
         <div class="container">
-            <h1 class="populares-title">Jogos Populares</h1>
-            <p class="populares-subtitle">Descubra os jogos mais bem avaliados e populares do momento</p>
+            <h1 class="populares-title"><?php echo htmlspecialchars($pageTitleMap[$tipo] ?? 'Jogos'); ?></h1>
+            <p class="populares-subtitle">Descubra títulos desta categoria</p>
         </div>
     </div>
 
@@ -186,7 +211,28 @@ include 'includes/header.php';
                     // Obter total de resultados do IGDB para calcular páginas corretamente
                     $totalCount = 0;
                     try {
-                        $totalCount = intval(getPopularGamesCount($selectedGenre, $selectedPlatform));
+                        // Obter contagem total dependendo do tipo
+                        $totalCount = 0;
+                        try {
+                            switch ($tipo) {
+                                case 'em_breve':
+                                    $totalCount = intval(getUpcomingGamesCount($selectedGenre, $selectedPlatform));
+                                    break;
+                                case 'hyped':
+                                    $totalCount = intval(getHypedGamesCount($selectedGenre, $selectedPlatform));
+                                    break;
+                                case 'hidden_gems':
+                                    $totalCount = intval(getHiddenGemsCount($selectedGenre, $selectedPlatform));
+                                    break;
+                                case 'populares':
+                                default:
+                                    $totalCount = intval(getPopularGamesCount($selectedGenre, $selectedPlatform));
+                                    break;
+                            }
+                        } catch (Exception $e) {
+                            error_log('Erro ao obter contagem de jogos: ' . $e->getMessage());
+                            $totalCount = 0;
+                        }
                     } catch (Exception $e) {
                         error_log('Erro ao obter contagem de jogos: ' . $e->getMessage());
                         $totalCount = 0;
