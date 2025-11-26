@@ -548,6 +548,68 @@ body.modal-open {
     color: #E6F0FF;
 }
 
+/* Ajustes adicionais de layout e espaçamento para melhorar aparência do modal de edição */
+#editGameModal .modal-dialog {
+    width: 95%;
+    max-width: 520px; /* Um pouco mais largo para caber campos confortavelmente */
+    margin: 1.25rem auto;
+}
+
+#editGameModal .modal-content {
+    border-radius: 12px; /* menos arredondado que o padrão para consistência */
+    overflow: visible;
+}
+
+#editGameModal .modal-header {
+    padding: 1rem 1.25rem;
+    border-bottom: none;
+}
+
+#editGameModal .modal-body {
+    padding: 1rem 1.25rem 1.25rem 1.25rem;
+}
+
+#editGameModal .modal-body .form-group {
+    margin-bottom: 1rem;
+}
+
+#editGameModal .modal-body .form-label {
+    display: block;
+    margin-bottom: 0.4rem;
+    color: rgba(230,240,255,0.9);
+    font-weight: 600;
+}
+
+#editGameModal .modal-body .form-input {
+    width: 100%;
+    padding: 0.65rem 0.9rem;
+    border-radius: 8px;
+}
+
+#editGameModal .modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    padding: 0.75rem 1.25rem 1rem 1.25rem;
+    border-top: 1px solid rgba(255,255,255,0.03);
+    background: transparent;
+}
+
+#editGameModal .btn-primary, #editGameModal .btn-secondary {
+    min-width: 120px;
+}
+
+#editGameModal .modal-close {
+    right: 0.75rem;
+    top: 0.5rem;
+}
+
+@media (max-width: 480px) {
+    #editGameModal .modal-dialog { max-width: 92%; }
+    #editGameModal .modal-actions { padding: 0.5rem 0.85rem 0.85rem; }
+    #editGameModal .btn-primary, #editGameModal .btn-secondary { min-width: 100px; }
+}
+
 /* ===== FAVORITE SEARCH MODAL (mesma estilização do editGameModal) ===== */
 #favoriteSearchModal .modal-content {
     background-color: #0b1220;
