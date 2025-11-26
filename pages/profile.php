@@ -9,7 +9,8 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     // Se for o mesmo ID da sessão, tratar como dono (requer login)
     if (isLoggedIn() && isset($_SESSION['user_id']) && $_SESSION['user_id'] == $profileId) {
         requireLogin();
-        $profileUser = getUser();
+        // Forçar recarga direta do banco para garantir colunas sociais atualizadas
+        $profileUser = getUserById($_SESSION['user_id']);
         $isOwner = true;
     } else {
         // Perfil público — não requer login
@@ -25,7 +26,8 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
 } else {
     // Cenário B: sem id na URL -> meu perfil (requer estar logado)
     requireLogin();
-    $profileUser = getUser();
+    // Forçar recarga direta do banco para garantir colunas sociais atualizadas na sessão atual
+    $profileUser = getUserById($_SESSION['user_id']);
     if (!$profileUser) {
         $_SESSION['error'] = 'Usuário não encontrado.';
         header('Location: index.php');
@@ -40,21 +42,10 @@ $firstName = !empty($profileUser['name']) ? explode(' ', $profileUser['name'])[0
 // Buscar estatísticas do usuário
 $db = getDB();
 
-// Total de jogos completados
-$stmt = $db->prepare("SELECT COUNT(*) as total FROM game_user WHERE user_id = ? AND status = 'completed'");
+// Total de jogos na biblioteca do usuário (independente do status)
+$stmt = $db->prepare("SELECT COUNT(*) as total FROM game_user WHERE user_id = ?");
 $stmt->execute([$profileUser['id']]);
-$completedTotal = $stmt->fetch()['total'];
-
-// Jogos completados este ano
-$stmt = $db->prepare("
-    SELECT COUNT(*) as total 
-    FROM game_user 
-    WHERE user_id = ? 
-    AND status = 'completed' 
-    AND YEAR(updated_at) = YEAR(CURRENT_DATE)
-");
-$stmt->execute([$profileUser['id']]);
-$completedThisYear = $stmt->fetch()['total'];
+$totalGames = (int) ($stmt->fetch()['total'] ?? 0);
 
 // Buscar jogos favoritos (máximo 5 para a seção de destaque)
 $stmt = $db->prepare("
@@ -122,24 +113,57 @@ include 'includes/header.php';
                 </div>
                 <div class="profile-header-info">
                     <h1 class="profile-name"><?php echo htmlspecialchars($firstName); ?></h1>
-                    <?php if (!empty($isOwner) && $isOwner): ?>
-                        <a href="index.php?page=edit-profile" class="btn-edit-profile">
-                            <i class="bi bi-pencil"></i> Editar Perfil
-                        </a>
-                    <?php else: ?>
-                        <button class="btn-follow">Seguir</button>
-                    <?php endif; ?>
+                    <div class="profile-header-actions" style="display:flex; gap:0.75rem; align-items:center;">
+                        <?php if (!empty($isOwner) && $isOwner): ?>
+                            <a href="index.php?page=edit-profile" class="btn-edit-profile">
+                                <i class="bi bi-pencil"></i> Editar Perfil
+                            </a>
+                        <?php endif; ?>
+
+                        <div class="social-icons-bar">
+                            <?php if (!empty($profileUser['social_steam'])): ?>
+                                <a href="<?php echo htmlspecialchars($profileUser['social_steam']); ?>" target="_blank" class="social-icon social-steam" data-platform="steam" title="Steam">
+                                    <i class="bi bi-steam"></i>
+                                </a>
+                            <?php endif; ?>
+
+                            <?php if (!empty($profileUser['social_twitter'])): ?>
+                                <a href="<?php echo htmlspecialchars($profileUser['social_twitter']); ?>" target="_blank" class="social-icon social-twitter" data-platform="twitter" title="Twitter">
+                                    <i class="bi bi-twitter"></i>
+                                </a>
+                            <?php endif; ?>
+
+                            <?php if (!empty($profileUser['social_instagram'])): ?>
+                                <a href="<?php echo htmlspecialchars($profileUser['social_instagram']); ?>" target="_blank" class="social-icon social-instagram" data-platform="instagram" title="Instagram">
+                                    <i class="bi bi-instagram"></i>
+                                </a>
+                            <?php endif; ?>
+
+                            <?php if (!empty($profileUser['social_discord'])): ?>
+                                <button type="button" class="social-icon social-discord" data-value="<?php echo htmlspecialchars($profileUser['social_discord']); ?>" data-platform="discord" title="Copiar Discord">
+                                    <i class="bi bi-discord"></i>
+                                </button>
+                            <?php endif; ?>
+
+                            <?php if (!empty($profileUser['social_psn'])): ?>
+                                <button type="button" class="social-icon social-psn" data-value="<?php echo htmlspecialchars($profileUser['social_psn']); ?>" data-platform="psn" title="Copiar PSN">
+                                    <i class="bi bi-psn"></i>
+                                </button>
+                            <?php endif; ?>
+
+                            <?php if (!empty($profileUser['social_xbox'])): ?>
+                                <button type="button" class="social-icon social-xbox" data-value="<?php echo htmlspecialchars($profileUser['social_xbox']); ?>" data-platform="xbox" title="Copiar Xbox">
+                                    <i class="bi bi-xbox"></i>
+                                </button>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="profile-stats">
-                <div class="stat-item">
-                    <span class="stat-value"><?php echo $completedTotal; ?></span>
-                    <span class="stat-label">JOGOS CONCLUÍDOS</span>
-                </div>
-                <div class="stat-divider"></div>
-                <div class="stat-item">
-                    <span class="stat-value"><?php echo $completedThisYear; ?></span>
-                    <span class="stat-label">CONCLUÍDOS ESTE ANO</span>
+            <div class="profile-stats" style="display:flex; justify-content:center; align-items:center;">
+                <div class="stat-item" style="text-align:center;">
+                    <span class="stat-value"><?php echo $totalGames; ?></span>
+                    <span class="stat-label">TOTAL DE JOGOS</span>
                 </div>
             </div>
         </div>
@@ -678,6 +702,48 @@ function removeFavorite(gameId, gameName) {
     background: #dc2626;
     transform: scale(1.1);
 }
+
+/* Social icons bar */
+.social-icons-bar {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.03);
+    color: var(--text-color, #fff);
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.social-icon i { font-size: 1.1rem; }
+.social-icon:hover { transform: translateY(-3px); color: var(--primary-color, #667eea); background: rgba(255,255,255,0.06); }
+
+/* Brand colors */
+.social-steam { color: #0f2a44; }
+.social-twitter { color: #1DA1F2; }
+.social-instagram { color: #E1306C; }
+.social-discord { color: #5865F2; }
+.social-psn { color: #003087; }
+.social-xbox { color: #107C10; }
+
+/* Tooltip for social buttons */
+.social-tooltip {
+    position: fixed;
+    z-index: 13000;
+    padding: 6px 8px;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    pointer-events: none;
+}
 </style>
 
 <?php include 'includes/footer.php'; ?>
@@ -914,5 +980,98 @@ document.addEventListener('click', function (e) {
 
 document.getElementById('profilePicClose')?.addEventListener('click', function () {
     closeProfileModal();
+});
+</script>
+
+<script>
+function copyToClipboard(text) {
+    if (!text) return;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            showToast('ID copiado com sucesso!');
+        }).catch(() => {
+            fallbackCopy(text);
+        });
+    } else {
+        fallbackCopy(text);
+    }
+
+    function fallbackCopy(str) {
+        const el = document.createElement('textarea');
+        el.value = str;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        el.select();
+        try { document.execCommand('copy'); showToast('ID copiado com sucesso!'); } catch(e) { alert('Não foi possível copiar'); }
+        document.body.removeChild(el);
+    }
+}
+
+function showToast(message) {
+    let toast = document.getElementById('copiedToast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'copiedToast';
+        toast.style.position = 'fixed';
+        toast.style.right = '20px';
+        toast.style.bottom = '20px';
+        toast.style.background = 'rgba(0,0,0,0.85)';
+        toast.style.color = '#fff';
+        toast.style.padding = '10px 14px';
+        toast.style.borderRadius = '8px';
+        toast.style.boxShadow = '0 6px 18px rgba(0,0,0,0.3)';
+        toast.style.zIndex = 12000;
+        document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.style.opacity = '1';
+    toast.style.transition = 'opacity 0.3s ease';
+    setTimeout(() => { toast.style.opacity = '0'; }, 2000);
+}
+</script>
+<script>
+// Tooltip logic for social copy buttons
+let socialTooltipEl = null;
+function createSocialTooltip() {
+    socialTooltipEl = document.createElement('div');
+    socialTooltipEl.className = 'social-tooltip';
+    document.body.appendChild(socialTooltipEl);
+}
+
+function showSocialTooltip(btn, text) {
+    if (!socialTooltipEl) createSocialTooltip();
+    socialTooltipEl.textContent = text;
+    const r = btn.getBoundingClientRect();
+    socialTooltipEl.style.left = (r.left + (r.width/2) - (socialTooltipEl.offsetWidth/2)) + 'px';
+    socialTooltipEl.style.top = (r.top - socialTooltipEl.offsetHeight - 8) + 'px';
+    socialTooltipEl.style.opacity = '1';
+}
+
+function hideSocialTooltip() {
+    if (!socialTooltipEl) return;
+    socialTooltipEl.style.opacity = '0';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Attach hover handlers to copy buttons
+    document.querySelectorAll('.social-icon[data-value]').forEach(btn => {
+        const val = btn.getAttribute('data-value') || '';
+        btn.addEventListener('mouseenter', (e) => {
+            showSocialTooltip(btn, 'Clique para copiar: ' + val);
+        });
+        btn.addEventListener('mouseleave', (e) => {
+            hideSocialTooltip();
+        });
+        btn.addEventListener('click', (e) => {
+            const v = btn.getAttribute('data-value');
+            if (!v) return;
+            copyToClipboard(v);
+            // update tooltip
+            showSocialTooltip(btn, 'Copiado!');
+            setTimeout(() => { hideSocialTooltip(); }, 1200);
+        });
+    });
 });
 </script>

@@ -22,13 +22,81 @@ $user = $stmt->fetch();
 $profileSuccess = false;
 $profileError = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
-    $username = trim($_POST['username']);
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Captura segura da seção que está sendo atualizada para evitar warnings
+    $updateSection = $_POST['update_section'] ?? '';
+
+    // Processar apenas a seção adequada
+    if ($updateSection === 'info') {
+        $username = trim($_POST['username'] ?? '');
     $firstName = trim($_POST['first_name']);
     $lastName = trim($_POST['last_name']);
     $email = trim($_POST['email']);
     $bio = trim($_POST['bio']);
     $pronouns = isset($_POST['pronouns']) ? $_POST['pronouns'] : 'male';
+
+    // Campos de conexões sociais (se disponíveis)
+    $social_steam = trim($_POST['social_steam'] ?? '');
+    $social_psn = trim($_POST['social_psn'] ?? '');
+    $social_xbox = trim($_POST['social_xbox'] ?? '');
+    $social_discord = trim($_POST['social_discord'] ?? '');
+    $social_twitter = trim($_POST['social_twitter'] ?? '');
+    $social_instagram = trim($_POST['social_instagram'] ?? '');
+
+    // Normalização básica dos campos sociais
+    // Instagram -> https://instagram.com/username
+    if (!empty($social_instagram)) {
+        $s = trim($social_instagram);
+        $s = preg_replace('/^@+/', '', $s); // remove leading @
+        // se já for URL, garantir https
+        if (preg_match('#^(https?://)#i', $s)) {
+            // garantir domínio instagram
+            if (stripos($s, 'instagram.com') === false) {
+                // manter, mas prefixar https://
+                $s = preg_replace('#^https?://#i', 'https://', $s);
+            } else {
+                $s = preg_replace('#^http://#i', 'https://', $s);
+            }
+        } else {
+            // tratar como username
+            $s = 'https://instagram.com/' . ltrim($s, '/');
+        }
+        $social_instagram = rtrim($s, '/');
+    }
+
+    // Twitter / X -> https://x.com/username
+    if (!empty($social_twitter)) {
+        $t = trim($social_twitter);
+        $t = preg_replace('/^@+/', '', $t);
+        if (preg_match('#^(https?://)#i', $t)) {
+            if (stripos($t, 'x.com') !== false || stripos($t, 'twitter.com') !== false) {
+                $t = preg_replace('#^http://#i', 'https://', $t);
+            } else {
+                $t = 'https://x.com/' . ltrim($t, '/');
+            }
+        } else {
+            $t = 'https://x.com/' . ltrim($t, '/');
+        }
+        $social_twitter = rtrim($t, '/');
+    }
+
+    // Steam -> garantir https e tentar formar profile URL
+    if (!empty($social_steam)) {
+        $st = trim($social_steam);
+        // se já for URL, garantir https
+        if (preg_match('#^(https?://)#i', $st)) {
+            $st = preg_replace('#^http://#i', 'https://', $st);
+        } else {
+            // se for apenas número -> profiles/<id>
+            if (preg_match('/^\d+$/', $st)) {
+                $st = 'https://steamcommunity.com/profiles/' . $st;
+            } else {
+                // nome de usuário/vanity
+                $st = 'https://steamcommunity.com/id/' . ltrim($st, '/');
+            }
+        }
+        $social_steam = rtrim($st, '/');
+    }
     
     // Validações
     if (empty($username) || empty($firstName) || empty($email)) {
@@ -40,24 +108,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
     } else {
         // Verificar se username já existe (exceto o do próprio usuário)
         $stmt = $db->prepare("SELECT id FROM users WHERE username = ? AND id != ?");
-        $stmt->execute([$username, $userId]);
-        if ($stmt->fetch()) {
-            $profileError = 'Este nome de usuário já está em uso.';
-        } else {
-            // Verificar se email já existe (exceto o do próprio usuário)
-            $stmt = $db->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
-            $stmt->execute([$email, $userId]);
+            $stmt->execute([$username, $userId]);
             if ($stmt->fetch()) {
-                $profileError = 'Este e-mail já está em uso.';
+                $profileError = 'Este nome de usuário já está em uso.';
             } else {
-                // Atualizar dados
-                $stmt = $db->prepare("
-                    UPDATE users 
-                    SET username = ?, first_name = ?, last_name = ?, email = ?, bio = ?, pronouns = ?
-                    WHERE id = ?
-                ");
+                // Verificar se email já existe (exceto o do próprio usuário)
+                $stmt = $db->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
+                $stmt->execute([$email, $userId]);
+                if ($stmt->fetch()) {
+                    $profileError = 'Este e-mail já está em uso.';
+                } else {
+                    // Atualizar dados (inclui campos sociais; as colunas devem existir no banco)
+                    $stmt = $db->prepare("
+                        UPDATE users
+                        SET username = ?, first_name = ?, last_name = ?, email = ?, bio = ?, pronouns = ?,
+                            social_steam = ?, social_psn = ?, social_xbox = ?, social_discord = ?, social_twitter = ?, social_instagram = ?
+                        WHERE id = ?
+                    ");
                 
-                if ($stmt->execute([$username, $firstName, $lastName, $email, $bio, $pronouns, $userId])) {
+                    if ($stmt->execute([$username, $firstName, $lastName, $email, $bio, $pronouns, $social_steam, $social_psn, $social_xbox, $social_discord, $social_twitter, $social_instagram, $userId])) {
                     $profileSuccess = true;
                     // Recarregar dados do usuário
                     $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
@@ -80,7 +149,89 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
                 }
             }
         }
+        }
+    } elseif ($updateSection === 'social') {
+        // Processar atualização apenas das conexões sociais
+        $social_steam = trim($_POST['social_steam'] ?? '');
+        $social_psn = trim($_POST['social_psn'] ?? '');
+        $social_xbox = trim($_POST['social_xbox'] ?? '');
+        $social_discord = trim($_POST['social_discord'] ?? '');
+        $social_twitter = trim($_POST['social_twitter'] ?? '');
+        $social_instagram = trim($_POST['social_instagram'] ?? '');
+
+        // Normalização básica dos campos sociais
+        if (!empty($social_instagram)) {
+            $s = trim($social_instagram);
+            $s = preg_replace('/^@+/', '', $s);
+            if (preg_match('#^(https?://)#i', $s)) {
+                if (stripos($s, 'instagram.com') === false) {
+                    $s = preg_replace('#^https?://#i', 'https://', $s);
+                } else {
+                    $s = preg_replace('#^http://#i', 'https://', $s);
+                }
+            } else {
+                $s = 'https://instagram.com/' . ltrim($s, '/');
+            }
+            $social_instagram = rtrim($s, '/');
+        }
+
+        if (!empty($social_twitter)) {
+            $t = trim($social_twitter);
+            $t = preg_replace('/^@+/', '', $t);
+            if (preg_match('#^(https?://)#i', $t)) {
+                if (stripos($t, 'x.com') !== false || stripos($t, 'twitter.com') !== false) {
+                    $t = preg_replace('#^http://#i', 'https://', $t);
+                } else {
+                    $t = 'https://x.com/' . ltrim($t, '/');
+                }
+            } else {
+                $t = 'https://x.com/' . ltrim($t, '/');
+            }
+            $social_twitter = rtrim($t, '/');
+        }
+
+        if (!empty($social_steam)) {
+            $st = trim($social_steam);
+            if (preg_match('#^(https?://)#i', $st)) {
+                $st = preg_replace('#^http://#i', 'https://', $st);
+            } else {
+                if (preg_match('/^\d+$/', $st)) {
+                    $st = 'https://steamcommunity.com/profiles/' . $st;
+                } else {
+                    $st = 'https://steamcommunity.com/id/' . ltrim($st, '/');
+                }
+            }
+            $social_steam = rtrim($st, '/');
+        }
+
+        // Atualizar somente colunas sociais
+        $stmt = $db->prepare("UPDATE users SET social_steam = ?, social_psn = ?, social_xbox = ?, social_discord = ?, social_twitter = ?, social_instagram = ? WHERE id = ?");
+        if ($stmt->execute([$social_steam, $social_psn, $social_xbox, $social_discord, $social_twitter, $social_instagram, $userId])) {
+            $profileSuccess = true;
+            $stmt = $db->prepare("SELECT * FROM users WHERE id = ?");
+            $stmt->execute([$userId]);
+            $user = $stmt->fetch();
+            // Garantir que $user tenha os valores normalizados imediatamente
+            $user['social_steam'] = $social_steam;
+            $user['social_psn'] = $social_psn;
+            $user['social_xbox'] = $social_xbox;
+            $user['social_discord'] = $social_discord;
+            $user['social_twitter'] = $social_twitter;
+            $user['social_instagram'] = $social_instagram;
+            // Sincronizar dados na sessão caso exista cache do usuário
+            if (isset($_SESSION['user']) && is_array($_SESSION['user'])) {
+                $_SESSION['user']['social_steam'] = $user['social_steam'] ?? '';
+                $_SESSION['user']['social_psn'] = $user['social_psn'] ?? '';
+                $_SESSION['user']['social_xbox'] = $user['social_xbox'] ?? '';
+                $_SESSION['user']['social_discord'] = $user['social_discord'] ?? '';
+                $_SESSION['user']['social_twitter'] = $user['social_twitter'] ?? '';
+                $_SESSION['user']['social_instagram'] = $user['social_instagram'] ?? '';
+            }
+        } else {
+            $profileError = 'Erro ao atualizar conexões.';
+        }
     }
+
 }
 
 // Processar formulário da aba Autenticação (Senha)
@@ -200,6 +351,7 @@ include 'includes/header.php';
         <!-- Abas de Navegação -->
         <div class="settings-tabs">
             <button class="settings-tab active" data-tab="profile">Perfil</button>
+            <button class="settings-tab" data-tab="connections">Minhas Conexões</button>
             <button class="settings-tab" data-tab="auth">Autenticação</button>
             <button class="settings-tab" data-tab="avatar">Avatar</button>
         </div>
@@ -221,6 +373,11 @@ include 'includes/header.php';
             <?php endif; ?>
             
             <form method="POST" class="settings-form">
+                <!-- Indica que esta submissão é da seção 'info' -->
+                <input type="hidden" name="update_section" value="info">
+                <!-- Hidden: social fields will be saved together with profile (legacy) -->
+                <input type="hidden" name="social_present" value="1">
+
                 <div class="form-group">
                     <label for="username">Nome de usuário</label>
                     <input 
@@ -359,6 +516,52 @@ include 'includes/header.php';
             </div>
         </div>
         
+        <!-- Conteúdo da Aba Minhas Conexões -->
+        <div class="tab-content" data-tab-content="connections">
+            <h2 class="section-subtitle">Minhas Conexões</h2>
+
+            <form method="POST" class="settings-form">
+                <!-- Indica que esta submissão é da seção 'social' -->
+                <input type="hidden" name="update_section" value="social">
+                <div class="form-group">
+                    <label for="social_steam"><i class="bi bi-steam"></i> Steam</label>
+                    <input type="text" id="social_steam" name="social_steam" class="form-input" placeholder="Link do perfil completo" value="<?php echo htmlspecialchars($user['social_steam'] ?? ''); ?>">
+                </div>
+
+                <div class="form-group">
+                    <label for="social_discord"><i class="bi bi-discord"></i> Discord</label>
+                    <input type="text" id="social_discord" name="social_discord" class="form-input" placeholder="SeuUser#1234" value="<?php echo htmlspecialchars($user['social_discord'] ?? ''); ?>">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="social_psn"><i class="bi bi-psn"></i> PSN</label>
+                        <input type="text" id="social_psn" name="social_psn" class="form-input" placeholder="Gamertag / PSN ID" value="<?php echo htmlspecialchars($user['social_psn'] ?? ''); ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="social_xbox"><i class="bi bi-xbox"></i> Xbox</label>
+                        <input type="text" id="social_xbox" name="social_xbox" class="form-input" placeholder="Gamertag / Xbox ID" value="<?php echo htmlspecialchars($user['social_xbox'] ?? ''); ?>">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="social_twitter"><i class="bi bi-twitter"></i> Twitter</label>
+                    <input type="text" id="social_twitter" name="social_twitter" class="form-input" placeholder="Link do perfil ou @handle" value="<?php echo htmlspecialchars($user['social_twitter'] ?? ''); ?>">
+                </div>
+
+                <div class="form-group">
+                    <label for="social_instagram"><i class="bi bi-instagram"></i> Instagram</label>
+                    <input type="text" id="social_instagram" name="social_instagram" class="form-input" placeholder="Link do perfil ou @handle" value="<?php echo htmlspecialchars($user['social_instagram'] ?? ''); ?>">
+                </div>
+
+                <div style="margin-top:0.75rem;">
+                    <button type="submit" name="save_profile" class="btn btn-primary">
+                        <i class="bi bi-link-45deg"></i> Salvar Conexões
+                    </button>
+                </div>
+            </form>
+        </div>
+
         <!-- Conteúdo da Aba Autenticação -->
         <div class="tab-content" data-tab-content="auth">
             <h2 class="section-subtitle">Autenticação</h2>

@@ -21,7 +21,7 @@ function getUser() {
     }
     
     $db = getDB();
-    $stmt = $db->prepare("SELECT id, name, username, email, first_name, last_name, bio, pronouns, avatar_path, created_at, updated_at FROM users WHERE id = ?");
+    $stmt = $db->prepare("SELECT id, name, username, email, first_name, last_name, bio, pronouns, avatar_path, social_steam, social_psn, social_xbox, social_discord, social_twitter, social_instagram, created_at, updated_at FROM users WHERE id = ?");
     $stmt->execute([$_SESSION['user_id']]);
     return $stmt->fetch();
 }
@@ -29,7 +29,7 @@ function getUser() {
 // Pega dados de um usuário por ID (uso público/admin)
 function getUserById($id) {
     $db = getDB();
-    $stmt = $db->prepare("SELECT id, name, username, email, first_name, last_name, bio, pronouns, avatar_path, created_at, updated_at FROM users WHERE id = ?");
+    $stmt = $db->prepare("SELECT id, name, username, email, first_name, last_name, bio, pronouns, avatar_path, social_steam, social_psn, social_xbox, social_discord, social_twitter, social_instagram, created_at, updated_at FROM users WHERE id = ?");
     $stmt->execute([$id]);
     return $stmt->fetch();
 }
