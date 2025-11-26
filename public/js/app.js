@@ -622,6 +622,17 @@ function analyzeStackingContexts(menuEl, overlayEl) {
     return report;
 }
 
+// Escape básico para inserir texto em HTML (prevenir injeção no dropdown)
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
 function fetchSearchResults(query, dropdown) {
     // Mostra loading
     dropdown.innerHTML = '<div class="search-loading">Buscando...</div>';
@@ -630,26 +641,56 @@ function fetchSearchResults(query, dropdown) {
     // Faz requisição AJAX
     fetch(`includes/search-autocomplete.php?query=${encodeURIComponent(query)}`)
         .then(response => response.json())
-        .then(games => {
-            if (games.length === 0) {
-                dropdown.innerHTML = '<div class="search-no-results">Nenhum jogo encontrado</div>';
+        .then(items => {
+            if (!items || items.length === 0) {
+                // Mostrar opção genérica que leva à página de busca universal
+                const link = `index.php?page=search&q=${encodeURIComponent(query)}`;
+                dropdown.innerHTML = `
+                    <a href="${link}" class="search-result-item all-results">
+                        Ver todos os resultados para "${escapeHtml(query)}"
+                    </a>
+                `;
                 return;
             }
 
-            // Renderiza resultados
+            // Separar por tipo
+            const games = items.filter(i => i.type === 'game');
+            const users = items.filter(i => i.type === 'user');
+
             let html = '';
-            games.forEach(game => {
-                const year = game.year ? `${game.year}` : 'Ano desconhecido';
-                html += `
-                    <a href="index.php?page=game&id=${game.id}" class="search-result-item" data-game-id="${game.id}">
-                        <img src="${game.cover}" alt="${game.name}" class="search-result-image">
-                        <div class="search-result-info">
-                            <div class="search-result-name">${game.name}</div>
-                            <div class="search-result-year">${year}</div>
-                        </div>
-                    </a>
-                `;
-            });
+
+            if (games.length > 0) {
+                html += `<div class="dropdown-section-title">Jogos</div>`;
+                games.forEach(game => {
+                    const year = game.year ? `${game.year}` : 'Ano desconhecido';
+                    html += `
+                        <a href="index.php?page=game&id=${game.id}" class="search-result-item" data-game-id="${game.id}">
+                            <img src="${game.cover}" alt="${escapeHtml(game.name)}" class="search-result-image">
+                            <div class="search-result-info">
+                                <div class="search-result-name">${escapeHtml(game.name)}</div>
+                                <div class="search-result-year">${year}</div>
+                            </div>
+                        </a>
+                    `;
+                });
+            }
+
+            if (users.length > 0) {
+                html += `<div class="dropdown-section-title">Pessoas</div>`;
+                users.forEach(u => {
+                    const avatar = u.avatar ? u.avatar : '';
+                    const avatarHtml = avatar ? `<img src="${escapeHtml(avatar)}" alt="${escapeHtml(u.username)}" class="search-user-avatar">` : `<div class="search-user-avatar fallback">${escapeHtml(u.username.charAt(0).toUpperCase())}</div>`;
+                    html += `
+                        <a href="index.php?page=profile&id=${u.id}" class="search-result-item search-user-item" data-user-id="${u.id}">
+                            ${avatarHtml}
+                            <div class="search-result-info">
+                                <div class="search-result-name">@${escapeHtml(u.username)}</div>
+                                <div class="search-result-year">${escapeHtml(u.name || '')}</div>
+                            </div>
+                        </a>
+                    `;
+                });
+            }
 
             dropdown.innerHTML = html;
         })
@@ -1333,3 +1374,41 @@ document.addEventListener('DOMContentLoaded', () => {
     if (authForm) attachForgotFormHandler(authForm);
     if (standaloneForm) attachForgotFormHandler(standaloneForm);
 });
+    
+// Debug: observar alterações na lista de usuários (apenas para diagnóstico)
+document.addEventListener('DOMContentLoaded', function() {
+    try {
+        const usersContainer = document.getElementById('tab-users');
+        if (!usersContainer) return;
+
+        const headerAvatar = document.querySelector('.user-profile-avatar img');
+        const headerAvatarSrc = headerAvatar ? headerAvatar.getAttribute('src') : null;
+
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach(m => {
+                if (m.type === 'childList' || m.type === 'subtree') {
+                    console.warn('[DEBUG] Mutação detectada em #tab-users', m);
+                    // Logar todos os srcs atuais dentro do container
+                    const imgs = usersContainer.querySelectorAll('img');
+                    imgs.forEach((img, idx) => {
+                        const src = img.getAttribute('src');
+                        if (src === headerAvatarSrc) {
+                            console.warn(`[DEBUG] Imagem ${idx} tem o mesmo src do avatar do header: ${src}`);
+                        } else {
+                            console.log(`[DEBUG] Imagem ${idx} src: ${src}`);
+                        }
+                    });
+                }
+            });
+        });
+
+        observer.observe(usersContainer, { childList: true, subtree: true, attributes: false });
+
+        // Capturar estado inicial
+        console.log('[DEBUG] Observer ligado em #tab-users. Avatar do header:', headerAvatarSrc);
+    } catch (err) {
+        console.error('[DEBUG] Erro ao inicializar observer:', err);
+    }
+});
+
+

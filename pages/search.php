@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Buscar Jogos - MyGameList';
+$pageTitle = 'Buscar - MyGameList';
 
 // Pegar o termo de busca
 $searchTerm = $_GET['q'] ?? '';
@@ -11,136 +11,189 @@ if (empty($searchTerm)) {
     exit;
 }
 
-// Buscar jogos na API
-$games = searchGames($searchTerm, 20);
-$totalResults = count($games);
+// Always perform both searches: IGDB games and local users
+ $db = getDB();
 
-// Jogos do usuário
-$userGames = [];
-if (isLoggedIn()) {
-    $user = getUser();
-    $db = getDB();
-    $stmt = $db->prepare("SELECT g.igdb_id, gu.status FROM game_user gu 
-                          INNER JOIN games g ON gu.game_id = g.id 
-                          WHERE gu.user_id = ? AND g.igdb_id IS NOT NULL");
-    $stmt->execute([$user['id']]);
-    foreach ($stmt->fetchAll() as $row) {
-        $userGames[$row['igdb_id']] = $row['status'];
-    }
-}
+ // Resultado genérico
+ $games = [];
+ $users = [];
+ $userGames = [];
+
+ // Buscar jogos na API (IGDB)
+ $games = searchGames($searchTerm, 20);
+
+ // Busca local por usuários (username ou name)
+ $q = '%' . $searchTerm . '%';
+ // Usar placeholders nomeados distintos para evitar problemas com drivers PDO que não
+ // aceitam o mesmo nome repetido. Passamos ambos os parâmetros na ordem correta.
+ $stmt = $db->prepare("SELECT id, username, name, avatar_path FROM users WHERE username LIKE :q1 OR name LIKE :q2 LIMIT 50");
+ $stmt->execute([':q1' => $q, ':q2' => $q]);
+ $users = $stmt->fetchAll();
+
+ // Mapear jogos do usuário logado para exibir estados na lista de resultados
+ if (isLoggedIn()) {
+     $user = getUser();
+     $stmt = $db->prepare("SELECT g.igdb_id, gu.status FROM game_user gu 
+                           INNER JOIN games g ON gu.game_id = g.id 
+                           WHERE gu.user_id = ? AND g.igdb_id IS NOT NULL");
+     $stmt->execute([$user['id']]);
+     foreach ($stmt->fetchAll() as $row) {
+         $userGames[$row['igdb_id']] = $row['status'];
+     }
+ }
+
+ $gamesCount = count($games);
+ $usersCount = count($users);
+ $totalResults = $gamesCount + $usersCount;
 
 include 'includes/header.php';
 ?>
 
 <!-- Página de Resultados de Busca -->
 <div class="container py-5">
-    <!-- Hero Section - Título da busca -->
+    <!-- Hero Section - Título da busca (Busca Universal) -->
     <div class="search-hero">
         <h1 class="search-hero-title">Resultados para: <span class="search-term"><?php echo htmlspecialchars($searchTerm); ?></span></h1>
-        <p class="search-results-count"><?php echo $totalResults; ?> <?php echo $totalResults === 1 ? 'jogo encontrado' : 'jogos encontrados'; ?></p>
+        <p class="search-results-count"><?php echo $totalResults; ?> resultado<?php echo $totalResults === 1 ? '' : 's'; ?> • <?php echo $gamesCount; ?> jogo<?php echo $gamesCount === 1 ? '' : 's'; ?> • <?php echo $usersCount; ?> usuário<?php echo $usersCount === 1 ? '' : 's'; ?></p>
+
+        <!-- Tabs: Jogos / Comunidade -->
+        <div class="search-tabs" role="tablist" aria-label="Resultados">
+            <button id="tab-btn-games" class="tab-btn <?php echo ($gamesCount > 0) ? 'active' : (($gamesCount === 0 && $usersCount > 0) ? '' : 'active'); ?>" data-target="tab-games" role="tab" aria-selected="<?php echo $gamesCount > 0 ? 'true' : 'false'; ?>">Jogos (<?php echo $gamesCount; ?>)</button>
+            <button id="tab-btn-users" class="tab-btn <?php echo ($gamesCount === 0 && $usersCount > 0) ? 'active' : ''; ?>" data-target="tab-users" role="tab" aria-selected="<?php echo ($gamesCount === 0 && $usersCount > 0) ? 'true' : 'false'; ?>">Comunidade (<?php echo $usersCount; ?>)</button>
+        </div>
     </div>
 
 
 
-    <!-- Conteúdo da aba Jogos -->
-    <div class="search-content" id="games-tab">
-        <?php if (empty($games)): ?>
-            <!-- Mensagem quando não há resultados -->
+    <!-- Conteúdo dos resultados (Busca Universal) -->
+    <div class="search-content">
+        <?php if ($totalResults === 0): ?>
             <div class="no-results">
                 <i class="bi bi-search"></i>
-                <h3>Nenhum jogo encontrado</h3>
+                <h3>Nenhum resultado encontrado</h3>
                 <p>Tente usar palavras-chave diferentes ou verificar a ortografia.</p>
             </div>
         <?php else: ?>
-            <!-- Lista de resultados -->
-            <div class="search-results-list">
-                <?php foreach ($games as $game): ?>
-                    <div class="search-result-card">
-                        <!-- Coluna Esquerda: Informações do jogo -->
-                        <a href="index.php?page=game&id=<?php echo $game['id']; ?>" class="search-card-info">
-                            <img src="<?php echo htmlspecialchars($game['cover']); ?>" 
-                                 alt="<?php echo htmlspecialchars($game['name']); ?>" 
-                                 class="search-card-cover">
-                            <div class="search-card-details">
-                                <h3 class="search-card-title">
-                                    <?php echo htmlspecialchars($game['name']); ?>
-                                    <?php if ($game['year']): ?>
-                                        <span class="search-card-year">(<?php echo $game['year']; ?>)</span>
-                                    <?php endif; ?>
-                                </h3>
-                                <div class="search-card-platforms">
-                                    <i class="bi bi-controller"></i>
-                                    <span>
-                                        <?php 
-                                        if (!empty($game['platforms'])) {
-                                            echo htmlspecialchars(implode(', ', array_slice($game['platforms'], 0, 3)));
-                                            if (count($game['platforms']) > 3) {
-                                                echo ' +' . (count($game['platforms']) - 3);
-                                            }
-                                        } else {
-                                            echo 'Plataforma não especificada';
-                                        }
-                                        ?>
-                                    </span>
-                                </div>
+            <!-- Seção Jogos -->
+            <section id="tab-games" class="search-section games-section" aria-hidden="false">
+                <h2>Jogos</h2>
+                <?php if ($gamesCount === 0): ?>
+                    <div class="section-empty muted">Nenhum jogo encontrado</div>
+                <?php else: ?>
+                    <div class="search-results-list">
+                        <?php foreach ($games as $game): ?>
+                            <div class="search-result-card">
+                                <a href="index.php?page=game&id=<?php echo $game['id']; ?>" class="search-card-info">
+                                    <img src="<?php echo htmlspecialchars($game['cover']); ?>" 
+                                         alt="<?php echo htmlspecialchars($game['name']); ?>" 
+                                         class="search-card-cover">
+                                    <div class="search-card-details">
+                                        <h3 class="search-card-title">
+                                            <?php echo htmlspecialchars($game['name']); ?>
+                                            <?php if ($game['year']): ?>
+                                                <span class="search-card-year">(<?php echo $game['year']; ?>)</span>
+                                            <?php endif; ?>
+                                        </h3>
+                                        <div class="search-card-platforms">
+                                            <i class="bi bi-controller"></i>
+                                            <span>
+                                                <?php 
+                                                if (!empty($game['platforms'])) {
+                                                    echo htmlspecialchars(implode(', ', array_slice($game['platforms'], 0, 3)));
+                                                    if (count($game['platforms']) > 3) {
+                                                        echo ' +' . (count($game['platforms']) - 3);
+                                                    }
+                                                } else {
+                                                    echo 'Plataforma não especificada';
+                                                }
+                                                ?>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+
+                                <!-- Coluna Direita: Botões de ação -->
+                                <?php if (isLoggedIn()): 
+                                    $gameStatus = $userGames[$game['id']] ?? null; ?>
+                                    <div class="search-card-actions">
+                                        <div class="search-actions-row">
+                                            <button class="search-action-btn <?= $gameStatus === 'completed' ? 'active' : '' ?>" 
+                                                    data-action="completed" 
+                                                    data-game-id="<?php echo $game['id']; ?>"
+                                                    data-game-name="<?php echo htmlspecialchars($game['name']); ?>"
+                                                    data-game-cover="<?php echo htmlspecialchars($game['cover']); ?>">
+                                                <i class="bi bi-check-circle"></i>
+                                                <span>Jogado</span>
+                                            </button>
+                                            <button class="search-action-btn <?= $gameStatus === 'playing' ? 'active' : '' ?>" 
+                                                    data-action="playing" 
+                                                    data-game-id="<?php echo $game['id']; ?>"
+                                                    data-game-name="<?php echo htmlspecialchars($game['name']); ?>"
+                                                    data-game-cover="<?php echo htmlspecialchars($game['cover']); ?>">
+                                                <i class="bi bi-controller"></i>
+                                                <span>Jogando</span>
+                                            </button>
+                                            <button class="search-action-btn <?= $gameStatus === 'dropped' ? 'active' : '' ?>" 
+                                                    data-action="dropped" 
+                                                    data-game-id="<?php echo $game['id']; ?>"
+                                                    data-game-name="<?php echo htmlspecialchars($game['name']); ?>"
+                                                    data-game-cover="<?php echo htmlspecialchars($game['cover']); ?>">
+                                                <i class="bi bi-x-circle"></i>
+                                                <span>Abandonado</span>
+                                            </button>
+                                            <button class="search-action-btn <?= $gameStatus === 'want_to_play' ? 'active' : '' ?>" 
+                                                    data-action="want_to_play" 
+                                                    data-game-id="<?php echo $game['id']; ?>"
+                                                    data-game-name="<?php echo htmlspecialchars($game['name']); ?>"
+                                                    data-game-cover="<?php echo htmlspecialchars($game['cover']); ?>">
+                                                <i class="bi bi-bookmark-heart"></i>
+                                                <span>Lista de Desejos</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="search-card-actions">
+                                        <div class="search-login-prompt">
+                                            <p class="login-prompt-main">
+                                                <button class="btn-register-small" onclick="openModal('registerModal')">Criar Conta</button>
+                                                para adicionar jogos à sua lista
+                                            </p>
+                                            <p class="login-prompt-text">
+                                                ou <button class="btn-login-link" onclick="openModal('loginModal')">iniciar sessão</button> se já tem uma conta.
+                                            </p>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </section>
+
+            <!-- Seção Comunidade -->
+            <?php if ($usersCount > 0): ?>
+            <section id="tab-users" class="search-section users-section" aria-hidden="true">
+                <h2>Comunidade</h2>
+                <div class="user-results-list">
+                    <?php foreach ($users as $u): ?>
+                        <a href="index.php?page=profile&id=<?php echo $u['id']; ?>" class="user-result-card">
+                            <div class="user-avatar">
+                                <?php if (!empty($u['avatar_path'])): ?>
+                                    <img src="<?php echo htmlspecialchars($u['avatar_path']); ?>" alt="<?php echo htmlspecialchars($u['username']); ?>">
+                                    <small style="color:crimson; display:block; font-size:0.8rem;">URL: <?php echo htmlspecialchars($u['avatar_path']); ?></small>
+                                <?php else: ?>
+                                    <div class="user-avatar-fallback"><?php echo strtoupper(substr($u['username'],0,1)); ?></div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="user-details">
+                                <div class="user-username">@<?php echo htmlspecialchars($u['username']); ?></div>
+                                <div class="user-name"><?php echo htmlspecialchars($u['name']); ?></div>
                             </div>
                         </a>
-
-                        <!-- Coluna Direita: Botões de ação -->
-                        <?php if (isLoggedIn()): 
-                            $gameStatus = $userGames[$game['id']] ?? null; ?>
-                            <div class="search-card-actions">
-                                <div class="search-actions-row">
-                                    <button class="search-action-btn <?= $gameStatus === 'completed' ? 'active' : '' ?>" 
-                                            data-action="completed" 
-                                            data-game-id="<?php echo $game['id']; ?>"
-                                            data-game-name="<?php echo htmlspecialchars($game['name']); ?>"
-                                            data-game-cover="<?php echo htmlspecialchars($game['cover']); ?>">
-                                        <i class="bi bi-check-circle"></i>
-                                        <span>Jogado</span>
-                                    </button>
-                                    <button class="search-action-btn <?= $gameStatus === 'playing' ? 'active' : '' ?>" 
-                                            data-action="playing" 
-                                            data-game-id="<?php echo $game['id']; ?>"
-                                            data-game-name="<?php echo htmlspecialchars($game['name']); ?>"
-                                            data-game-cover="<?php echo htmlspecialchars($game['cover']); ?>">
-                                        <i class="bi bi-controller"></i>
-                                        <span>Jogando</span>
-                                    </button>
-                                    <button class="search-action-btn <?= $gameStatus === 'dropped' ? 'active' : '' ?>" 
-                                            data-action="dropped" 
-                                            data-game-id="<?php echo $game['id']; ?>"
-                                            data-game-name="<?php echo htmlspecialchars($game['name']); ?>"
-                                            data-game-cover="<?php echo htmlspecialchars($game['cover']); ?>">
-                                        <i class="bi bi-x-circle"></i>
-                                        <span>Abandonado</span>
-                                    </button>
-                                    <button class="search-action-btn <?= $gameStatus === 'want_to_play' ? 'active' : '' ?>" 
-                                            data-action="want_to_play" 
-                                            data-game-id="<?php echo $game['id']; ?>"
-                                            data-game-name="<?php echo htmlspecialchars($game['name']); ?>"
-                                            data-game-cover="<?php echo htmlspecialchars($game['cover']); ?>">
-                                        <i class="bi bi-bookmark-heart"></i>
-                                        <span>Lista de Desejos</span>
-                                    </button>
-                                </div>
-                            </div>
-                        <?php else: ?>
-                            <div class="search-card-actions">
-                                <div class="search-login-prompt">
-                                    <p class="login-prompt-main">
-                                        <button class="btn-register-small" onclick="openModal('registerModal')">Criar Conta</button>
-                                        para adicionar jogos à sua lista
-                                    </p>
-                                    <p class="login-prompt-text">
-                                        ou <button class="btn-login-link" onclick="openModal('loginModal')">iniciar sessão</button> se já tem uma conta.
-                                    </p>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                <?php endforeach; ?>
-            </div>
+                    <?php endforeach; ?>
+                </div>
+            </section>
+            <?php endif; ?>
         <?php endif; ?>
     </div>
 </div>
@@ -319,4 +372,119 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<script>
+// Tabs switcher for search results
+document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('.search-tabs .tab-btn');
+    const tabGames = document.getElementById('tab-games');
+    const tabUsers = document.getElementById('tab-users');
+
+    function activateTab(targetId) {
+        tabButtons.forEach(btn => {
+            const t = btn.getAttribute('data-target');
+            if (t === targetId) {
+                btn.classList.add('active');
+                btn.setAttribute('aria-selected', 'true');
+            } else {
+                btn.classList.remove('active');
+                btn.setAttribute('aria-selected', 'false');
+            }
+        });
+
+        if (tabGames) tabGames.style.display = (targetId === 'tab-games') ? '' : 'none';
+        if (tabUsers) tabUsers.style.display = (targetId === 'tab-users') ? '' : 'none';
+    }
+
+    // Initial state: if there are games, show games; else show users (if any)
+    const defaultTab = (<?php echo ($gamesCount > 0) ? "'tab-games'" : (($usersCount > 0) ? "'tab-users'" : "'tab-games'") ; ?>);
+    activateTab(defaultTab.replace(/'/g, ''));
+
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = this.getAttribute('data-target');
+            activateTab(target);
+        });
+    });
+});
+</script>
+
 <?php include 'includes/footer.php'; ?>
+
+<style>
+/* User result card styling */
+.user-results-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+}
+.user-result-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+}
+.user-avatar img, .user-avatar-fallback {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+.user-details .user-username {
+    font-weight: 700;
+    color: var(--text-main);
+}
+.user-details .user-name {
+    font-size: 0.9rem;
+    color: var(--text-soft);
+}
+.search-refine-form .search-refine-input {
+    padding: 0.6rem 0.8rem;
+    border-radius: 6px;
+    border: 1px solid var(--input-border);
+    background: var(--input-bg);
+    color: var(--text-main);
+}
+.search-refine-select {
+    padding: 0.55rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid var(--input-border);
+    background: var(--card-bg);
+    color: var(--text-main);
+}
+
+/* Tabs styling for search results */
+.search-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+.tab-btn {
+    background: transparent;
+    border: none;
+    padding: 0.6rem 0.9rem;
+    font-weight: 600;
+    color: var(--text-soft, #6b7280);
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+}
+.tab-btn.active {
+    color: var(--text-main, #111827);
+    border-bottom-color: var(--accent, #ff2d6f);
+}
+.tab-btn:focus { outline: none; }
+.search-section { margin-top: 1rem; }
+.search-section h2 { margin: 0 0 0.75rem 0; font-size: 1.1rem; }
+.section-empty.muted { color: var(--text-soft); padding: 1rem 0; }
+</style>

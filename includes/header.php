@@ -58,7 +58,7 @@
                     <form action="index.php" method="GET">
                         <input type="hidden" name="page" value="search">
                         <i class="bi bi-search search-icon" id="searchIcon"></i>
-                        <input class="search-input" type="search" name="q" placeholder="Buscar jogos..." value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>">
+                        <input class="search-input" type="search" name="q" placeholder="Buscar jogos ou usuários..." value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>">
                         <i class="bi bi-x search-clear" id="searchClear" role="button" title="Limpar busca"></i>
                     </form>
                 </div>
@@ -161,7 +161,7 @@
                     <form action="index.php" method="GET">
                         <input type="hidden" name="page" value="search">
                         <i class="bi bi-search search-icon"></i>
-                        <input class="search-input" type="search" name="q" placeholder="Buscar jogos..." value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>">
+                        <input class="search-input" type="search" name="q" placeholder="Buscar jogos ou usuários..." value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>">
                         <i class="bi bi-x search-clear search-clear-mobile" role="button" title="Limpar busca"></i>
                     </form>
                 </div>

@@ -1,11 +1,41 @@
 <?php
-requireLogin();
-
+// Determinar qual perfil será exibido: público (por id) ou meu perfil (sessão)
 $pageTitle = 'Perfil - MyGameList';
-$user = getUser();
 
-// Pegar primeiro nome
-$firstName = explode(' ', $user['name'])[0];
+// Cenário A: se houver ?id= e for numérico, carregar perfil público/específico
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
+    $profileId = (int) $_GET['id'];
+
+    // Se for o mesmo ID da sessão, tratar como dono (requer login)
+    if (isLoggedIn() && isset($_SESSION['user_id']) && $_SESSION['user_id'] == $profileId) {
+        requireLogin();
+        $user = getUser();
+        $isOwner = true;
+    } else {
+        // Perfil público — não requer login
+        $user = getUserById($profileId);
+        if (!$user) {
+            $_SESSION['error'] = 'Usuário não encontrado.';
+            header('Location: index.php');
+            exit;
+        }
+        $isOwner = (isLoggedIn() && isset($_SESSION['user_id']) && $_SESSION['user_id'] == $profileId);
+    }
+
+} else {
+    // Cenário B: sem id na URL -> meu perfil (requer estar logado)
+    requireLogin();
+    $user = getUser();
+    if (!$user) {
+        $_SESSION['error'] = 'Usuário não encontrado.';
+        header('Location: index.php');
+        exit;
+    }
+    $isOwner = true;
+}
+
+// Pegar primeiro nome (usar safe fallback)
+$firstName = !empty($user['name']) ? explode(' ', $user['name'])[0] : '';
 
 // Buscar estatísticas do usuário
 $db = getDB();
@@ -88,9 +118,13 @@ include 'includes/header.php';
                 </div>
                 <div class="profile-header-info">
                     <h1 class="profile-name"><?php echo htmlspecialchars($firstName); ?></h1>
-                    <a href="index.php?page=edit-profile" class="btn-edit-profile">
-                        <i class="bi bi-pencil"></i> Editar Perfil
-                    </a>
+                    <?php if (!empty($isOwner) && $isOwner): ?>
+                        <a href="index.php?page=edit-profile" class="btn-edit-profile">
+                            <i class="bi bi-pencil"></i> Editar Perfil
+                        </a>
+                    <?php else: ?>
+                        <button class="btn-follow">Seguir</button>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="profile-stats">
@@ -127,32 +161,48 @@ include 'includes/header.php';
             <section class="favorite-games-section">
                 <div class="section-header-with-action">
                     <h2 class="section-title">JOGOS FAVORITOS</h2>
-                    <button class="btn-add-favorite-search" onclick="openFavoriteSearchModal()">
-                        <i class="bi bi-search"></i> Adicionar Favorito
-                    </button>
+                    <?php if (!empty($isOwner) && $isOwner): ?>
+                        <button class="btn-add-favorite-search" onclick="openFavoriteSearchModal()">
+                            <i class="bi bi-search"></i> Adicionar Favorito
+                        </button>
+                    <?php endif; ?>
                 </div>
                 <div class="favorite-games-grid">
-                    <?php for ($i = 0; $i < 5; $i++): ?>
-                        <?php if (isset($favoriteGames[$i])): ?>
-                            <?php $game = $favoriteGames[$i]; ?>
-                            <div class="favorite-game-card">
-                                <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
-                                     alt="<?php echo htmlspecialchars($game['name']); ?>"
-                                     class="favorite-game-cover">
-                                <div class="favorite-game-overlay">
-                                    <button class="btn-remove-favorite" onclick="removeFavorite(<?php echo $game['id']; ?>, '<?php echo htmlspecialchars($game['name']); ?>')" title="Remover dos favoritos">
-                                        <i class="bi bi-x-lg"></i>
+                    <?php if (!empty($isOwner) && $isOwner): ?>
+                        <?php for ($i = 0; $i < 5; $i++): ?>
+                            <?php if (isset($favoriteGames[$i])): ?>
+                                <?php $game = $favoriteGames[$i]; ?>
+                                <div class="favorite-game-card">
+                                    <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
+                                         alt="<?php echo htmlspecialchars($game['name']); ?>"
+                                         class="favorite-game-cover">
+                                    <div class="favorite-game-overlay">
+                                        <button class="btn-remove-favorite" onclick="removeFavorite(<?php echo $game['id']; ?>, '<?php echo htmlspecialchars($game['name']); ?>')" title="Remover dos favoritos">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            <?php else: ?>
+                                <div class="favorite-game-card empty" onclick="openFavoriteSearchModal()">
+                                    <button class="btn-add-favorite">
+                                        <i class="bi bi-plus-lg"></i>
                                     </button>
                                 </div>
-                            </div>
+                            <?php endif; ?>
+                        <?php endfor; ?>
+                    <?php else: ?>
+                        <?php if (empty($favoriteGames)): ?>
+                            <p class="empty-message">Nenhum jogo favorito ainda.</p>
                         <?php else: ?>
-                            <div class="favorite-game-card empty" onclick="openFavoriteSearchModal()">
-                                <button class="btn-add-favorite">
-                                    <i class="bi bi-plus-lg"></i>
-                                </button>
-                            </div>
+                            <?php foreach ($favoriteGames as $game): ?>
+                                <div class="favorite-game-card">
+                                    <img src="<?php echo htmlspecialchars($game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image'); ?>" 
+                                         alt="<?php echo htmlspecialchars($game['name']); ?>"
+                                         class="favorite-game-cover">
+                                </div>
+                            <?php endforeach; ?>
                         <?php endif; ?>
-                    <?php endfor; ?>
+                    <?php endif; ?>
                 </div>
             </section>
         </div>
@@ -184,12 +234,14 @@ include 'includes/header.php';
                                                      alt="<?php echo htmlspecialchars($game['name']); ?>"
                                                      class="game-list-cover">
                                                 <div class="game-card-overlay">
-                                                    <button class="game-action-btn" onclick="editGame(<?php echo $game['id']; ?>)" title="Editar">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </button>
-                                                    <button class="game-action-btn btn-danger" onclick="removeGame(<?php echo $game['id']; ?>)" title="Remover">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
+                                                    <?php if (!empty($isOwner) && $isOwner): ?>
+                                                        <button class="game-action-btn" onclick="editGame(<?php echo $game['id']; ?>)" title="Editar">
+                                                            <i class="bi bi-pencil"></i>
+                                                        </button>
+                                                        <button class="game-action-btn btn-danger" onclick="removeGame(<?php echo $game['id']; ?>)" title="Remover">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
                                 <?php endforeach; ?>
@@ -209,12 +261,14 @@ include 'includes/header.php';
                                              alt="<?php echo htmlspecialchars($game['name']); ?>"
                                              class="game-list-cover">
                                         <div class="game-card-overlay">
-                                            <button class="game-action-btn" onclick="editGame(<?php echo $game['id']; ?>)" title="Editar">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="game-action-btn btn-danger" onclick="removeGame(<?php echo $game['id']; ?>)" title="Remover">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
+                                            <?php if (!empty($isOwner) && $isOwner): ?>
+                                                <button class="game-action-btn" onclick="editGame(<?php echo $game['id']; ?>)" title="Editar">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button class="game-action-btn btn-danger" onclick="removeGame(<?php echo $game['id']; ?>)" title="Remover">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
@@ -234,12 +288,14 @@ include 'includes/header.php';
                                              alt="<?php echo htmlspecialchars($game['name']); ?>"
                                              class="game-list-cover">
                                         <div class="game-card-overlay">
-                                            <button class="game-action-btn" onclick="editGame(<?php echo $game['id']; ?>)" title="Editar">
-                                                <i class="bi bi-pencil"></i>
-                                            </button>
-                                            <button class="game-action-btn btn-danger" onclick="removeGame(<?php echo $game['id']; ?>)" title="Remover">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
+                                            <?php if (!empty($isOwner) && $isOwner): ?>
+                                                <button class="game-action-btn" onclick="editGame(<?php echo $game['id']; ?>)" title="Editar">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button class="game-action-btn btn-danger" onclick="removeGame(<?php echo $game['id']; ?>)" title="Remover">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
@@ -271,6 +327,7 @@ include 'includes/header.php';
     </div>
 </div>
 
+<?php if (!empty($isOwner) && $isOwner): ?>
 <!-- Modal: Adicionar Jogo Favorito -->
 <div id="favoriteSearchModal" class="modal" role="dialog" aria-modal="true">
     <div class="modal-content modal-medium">
@@ -296,13 +353,16 @@ include 'includes/header.php';
     </div>
 </div>
 
+<?php endif; ?>
+
 <script>
 function openFavoriteSearchModal() {
     const modal = document.getElementById('favoriteSearchModal');
     modal.classList.add('show');
     document.body.classList.add('modal-open');
     setTimeout(() => {
-        document.getElementById('favoriteSearchInput').focus();
+        const el = document.getElementById('favoriteSearchInput');
+        if (el) el.focus();
     }, 100);
 }
 
@@ -310,11 +370,13 @@ function closeFavoriteSearchModal() {
     const modal = document.getElementById('favoriteSearchModal');
     modal.classList.remove('show');
     document.body.classList.remove('modal-open');
-    document.getElementById('favoriteSearchInput').value = '';
-    document.getElementById('favoriteSearchResults').innerHTML = '';
+    const input = document.getElementById('favoriteSearchInput');
+    if (input) input.value = '';
+    const results = document.getElementById('favoriteSearchResults');
+    if (results) results.innerHTML = '';
 }
 
-// Aguardar DOM carregar
+// Aguardar DOM carregar e inicializar busca somente para o dono
 document.addEventListener('DOMContentLoaded', function() {
     // Fechar modal ao clicar fora
     document.addEventListener('click', (e) => {
@@ -329,56 +391,49 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchResults = document.getElementById('favoriteSearchResults');
 
     if (!searchInput || !searchResults) {
-        console.error('[FAVORITOS] Elementos de pesquisa não encontrados');
+        // elementos não encontrados - talvez modal não exista
         return;
     }
-
-    // Sistema de pesquisa inicializado
 
     searchInput.addEventListener('input', function() {
-    const query = this.value.trim();
-    
-    clearTimeout(searchTimeout);
-    
-    if (query.length < 2) {
-        searchResults.innerHTML = '';
-        return;
-    }
-    
-    searchResults.innerHTML = '<div class="search-loading">Buscando...</div>';
-    
-    searchTimeout = setTimeout(() => {
-        fetch(`includes/search-autocomplete.php?query=${encodeURIComponent(query)}`)
-            .then(response => response.json())
-            .then(games => {
-                if (games.length === 0) {
-                    searchResults.innerHTML = '<div class="search-no-results">Nenhum jogo encontrado</div>';
-                    return;
-                }
-                
-                let html = '<div class="favorite-search-grid">';
-                games.forEach(game => {
-                    html += `
-                        <div class="favorite-search-item" onclick="addGameToFavorites(${game.id}, '${game.name.replace(/'/g, "\\'")}'  , '${game.cover}')">
-                            <img src="${game.cover}" alt="${game.name}" class="favorite-search-cover">
-                            <div class="favorite-search-info">
-                                <div class="favorite-search-name">${game.name}</div>
-                                <div class="favorite-search-year">${game.year || 'Ano desconhecido'}</div>
+        const query = this.value.trim();
+        clearTimeout(searchTimeout);
+        if (query.length < 2) {
+            searchResults.innerHTML = '';
+            return;
+        }
+        searchResults.innerHTML = '<div class="search-loading">Buscando...</div>';
+        searchTimeout = setTimeout(() => {
+            fetch(`includes/search-autocomplete.php?query=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(games => {
+                    if (games.length === 0) {
+                        searchResults.innerHTML = '<div class="search-no-results">Nenhum jogo encontrado</div>';
+                        return;
+                    }
+                    let html = '<div class="favorite-search-grid">';
+                    games.forEach(game => {
+                        html += `
+                            <div class="favorite-search-item" onclick="addGameToFavorites(${game.id}, '${game.name.replace(/'/g, "\\'")}'  , '${game.cover}')">
+                                <img src="${game.cover}" alt="${game.name}" class="favorite-search-cover">
+                                <div class="favorite-search-info">
+                                    <div class="favorite-search-name">${game.name}</div>
+                                    <div class="favorite-search-year">${game.year || 'Ano desconhecido'}</div>
+                                </div>
+                                <button class="btn-add-to-favorites">
+                                    <i class="bi bi-star"></i> Adicionar
+                                </button>
                             </div>
-                            <button class="btn-add-to-favorites">
-                                <i class="bi bi-star"></i> Adicionar
-                            </button>
-                        </div>
-                    `;
+                        `;
+                    });
+                    html += '</div>';
+                    searchResults.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('[FAVORITOS] Erro na busca:', error);
+                    searchResults.innerHTML = '<div class="search-error">Erro ao buscar jogos</div>';
                 });
-                html += '</div>';
-                searchResults.innerHTML = html;
-            })
-            .catch(error => {
-                console.error('[FAVORITOS] Erro na busca:', error);
-                searchResults.innerHTML = '<div class="search-error">Erro ao buscar jogos</div>';
-            });
-    }, 300);
+        }, 300);
     });
 });
 
@@ -403,14 +458,14 @@ function addGameToFavorites(gameId, gameName, gameCover) {
         alert('Erro ao adicionar jogo aos favoritos');
     });
 }
-
+</script>
+<?php if (!empty($isOwner) && $isOwner): ?>
+<script>
 function removeFavorite(gameId, gameName) {
     if (!confirm(`Remover "${gameName}" dos favoritos?`)) {
         return;
     }
-    
-    // Removendo favorito: user confirmed
-    
+
     fetch('includes/remove-from-favorites.php', {
         method: 'POST',
         headers: {
@@ -432,6 +487,7 @@ function removeFavorite(gameId, gameName) {
     });
 }
 </script>
+<?php endif; ?>
 
 <style>
 .section-header-with-action {
@@ -743,6 +799,7 @@ document.addEventListener('click', (e) => {
 });
 </script>
 <script>
+// Garantir fechamento do modal ao clicar fora (apenas um handler)
 document.addEventListener('click', (e) => {
     if (e.target.id === 'editGameModal') {
         closeEditGameModal();

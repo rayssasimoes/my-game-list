@@ -26,6 +26,14 @@ function getUser() {
     return $stmt->fetch();
 }
 
+// Pega dados de um usuário por ID (uso público/admin)
+function getUserById($id) {
+    $db = getDB();
+    $stmt = $db->prepare("SELECT id, name, username, email, first_name, last_name, bio, pronouns, avatar_path, created_at, updated_at FROM users WHERE id = ?");
+    $stmt->execute([$id]);
+    return $stmt->fetch();
+}
+
 // Faz login
 function login($identifier, $password) {
     $db = getDB();

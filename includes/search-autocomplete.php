@@ -24,22 +24,51 @@ if (strlen($query) < 2) {
 }
 
 // Limita a 8 resultados para o autocomplete
-$games = searchGames($query, 8);
+// Limites por tipo (para não poluir o dropdown)
+$maxGames = 3;
+$maxUsers = 3;
 
-// Formata os resultados para o frontend
+$games = searchGames($query, $maxGames);
+
+// Busca local por usuários (máx $maxUsers)
+$db = getDB();
+$like = '%' . $query . '%';
+$stmt = $db->prepare("SELECT id, username, name, avatar_path FROM users WHERE username LIKE :q1 OR name LIKE :q2 LIMIT :limit");
+// Alguns drivers não aceitam bind direto de LIMIT via nomeado sem cast para int,
+// então usamos bindValue com PDO::PARAM_INT para :limit
+$stmt->bindValue(':q1', $like, PDO::PARAM_STR);
+$stmt->bindValue(':q2', $like, PDO::PARAM_STR);
+$stmt->bindValue(':limit', (int)$maxUsers, PDO::PARAM_INT);
+$stmt->execute();
+$users = $stmt->fetchAll();
+
+// Unificar resultados com campo 'type' para o frontend saber como renderizar
 $results = [];
+
+// Adicionar jogos
 foreach ($games as $game) {
-    // Formata o ano de lançamento
     $year = null;
     if (isset($game['first_release_date'])) {
         $year = date('Y', $game['first_release_date']);
     }
 
     $results[] = [
+        'type' => 'game',
         'id' => $game['id'] ?? null,
         'name' => $game['name'],
         'cover' => $game['cover'],
         'year' => $year
+    ];
+}
+
+// Adicionar usuários
+foreach ($users as $u) {
+    $results[] = [
+        'type' => 'user',
+        'id' => $u['id'],
+        'username' => $u['username'],
+        'name' => $u['name'],
+        'avatar' => $u['avatar_path']
     ];
 }
 

@@ -93,6 +93,27 @@
     color: #fff;
 }
 
+/* Botão seguir (visão pública) - estilo principal de CTA usando cor do tema */
+.btn-follow {
+    padding: 0.45rem 0.9rem;
+    background: var(--accent);
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.12s ease, transform 0.08s ease;
+}
+
+.btn-follow:hover {
+    filter: brightness(0.95);
+    transform: translateY(-1px);
+}
+
 /* Profile Bio */
 .profile-bio {
     padding-bottom: 0.75rem;
