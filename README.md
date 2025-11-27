@@ -83,6 +83,13 @@ Inicie Apache e MySQL no XAMPP e acesse:
 http://localhost/my-game-list
 ```
 
+## Site publicado (link)
+
+O projeto está em processo de publicação. Assim que o site estiver hospedado publicamente, o link será colocado aqui.
+
+- Link atual (placeholder): `https://SEU_DOMINIO.infinityfreeapp.com` 
+- Observação: estou tentando hospedar o site — assim que a publicação for concluída, atualizarei este README com a URL definitiva.
+
 ## Acessar pelo celular
 
 **Windows:**
