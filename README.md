@@ -85,7 +85,7 @@ http://localhost/my-game-list
 
 ## Site publicado (link)
 
-- Link: `mygamelist.infinityfreeapp.com`
+- Link: mygamelist.infinityfreeapp.com
 
 ## Acessar pelo celular
 
