@@ -75,33 +75,9 @@ cd C:\xampp\mysql\bin
 mysql -u root -p < /caminho/para/my-game-list/database.sql
 ```
 
-## Executar o projeto
-
-Inicie Apache e MySQL no XAMPP e acesse:
-
-```
-http://localhost/my-game-list
-```
-
 ## Site publicado (link)
 
 - Link: mygamelist.infinityfreeapp.com
-
-## Acessar pelo celular
-
-**Windows:**
-
-Execute `ipconfig` e copie o IPv4 (exemplo: 192.168.0.105)
-
-**Linux/Mac:**
-
-Execute `ifconfig` ou `ip addr` e copie o IP local
-
-No celular (mesma rede Wi-Fi), acesse:
-
-```
-http://192.168.0.105/my-game-list
-```
 
 ## Estrutura
 
@@ -117,13 +93,3 @@ my-game-list/
 ├── .env.example
 └── README.md
 ```
-
-## Problemas comuns
-
-- MySQL não conecta: Verifique se está rodando no XAMPP
-- Jogos não aparecem: Confira as credenciais IGDB no `.env`
-- Erro 404: Confirme que a pasta está em C:\xampp\htdocs\my-game-list
-
-## Segurança
-
-Nunca commite o arquivo `.env` - ele já está no .gitignore
