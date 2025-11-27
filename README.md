@@ -74,13 +74,6 @@ my-game-list/
 └── README.md               # você está aqui
 ```
 
-**Principais arquivos e onde olhar ao migrar**
-- `config/database.php` : conecta ao MySQL (usa `getenv()` / `config/credentials.php`).
-- `config/credentials.example.php` : modelo para criar `config/credentials.php` no servidor.
-- `includes/auth.php` : lógica de autenticação (login, register, getUser).
-- `pages/edit-profile.php` : edição do perfil do usuário (cuidado com colunas do DB).
-- `includes/password-reset.php` : fluxo de recuperação de senha (PHPMailer / SMTP).
-
 **Comandos úteis**
 - Rodar composer (instalar dependências):
    ```bash
@@ -90,16 +83,3 @@ my-game-list/
    ```bash
    php -v
    ```
-
-**Dicas após deploy**
-- Ajuste `config/credentials.php` no servidor com `putenv()` ou preencha variáveis de ambiente no painel da hospedagem.
-- Verifique permissões de `uploads/` (diretório `public/uploads/avatars/`) — normalmente `755` para pastas e `644` para arquivos.
-- Remova temporariamente `ini_set('display_errors', 1)` após depuração (não deixar em produção).
-
----
-
-Se quiser, eu posso:
-- Adicionar um arquivo `docs/DEPLOY.md` com passos detalhados para InfinityFree (incluindo criação do banco, import SQL, criação de `config/credentials.php` e ajustes SMTP).
-- Adicionar entrada no `.gitignore` para `config/credentials.php` e `.env` (recomendado).
-
-Diga se quer que eu crie o `docs/DEPLOY.md` e/ou adicione o `.gitignore` para `config/credentials.php` e `.env` e eu aplico os patches.
