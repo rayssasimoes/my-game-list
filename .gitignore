@@ -10,6 +10,7 @@
 .env
 .env.backup
 config.php
+config/credentials.php
 
 # Logs
 *.log
