@@ -24,20 +24,24 @@ Aplicação web simples para organizar sua biblioteca de jogos pessoais e acompa
 **Hospedagem pública (deploy):**
 - **URL:** https://mygamelist.infinityfreeapp.com
 
-**Estrutura principal do projeto**
+# Estrutura principal do projeto
 
 ```
 my-game-list/
-├── config/                 # configurações: database.php, credentials.example.php
-├── includes/               # endpoints e helpers (auth, add-to-list, search, modals, etc.)
-├── pages/                  # views PHP (home.php, game.php, edit-profile.php, etc.)
-├── public/                 # assets públicos
-│   ├── css/
-│   └── js/
-├── uploads/                # uploads (avatars)
-├── vendor/                 # dependências (composer)
-├── database.sql            # esquema do banco (local)
-├── database-infinityfree.sql # esquema adaptado para InfinityFree
-├── .env.example            # template de variáveis de ambiente
-└── README.md               # você está aqui
+├── .env
+├── .env.example
+├── .git/
+├── .gitignore
+├── composer.json
+├── composer.lock
+├── config/
+├── database.sql
+├── docs/
+├── includes/
+├── index.php
+├── node_modules/
+├── pages/
+├── public/
+├── README.md
+├── vendor/
 ```
