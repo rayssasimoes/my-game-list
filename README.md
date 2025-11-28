@@ -1,10 +1,8 @@
-# MyGameList
+# MyGameList 🕹️
 
 Aplicação web para organizar sua biblioteca de jogos usando a API do IGDB.
 
-## Tecnologias
-
-## **My Game List**
+## **My Game List 🕹️**
 
 Aplicação web simples para organizar sua biblioteca de jogos pessoais e acompanhar status (jogando, finalizado, quero jogar etc.). Usa a API do IGDB para obter informações dos jogos e oferece recursos básicos como cadastro, login, lista pessoal, favoritos e perfil de usuário.
 
