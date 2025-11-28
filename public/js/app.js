@@ -1365,9 +1365,16 @@ function attachForgotFormHandler(formEl) {
                 }, 3000);
             } else {
                 if (messageDiv) {
-                    messageDiv.className = 'alert alert-error';
-                    if (messageText) messageText.textContent = data.message || 'Erro ao processar solicitação. Tente novamente.';
-                    messageDiv.style.display = 'block';
+                    // Mensagem específica quando email não existe
+                    if (data.message && data.message.toLowerCase().indexOf('email não encontrado') !== -1) {
+                        messageDiv.className = 'alert alert-error';
+                        if (messageText) messageText.innerHTML = '<strong>Alerta:</strong> O email informado não está cadastrado no site. Verifique o endereço ou crie uma conta.';
+                        messageDiv.style.display = 'block';
+                    } else {
+                        messageDiv.className = 'alert alert-error';
+                        if (messageText) messageText.textContent = data.message || 'Erro ao processar solicitação. Tente novamente.';
+                        messageDiv.style.display = 'block';
+                    }
                 }
             }
         })

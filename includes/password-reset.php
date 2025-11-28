@@ -56,15 +56,15 @@ try {
     $stmt->execute([$email]);
     $user = $stmt->fetch();
     
-    // Por segurança, sempre retorna sucesso mesmo se o email não existir
-    // Isso evita que atacantes descubram emails válidos
+    // Se o email não existir, não enviamos o email e retornamos erro
     if (!$user) {
-        // Log para debug (remover em produção)
+        // Log para auditoria
         error_log("Tentativa de recuperação para email não cadastrado: $email");
-        
+
+        // Retornar erro para o cliente (o modal exibirá a mensagem)
         echo json_encode([
-            'success' => true,
-            'message' => 'Se o email estiver cadastrado, você receberá um link de recuperação em instantes.'
+            'success' => false,
+            'message' => 'Email não encontrado. Verifique e tente novamente.'
         ]);
         exit;
     }
@@ -94,8 +94,8 @@ try {
         $mail->isSMTP();
         $mail->Host       = $_ENV['SMTP_HOST'] ?? 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = $_ENV['SMTP_USERNAME'] ?? 'SEU_EMAIL@gmail.com';
-        $mail->Password   = $_ENV['SMTP_PASSWORD'] ?? 'SUA_SENHA_APP';
+        $mail->Username   = $_ENV['SMTP_USERNAME'] ?? 'mygamelist.noreply@gmail.com';
+        $mail->Password   = $_ENV['SMTP_PASSWORD'] ?? 'ijwaewbubxipflap';
         
         // Determina o tipo de encriptação
         $encryption = strtoupper($_ENV['SMTP_ENCRYPTION'] ?? 'TLS');
@@ -109,7 +109,7 @@ try {
         
         // Remetente
         $fromName = $_ENV['SMTP_FROM_NAME'] ?? 'My Game List';
-        $mail->setFrom($_ENV['SMTP_USERNAME'] ?? 'SEU_EMAIL@gmail.com', $fromName);
+        $mail->setFrom($_ENV['SMTP_USERNAME'] ?? 'mygamelist.noreply@gmail.com', $fromName);
         
         // Destinatário
         $mail->addAddress($user['email'], $user['name']);

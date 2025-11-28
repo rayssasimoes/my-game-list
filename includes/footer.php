@@ -26,6 +26,6 @@
     <!-- Incluir modais de autenticação -->
     <?php include 'includes/modals.php'; ?>
 
-    <script src="public/js/app.js"></script>
+    <script src="public/js/app.js?v=<?php echo filemtime(__DIR__ . '/../public/js/app.js'); ?>"></script>
 </body>
 </html>

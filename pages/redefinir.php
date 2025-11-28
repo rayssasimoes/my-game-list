@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Página de Redefinição de Senha
  * 
