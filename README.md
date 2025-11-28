@@ -28,20 +28,15 @@ Aplicação web simples para organizar sua biblioteca de jogos pessoais e acompa
 
 ```
 my-game-list/
-├── .env
-├── .env.example
-├── .git/
-├── .gitignore
-├── composer.json
-├── composer.lock
-├── config/
-├── database.sql
-├── docs/
-├── includes/
-├── index.php
-├── node_modules/
-├── pages/
-├── public/
-├── README.md
-├── vendor/
+├── .env.example        # Exemplo de variáveis de ambiente
+├── .gitignore          # Ignora arquivos sensíveis/temporários
+├── composer.json       # Dependências PHP (Composer)
+├── composer.lock       # Versões travadas do Composer
+├── config/             # Configurações do app (DB, credenciais)
+├── database.sql        # Esquema do banco de dados
+├── includes/           # Endpoints e helpers PHP
+├── index.php           # Entrada principal do app
+├── pages/              # Páginas/views PHP
+├── public/             # Assets públicos (css, js, imagens)
+├── README.md           # Documentação do projeto
 ```
