@@ -36,3 +36,6 @@ resources/
 # User uploads (futuro)
 /public/uploads/*
 !/public/uploads/.gitkeep
+
+# versão schema do banco de dados preparada para importar em hosts
+docs/database-infinityfree.sql

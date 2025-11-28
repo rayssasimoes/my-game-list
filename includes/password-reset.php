@@ -122,7 +122,8 @@ try {
         $mail->Subject = 'Redefinição de Senha - My Game List';
         
         // Link de redefinição (usa APP_URL do .env)
-        $appUrl = $_ENV['APP_URL'] ?? 'http://localhost/my-game-list';
+        // Link de redefinição (Definido manualmente para o domínio de produção)
+        $appUrl = 'http://mygamelist.infinityfreeapp.com';
         $resetLink = $appUrl . "/pages/redefinir.php?token=" . $token;
         
         // Corpo do email em HTML

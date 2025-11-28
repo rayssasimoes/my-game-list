@@ -74,6 +74,7 @@ my-game-list/
 └── README.md               # você está aqui
 ```
 
+
 **Comandos úteis**
 - Rodar composer (instalar dependências):
    ```bash
