@@ -110,7 +110,10 @@ function igdbRequest($endpoint, $query) {
         return $decoded;
     }
     
-    error_log("IGDB API Error - HTTP {$httpCode} - Response: " . substr($response, 0, 200));
+    // Log detalhado do erro incluindo a query enviada
+    error_log("IGDB API Error - HTTP {$httpCode}");
+    error_log("Query enviada: " . $query);
+    error_log("Response: " . $response);
     return [];
 }
 
@@ -421,7 +424,7 @@ function getPopularGamesFiltered($limit = 48, $page = 1, $genreId = '', $platfor
     $whereClause = implode(' & ', $whereConditions);
     
     $query = "
-        fields name, cover.url, total_rating, first_release_date;
+        fields name, cover.url, total_rating, total_rating_count, rating, first_release_date;
         where {$whereClause};
         sort total_rating desc;
         limit {$limit};
@@ -504,14 +507,34 @@ function getPopularGamesCount($genreId = '', $platformId = '') {
 
 // Buscar jogos por termo de busca
 function searchGames($searchTerm, $limit = 20) {
-    $query = "
-        fields name, cover.url, first_release_date, platforms.name;
-        search \"{$searchTerm}\";
-        where cover != null;
-        limit {$limit};
-    ";
+    // Verificar credenciais
+    if (empty(IGDB_CLIENT_ID) || empty(IGDB_CLIENT_SECRET)) {
+        error_log("ERRO searchGames: Credenciais IGDB não configuradas!");
+        return [];
+    }
+    
+    // Quando usar 'search', não podemos usar 'where' - a API retorna erro
+    // Usar limit maior e filtrar depois para garantir jogos com capa
+    $query = "search \"{$searchTerm}\"; fields name, cover.url, first_release_date, platforms.name, total_rating_count, rating; limit " . ($limit * 3) . ";";
+    
+    error_log("searchGames - Query: " . $query);
     
     $games = igdbRequest('games', $query);
+    
+    // Filtrar jogos sem capa e ordenar por popularidade
+    $gamesWithCover = array_filter($games, function($game) {
+        return isset($game['cover']['url']);
+    });
+    
+    // Ordenar por total_rating_count (popularidade)
+    usort($gamesWithCover, function($a, $b) {
+        $countA = $a['total_rating_count'] ?? 0;
+        $countB = $b['total_rating_count'] ?? 0;
+        return $countB - $countA; // Ordem decrescente
+    });
+    
+    // Limitar ao número solicitado
+    $games = array_slice($gamesWithCover, 0, $limit);
     
     // Formatar dados
     $formatted = [];
@@ -651,7 +674,7 @@ function getUpcomingGames($limit = 8) {
     $thirtyDaysFromNow = $today + (30 * 24 * 60 * 60);
     
     $query = "
-        fields name, cover.url, first_release_date;
+        fields name, cover.url, first_release_date, total_rating_count, rating;
         where first_release_date > {$today} & first_release_date < {$thirtyDaysFromNow} & cover != null;
         sort first_release_date asc;
         limit {$limit};
@@ -704,7 +727,7 @@ function getHypedGames($limit = 8) {
     $sixMonthsFromNow = time() + (180 * 24 * 60 * 60);
     
     $query = "
-        fields name, cover.url, first_release_date, hypes;
+        fields name, cover.url, first_release_date, hypes, total_rating_count, rating;
         where first_release_date > {$sixMonthsFromNow} & hypes > 50 & cover != null;
         sort hypes desc;
         limit {$limit};

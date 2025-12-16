@@ -1,16 +1,41 @@
 <?php
 $pageTitle = 'MyGameList';
 
-// Buscar jogos populares
-$games = getPopularGames(20);
-$sectionTitle = "Populares agora";
-
-// Se logado, buscar jogos que já estão na lista do usuário
+// Decidir qual seção mostrar baseado no login
+$db = getDB();
 $userGames = [];
+
 if (isLoggedIn()) {
     $user = getUser();
-    $db = getDB();
-    // Buscar jogos com JOIN para pegar o igdb_id
+    
+    // Buscar jogos que estão marcados como favoritos (rating = 10)
+    $stmt = $db->prepare("
+        SELECT g.*, COUNT(*) as fav_count 
+        FROM games g
+        INNER JOIN game_user gu ON g.id = gu.game_id
+        WHERE gu.rating = 10
+        GROUP BY g.id
+        ORDER BY fav_count DESC, gu.updated_at DESC
+        LIMIT 20
+    ");
+    $stmt->execute();
+    $communityFavorites = $stmt->fetchAll();
+    
+    // Formatar dados dos favoritos da comunidade
+    $games = [];
+    foreach ($communityFavorites as $game) {
+        $games[] = [
+            'id' => $game['igdb_id'] ?? $game['id'],
+            'igdb_id' => $game['igdb_id'],
+            'name' => $game['name'],
+            'cover' => $game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image',
+            'fav_count' => $game['fav_count']
+        ];
+    }
+    
+    $sectionTitle = "Favoritos da Comunidade";
+    
+    // Buscar jogos que já estão na lista do usuário
     $stmt = $db->prepare("
         SELECT g.igdb_id, gu.status 
         FROM game_user gu 
@@ -23,6 +48,10 @@ if (isLoggedIn()) {
     foreach ($userGamesList as $userGame) {
         $userGames[$userGame['igdb_id']] = $userGame['status'];
     }
+} else {
+    // Visitantes veem jogos populares da API do IGDB
+    $games = getPopularGames(20);
+    $sectionTitle = "Populares Agora";
 }
 
 include 'includes/header.php';
@@ -49,12 +78,30 @@ include 'includes/header.php';
                 }
             }
         ?>
+        
+        <!-- Banner de Manutenção -->
+        <div class="maintenance-banner">
+            <div class="maintenance-icon">🔧</div>
+            <div class="maintenance-content">
+                <strong>Site em manutenção:</strong> Estamos melhorando sua experiência! Algumas funcionalidades podem apresentar instabilidades temporárias, mas o site continua funcionando normalmente.
+            </div>
+        </div>
+        
         <div class="hero-section">
             <h1 class="hero-title">
                 <?php echo $greeting; ?> de volta, <span class="hero-name"><?php echo htmlspecialchars($firstName); ?></span>. Organize, descubra e jogue!
             </h1>
         </div>
     <?php else: ?>
+        
+        <!-- Banner de Manutenção (visitante) -->
+        <div class="maintenance-banner">
+            <div class="maintenance-icon">🔧</div>
+            <div class="maintenance-content">
+                <strong>Site em manutenção:</strong> Estamos melhorando sua experiência! Algumas funcionalidades podem apresentar instabilidades temporárias, mas o site continua funcionando normalmente.
+            </div>
+        </div>
+        
         <div class="welcome-message-compact">
             <h1 class="welcome-title">Boas-vindas ao <span class="welcome-name-app">MyGameList</span>! Descubra, organize e compartilhe sua coleção de jogos favoritos</h1>
         </div>
@@ -62,7 +109,7 @@ include 'includes/header.php';
 
     <!-- Seção: Populares no Momento -->
     <section class="popular-games-section mb-5">
-        <a href="index.php?page=populares" class="section-header-link">
+        <a href="index.php?page=populares<?php echo isLoggedIn() ? '&tipo=favoritos_comunidade' : ''; ?>" class="section-header-link">
             <div class="section-header-with-arrow">
                 <h2 class="section-title"><?php echo $sectionTitle; ?></h2>
                 <span class="scroll-indicator">›</span>

@@ -4,6 +4,11 @@
  * Retorna jogos que correspondem ao termo de busca
  */
 
+// Iniciar sessão para cache do token IGDB
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/igdb-api.php';
 
@@ -28,7 +33,13 @@ if (strlen($query) < 2) {
 $maxGames = 3;
 $maxUsers = 3;
 
+// Log para debug
+error_log("Search autocomplete - Query: {$query}");
+
 $games = searchGames($query, $maxGames);
+
+// Log resultado
+error_log("Search autocomplete - Jogos encontrados: " . count($games));
 
 // Busca local por usuários (máx $maxUsers)
 $db = getDB();

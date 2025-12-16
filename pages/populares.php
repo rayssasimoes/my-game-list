@@ -4,6 +4,7 @@ $tipo = isset($_GET['tipo']) ? trim($_GET['tipo']) : 'populares';
 
 $pageTitleMap = [
     'populares' => 'Jogos Populares - MyGameList',
+    'favoritos_comunidade' => 'Favoritos da Comunidade - MyGameList',
     'em_breve' => 'Em Breve - MyGameList',
     'hyped' => 'Recentemente Antecipados - MyGameList',
     'hidden_gems' => 'Sucessos Inesperados - MyGameList'
@@ -46,6 +47,63 @@ if (isset($_GET['clearcache'])) {
 
 // Buscar jogos de acordo com o tipo selecionado
 switch ($tipo) {
+    case 'favoritos_comunidade':
+        // Buscar favoritos da comunidade (rating = 10) com paginação e filtros
+        $db = getDB();
+        $offset = ($currentPageNum - 1) * $gamesPerPage;
+        
+        // Construir query com filtros
+        $whereConditions = ["gu.rating = 10"];
+        $params = [];
+        
+        if ($selectedGenre) {
+            $whereConditions[] = "JSON_CONTAINS(g.genres, ?)";
+            $params[] = '"' . $selectedGenre . '"';
+        }
+        
+        if ($selectedPlatform) {
+            $whereConditions[] = "JSON_CONTAINS(g.platforms, ?)";
+            $params[] = '"' . $selectedPlatform . '"';
+        }
+        
+        $whereClause = implode(" AND ", $whereConditions);
+        
+        $query = "
+            SELECT g.*, COUNT(*) as fav_count 
+            FROM games g
+            INNER JOIN game_user gu ON g.id = gu.game_id
+            WHERE {$whereClause}
+            GROUP BY g.id
+            ORDER BY fav_count DESC, gu.updated_at DESC
+            LIMIT ? OFFSET ?
+        ";
+        
+        $params[] = $gamesPerPage + 1;
+        $params[] = $offset;
+        
+        $stmt = $db->prepare($query);
+        $stmt->execute($params);
+        $communityFavorites = $stmt->fetchAll();
+        
+        // Verificar se há próxima página
+        $hasNextPage = count($communityFavorites) > $gamesPerPage;
+        if ($hasNextPage) {
+            array_pop($communityFavorites);
+        }
+        
+        // Formatar dados
+        $games = [];
+        foreach ($communityFavorites as $game) {
+            $games[] = [
+                'id' => $game['igdb_id'] ?? $game['id'],
+                'igdb_id' => $game['igdb_id'],
+                'name' => $game['name'],
+                'cover' => $game['cover_url'] ?? 'https://via.placeholder.com/264x352?text=No+Image',
+                'fav_count' => $game['fav_count']
+            ];
+        }
+        break;
+
     case 'em_breve':
         $games = getUpcomingGamesFiltered($gamesPerPage, $currentPageNum, $selectedGenre, $selectedPlatform);
         $hasNextPage = count($games) === $gamesPerPage;
@@ -336,9 +394,14 @@ include 'includes/header.php';
         
         // Elementos encontrados
         
+        // Obter tipo atual da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentTipo = urlParams.get('tipo') || '';
+        
             // Aplicar
         applyBtn.onclick = function() {
             let url = 'index.php?page=populares';
+            if (currentTipo) url += '&tipo=' + currentTipo;
             if (genreFilter.value) url += '&genre=' + genreFilter.value;
             if (platformFilter.value) url += '&platform=' + platformFilter.value;
             window.location.href = url;
@@ -346,7 +409,9 @@ include 'includes/header.php';
         
         // Limpar
         clearBtn.onclick = function() {
-            window.location.href = 'index.php?page=populares';
+            let url = 'index.php?page=populares';
+            if (currentTipo) url += '&tipo=' + currentTipo;
+            window.location.href = url;
         };
         
         // Toggle botão limpar
