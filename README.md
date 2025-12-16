@@ -18,6 +18,18 @@ Aplicação web simples para organizar sua biblioteca de jogos pessoais e acompa
 **Hospedagem pública (deploy): 🌐**
 - **URL:** https://mygamelist.infinityfreeapp.com
 
+## **Usuários de Exemplo para Teste 🎮**
+
+Para testar as funcionalidades do sistema, você pode usar os seguintes dados:
+
+**Para pesquisar perfis de usuários:**
+- Use a barra de pesquisa e procure por: `@carlus`
+
+**Conta de teste para login:**
+- **Usuário:** `@user_teste`
+- **E-mail:** `userteste@gmail.com`
+- **Senha:** `userteste`
+
 # Estrutura principal do projeto
 
 ```
